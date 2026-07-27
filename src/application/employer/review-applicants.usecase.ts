@@ -15,7 +15,9 @@ export class ReviewApplicantsUseCase {
   constructor(private readonly applications: ApplicationRepositoryPort) {}
 
   async execute(input: ReviewApplicantsInput): Promise<ReviewApplicantsOutput> {
-    const apps = await this.applications.findByListingId(input.listingId);
-    return { applications: apps.map((a) => a.toObject()) };
+    const apps = this.applications.findByListingId
+      ? await this.applications.findByListingId(input.listingId)
+      : (await this.applications.findByListing(input.listingId)).map((a) => a.application);
+    return { applications: apps.map((a: Application) => a.toObject()) };
   }
 }

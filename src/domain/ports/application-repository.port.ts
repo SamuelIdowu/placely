@@ -1,12 +1,7 @@
 // src/domain/ports/application-repository.port.ts
+// Port definition matching IApplicationRepository for backwards compatibility and clean architecture compliance.
 
-import type { Application, ApplicationStatus } from '@/domain/entities/application';
+import type { IApplicationRepository } from './IApplicationRepository';
 
-export interface ApplicationRepositoryPort {
-  findById(id: string): Promise<Application | null>;
-  findByStudentId(studentId: string): Promise<Application[]>;
-  findByListingId(listingId: string): Promise<Application[]>;
-  findByListingAndStudent(listingId: string, studentId: string): Promise<Application | null>;
-  save(application: Application): Promise<Application>;
-  updateStatus(id: string, status: ApplicationStatus): Promise<Application>;
-}
+export type { IApplicationRepository as ApplicationRepositoryPort };
+export * from './IApplicationRepository';

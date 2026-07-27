@@ -1,29 +1,64 @@
 // src/domain/entities/message.ts
-// Message entity — messaging context (ADR-02: polling, no WebSocket at MVP).
+// Message Domain Entity
 
 export interface MessageProps {
   id: string;
   applicationId: string;
   senderId: string;
+  senderRole?: string;
   body: string;
   createdAt: Date;
+  sender?: {
+    email?: string;
+    name?: string;
+    role?: string;
+  };
 }
 
 export class Message {
   private readonly props: MessageProps;
 
   constructor(props: MessageProps) {
-    if (!props.body.trim()) {
+    if (!props.body || !props.body.trim()) {
       throw new Error('Message body cannot be empty');
     }
-    this.props = props;
+    this.props = {
+      ...props,
+      body: props.body.trim(),
+    };
   }
 
-  get id() { return this.props.id; }
-  get applicationId() { return this.props.applicationId; }
-  get senderId() { return this.props.senderId; }
-  get body() { return this.props.body; }
-  get createdAt() { return this.props.createdAt; }
+  get id(): string {
+    return this.props.id;
+  }
+
+  get applicationId(): string {
+    return this.props.applicationId;
+  }
+
+  get senderId(): string {
+    return this.props.senderId;
+  }
+
+  get senderRole(): string | undefined {
+    return this.props.senderRole;
+  }
+
+  get body(): string {
+    return this.props.body;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get sender(): MessageProps['sender'] {
+    return this.props.sender;
+  }
+
+  isSentBy(userId: string): boolean {
+    return this.props.senderId === userId;
+  }
 
   toObject(): MessageProps {
     return { ...this.props };

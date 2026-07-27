@@ -25,4 +25,13 @@ export interface EmailServicePort {
     result: 'VERIFIED' | 'REJECTED';
     adminNote?: string;
   }): Promise<void>;
+
+  sendNewMessageNotification(params: {
+    to: string;
+    recipientName: string;
+    senderName: string;
+    listingTitle: string;
+    messagePreview: string;
+    applicationUrl: string;
+  }): Promise<void>;
 }

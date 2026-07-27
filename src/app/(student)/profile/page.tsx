@@ -1,12 +1,48 @@
 // app/(student)/profile/page.tsx
+
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { studentProfileRepo, verificationRepo } from '@/lib/container';
+import { StudentProfileForm } from './StudentProfileForm';
+
 export const metadata: Metadata = { title: 'My Profile — Placely' };
 
-export default function StudentProfilePage() {
+export default async function StudentProfilePage() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect('/auth/signin');
+  }
+
+  const profile = await studentProfileRepo.findByUserId(session.user.id);
+  const profileObj = profile?.toObject();
+
+  let adminNote: string | undefined = undefined;
+  if (profileObj?.id) {
+    const vReq = await verificationRepo.findByStudentProfileId(profileObj.id);
+    adminNote = vReq?.toObject().adminNote;
+  }
+
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold">My Profile</h1>
-      {/* Profile form — Sprint 1 */}
+    <main className="container max-w-5xl py-8 px-4 sm:px-6">
+      <StudentProfileForm
+        initialData={
+          profileObj
+            ? {
+                university: profileObj.university,
+                discipline: profileObj.discipline,
+                cgpa: profileObj.cgpa,
+                resumeUrl: profileObj.resumeUrl,
+                linkedinUrl: profileObj.linkedinUrl,
+                portfolioUrl: profileObj.portfolioUrl,
+                bio: profileObj.bio,
+                profileCompleteness: profileObj.profileCompleteness,
+                verificationStatus: profileObj.verificationStatus,
+                adminNote,
+              }
+            : undefined
+        }
+      />
     </main>
   );
 }

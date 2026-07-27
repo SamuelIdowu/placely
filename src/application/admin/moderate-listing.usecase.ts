@@ -4,7 +4,7 @@ import type { ListingRepositoryPort } from '@/domain/ports/listing-repository.po
 
 export interface ModerateListingInput {
   listingId: string;
-  approve: boolean;
+  isModerated: boolean;
 }
 
 export interface ModerateListingOutput {
@@ -19,13 +19,7 @@ export class ModerateListingUseCase {
     const listing = await this.listings.findById(input.listingId);
     if (!listing) return { success: false, error: 'Listing not found' };
 
-    if (input.approve) {
-      const moderated = listing.moderate();
-      await this.listings.update(moderated);
-    } else {
-      const closed = listing.close();
-      await this.listings.update(closed);
-    }
+    await this.listings.moderate(input.listingId, input.isModerated);
 
     return { success: true };
   }

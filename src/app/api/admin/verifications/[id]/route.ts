@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { approveVerificationUseCase } from '@/lib/container';
+import { approveVerificationUseCase, rejectVerificationUseCase } from '@/lib/container';
 
 export async function PATCH(
   req: NextRequest,
@@ -18,12 +18,17 @@ export async function PATCH(
   const body = await req.json();
   const { approve, adminNote } = body;
 
-  const result = await approveVerificationUseCase.execute({
-    verificationRequestId: id,
-    approve: Boolean(approve),
-    adminNote,
-    reviewerEmail: session.user.email!,
-  });
+  const result = approve
+    ? await approveVerificationUseCase.execute({
+        verificationRequestId: id,
+        adminNote,
+        reviewerEmail: session.user.email || '',
+      })
+    : await rejectVerificationUseCase.execute({
+        verificationRequestId: id,
+        adminNote: adminNote ?? 'Rejected by admin',
+        reviewerEmail: session.user.email || '',
+      });
 
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 422 });

@@ -1,53 +1,34 @@
-// app/api/applications/route.ts
-// POST /api/applications — student submits an application
-// GET  /api/applications — student fetches their own applications
-
-import { NextRequest, NextResponse } from 'next/server';
+// src/app/api/applications/route.ts
+import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { submitApplicationUseCase, getMyApplicationsUseCase, studentProfileRepo } from '@/lib/container';
+import { submitApplicationUseCase, studentProfileRepo } from '@/lib/container';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const session = await auth();
-  if (!session || session.user.role !== 'STUDENT') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.id || session.user.role !== 'STUDENT') {
+    return NextResponse.json({ error: 'Unauthorized: Student role required' }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { listingId, note } = body;
-  if (!listingId) {
-    return NextResponse.json({ error: 'listingId required' }, { status: 400 });
+  try {
+    const studentProfile = await studentProfileRepo.findByUserId(session.user.id);
+    if (!studentProfile) {
+      return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
+    }
+
+    const body = await req.json();
+    const result = await submitApplicationUseCase.execute({
+      studentProfileId: studentProfile.id,
+      listingId: body.listingId,
+      note: body.note,
+    });
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 400 });
+    }
+
+    return NextResponse.json({ success: true, application: result.application?.toObject() }, { status: 201 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to submit application';
+    return NextResponse.json({ error: message }, { status: 400 });
   }
-
-  // Resolve StudentProfile from User.id stored in session
-  const profile = await studentProfileRepo.findByUserId(session.user.id);
-  if (!profile) {
-    return NextResponse.json({ error: 'Student profile not found — complete setup first' }, { status: 400 });
-  }
-
-  const result = await submitApplicationUseCase.execute({
-    listingId,
-    studentId: profile.id,
-    note,
-  });
-
-  if (!result.success) {
-    return NextResponse.json({ error: result.error }, { status: 422 });
-  }
-
-  return NextResponse.json({ applicationId: result.applicationId }, { status: 201 });
-}
-
-export async function GET() {
-  const session = await auth();
-  if (!session || session.user.role !== 'STUDENT') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const profile = await studentProfileRepo.findByUserId(session.user.id);
-  if (!profile) {
-    return NextResponse.json({ applications: [] });
-  }
-
-  const result = await getMyApplicationsUseCase.execute({ studentId: profile.id });
-  return NextResponse.json(result);
 }

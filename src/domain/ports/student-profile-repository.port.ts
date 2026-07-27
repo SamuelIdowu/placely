@@ -7,4 +7,5 @@ export interface StudentProfileRepositoryPort {
   findByUserId(userId: string): Promise<StudentProfile | null>;
   save(profile: StudentProfile): Promise<StudentProfile>;
   update(profile: StudentProfile): Promise<StudentProfile>;
+  upsert(profile: StudentProfile): Promise<StudentProfile>;
 }

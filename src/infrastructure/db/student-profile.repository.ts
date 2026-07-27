@@ -2,7 +2,7 @@
 
 import { prisma } from '@/infrastructure/db/prisma.client';
 import type { StudentProfileRepositoryPort } from '@/domain/ports/student-profile-repository.port';
-import { StudentProfile, type StudentProfileProps, type VerificationStatus } from '@/domain/entities/student-profile';
+import { StudentProfile, computeCompleteness, type VerificationStatus } from '@/domain/entities/student-profile';
 
 export class PrismaStudentProfileRepository implements StudentProfileRepositoryPort {
   async findById(id: string): Promise<StudentProfile | null> {
@@ -17,6 +17,7 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
 
   async save(profile: StudentProfile): Promise<StudentProfile> {
     const data = profile.toObject();
+    const completeness = computeCompleteness(data);
     const row = await prisma.studentProfile.create({
       data: {
         id: data.id,
@@ -28,7 +29,7 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
         linkedinUrl: data.linkedinUrl,
         portfolioUrl: data.portfolioUrl,
         bio: data.bio,
-        profileCompleteness: data.profileCompleteness,
+        profileCompleteness: completeness,
         verificationStatus: data.verificationStatus,
       },
     });
@@ -37,6 +38,7 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
 
   async update(profile: StudentProfile): Promise<StudentProfile> {
     const data = profile.toObject();
+    const completeness = computeCompleteness(data);
     const row = await prisma.studentProfile.update({
       where: { id: data.id },
       data: {
@@ -47,9 +49,43 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
         linkedinUrl: data.linkedinUrl,
         portfolioUrl: data.portfolioUrl,
         bio: data.bio,
-        profileCompleteness: data.profileCompleteness,
+        profileCompleteness: completeness,
         verificationStatus: data.verificationStatus,
-        updatedAt: data.updatedAt,
+        updatedAt: new Date(),
+      },
+    });
+    return this.toDomain(row);
+  }
+
+  async upsert(profile: StudentProfile): Promise<StudentProfile> {
+    const data = profile.toObject();
+    const completeness = computeCompleteness(data);
+    const row = await prisma.studentProfile.upsert({
+      where: { userId: data.userId },
+      create: {
+        id: data.id,
+        userId: data.userId,
+        university: data.university,
+        discipline: data.discipline,
+        cgpa: data.cgpa,
+        resumeUrl: data.resumeUrl,
+        linkedinUrl: data.linkedinUrl,
+        portfolioUrl: data.portfolioUrl,
+        bio: data.bio,
+        profileCompleteness: completeness,
+        verificationStatus: data.verificationStatus,
+      },
+      update: {
+        university: data.university,
+        discipline: data.discipline,
+        cgpa: data.cgpa,
+        resumeUrl: data.resumeUrl,
+        linkedinUrl: data.linkedinUrl,
+        portfolioUrl: data.portfolioUrl,
+        bio: data.bio,
+        profileCompleteness: completeness,
+        verificationStatus: data.verificationStatus,
+        updatedAt: new Date(),
       },
     });
     return this.toDomain(row);

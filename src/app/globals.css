@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fonts */
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-dm-serif: 'DM Serif Display', Georgia, serif;
+  --font-hanken: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Universal Default Color Tokens (App System Default) */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0f172a;
+  --radius: 0.5rem;
+
+  /* Editorial Minimalist System (Landing Page Unauthenticated) Tokens */
+  --landing-primary: #4f46e5;
+  --landing-primary-hover: #4338ca;
+  --landing-bg: #ffffff;
+  --landing-fg: #0f172a;
+  --landing-border: #000000;
+  --radius-landing-btn: 0px;
+  --radius-landing-card: 0px;
+
+  /* Placely Corporate Minimalism System (App Authenticated) Tokens */
+  --app-primary: #000000;
+  --app-primary-hover: #1e293b;
+  --app-secondary-green: #10b981;
+  --app-secondary-green-hover: #059669;
+  --app-bg: #f8fafc;
+  --app-card-bg: #ffffff;
+  --app-fg: #0f172a;
+  --app-muted-fg: #64748b;
+  --app-border: #e2e8f0;
+  --radius-app-btn: 4px;
+  --radius-app-card: 8px;
+
+  /* Application Status Semantic Colors */
+  --status-draft-bg: #f1f5f9;
+  --status-draft-fg: #475569;
+  --status-pending-bg: #fef3c7;
+  --status-pending-fg: #b45309;
+  --status-shortlisted-bg: #dbeafe;
+  --status-shortlisted-fg: #1d4ed8;
+  --status-accepted-bg: #d1fae5;
+  --status-accepted-fg: #047857;
+  --status-rejected-bg: #ffe4e6;
+  --status-rejected-fg: #be123c;
 }
 
-@theme inline {
+@theme {
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-dm-serif);
+  --font-hanken: var(--font-hanken);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-landing-primary: var(--landing-primary);
+  --color-landing-primary-hover: var(--landing-primary-hover);
+  --color-landing-bg: var(--landing-bg);
+  --color-landing-fg: var(--landing-fg);
+  --color-landing-border: var(--landing-border);
+
+  --color-app-primary: var(--app-primary);
+  --color-app-primary-hover: var(--app-primary-hover);
+  --color-app-secondary-green: var(--app-secondary-green);
+  --color-app-secondary-green-hover: var(--app-secondary-green-hover);
+  --color-app-bg: var(--app-bg);
+  --color-app-card-bg: var(--app-card-bg);
+  --color-app-fg: var(--app-fg);
+  --color-app-muted-fg: var(--app-muted-fg);
+  --color-app-border: var(--app-border);
+
+  --color-status-draft-bg: var(--status-draft-bg);
+  --color-status-draft-fg: var(--status-draft-fg);
+  --color-status-pending-bg: var(--status-pending-bg);
+  --color-status-pending-fg: var(--status-pending-fg);
+  --color-status-shortlisted-bg: var(--status-shortlisted-bg);
+  --color-status-shortlisted-fg: var(--status-shortlisted-fg);
+  --color-status-accepted-bg: var(--status-accepted-bg);
+  --color-status-accepted-fg: var(--status-accepted-fg);
+  --color-status-rejected-bg: var(--status-rejected-bg);
+  --color-status-rejected-fg: var(--status-rejected-fg);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-landing-btn: var(--radius-landing-btn);
+  --radius-landing-card: var(--radius-landing-card);
+  --radius-app-btn: var(--radius-app-btn);
+  --radius-app-card: var(--radius-app-card);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
 }

@@ -1,5 +1,5 @@
 // app/api/admin/listings/[id]/moderate/route.ts
-// PATCH /api/admin/listings/[id]/moderate — admin approves or closes a listing
+// PATCH /api/admin/listings/[id]/moderate — admin flags or restores a listing
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
@@ -16,11 +16,16 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { approve } = body;
+  const isModerated =
+    body.isModerated !== undefined
+      ? Boolean(body.isModerated)
+      : body.flag !== undefined
+      ? Boolean(body.flag)
+      : !Boolean(body.approve);
 
   const result = await moderateListingUseCase.execute({
     listingId: id,
-    approve: Boolean(approve),
+    isModerated,
   });
 
   if (!result.success) {

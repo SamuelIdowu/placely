@@ -1,12 +1,35 @@
-// app/(employer)/employer/listings/new/page.tsx
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title: 'Post a Listing — Placely' };
+import { auth } from '@/lib/auth';
+import { employerProfileRepo } from '@/lib/container';
+import { redirect } from 'next/navigation';
+import { NewListingForm } from './NewListingForm';
+import { PendingVerificationBanner } from '@/components/shared/PendingVerificationBanner';
 
-export default function NewListingPage() {
+export const metadata: Metadata = { title: 'Post an Internship Listing — Placely' };
+
+export default async function NewListingPage() {
+  const session = await auth();
+  if (!session || session.user.role !== 'EMPLOYER') {
+    redirect('/auth/login');
+  }
+
+  const employer = await employerProfileRepo.findByUserId(session.user.id);
+  const isVerified = employer?.verificationStatus === 'VERIFIED';
+
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold">Post a New Placement</h1>
-      {/* Post listing form — Sprint 2 */}
+    <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Post an Internship Listing</h1>
+        <p className="text-sm text-slate-500">
+          Reach qualified engineering students for SIWES internship placements.
+        </p>
+      </div>
+
+      {!isVerified && (
+        <PendingVerificationBanner status={employer?.verificationStatus || 'PENDING'} />
+      )}
+
+      <NewListingForm isVerified={isVerified} />
     </main>
   );
 }

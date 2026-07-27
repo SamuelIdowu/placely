@@ -4,10 +4,10 @@ import type { VerificationRepositoryPort } from '@/domain/ports/verification-rep
 import type { StudentProfileRepositoryPort } from '@/domain/ports/student-profile-repository.port';
 import type { EmployerProfileRepositoryPort } from '@/domain/ports/employer-profile-repository.port';
 import type { EmailServicePort } from '@/domain/ports/email-service.port';
+import { prisma } from '@/infrastructure/db/prisma.client';
 
 export interface ApproveVerificationInput {
   verificationRequestId: string;
-  approve: boolean;
   adminNote?: string;
   reviewerEmail: string; // for audit
 }
@@ -29,24 +29,53 @@ export class ApproveVerificationUseCase {
     const request = await this.verifications.findById(input.verificationRequestId);
     if (!request) return { success: false, error: 'Verification request not found' };
 
-    const updated = input.approve
-      ? request.approve(input.adminNote)
-      : request.reject(input.adminNote ?? 'Rejected by admin');
-
+    const updated = request.approve(input.adminNote);
     await this.verifications.update(updated);
 
+    let recipientEmail: string | null = null;
+    let recipientName: string = 'User';
+
     // Propagate status to owning profile
-    if (request.toObject().studentProfileId) {
-      const profile = await this.studentProfiles.findById(request.toObject().studentProfileId!);
+    const studentProfileId = request.toObject().studentProfileId;
+    const employerProfileId = request.toObject().employerProfileId;
+
+    if (studentProfileId) {
+      const profile = await this.studentProfiles.findById(studentProfileId);
       if (profile) {
-        const updatedProfile = input.approve ? profile.markVerified() : profile.markRejected();
+        const updatedProfile = profile.markVerified();
         await this.studentProfiles.update(updatedProfile);
+
+        // Fetch user email for notification
+        const user = await prisma.user.findUnique({ where: { id: profile.userId } });
+        if (user) {
+          recipientEmail = user.email;
+          recipientName = profile.university;
+        }
       }
-    } else if (request.toObject().employerProfileId) {
-      const profile = await this.employerProfiles.findById(request.toObject().employerProfileId!);
+    } else if (employerProfileId) {
+      const profile = await this.employerProfiles.findById(employerProfileId);
       if (profile) {
-        const updatedProfile = input.approve ? profile.markVerified() : profile.markRejected();
+        const updatedProfile = profile.markVerified();
         await this.employerProfiles.update(updatedProfile);
+
+        const user = await prisma.user.findUnique({ where: { id: profile.userId } });
+        if (user) {
+          recipientEmail = user.email;
+          recipientName = profile.companyName;
+        }
+      }
+    }
+
+    if (recipientEmail) {
+      try {
+        await this.email.sendVerificationResultEmail({
+          to: recipientEmail,
+          profileName: recipientName,
+          result: 'VERIFIED',
+          adminNote: input.adminNote,
+        });
+      } catch (err) {
+        console.error('Failed to send verification approval email:', err);
       }
     }
 

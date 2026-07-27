@@ -2,79 +2,107 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import { signUpAction } from './actions';
+import { getNigerianUniversities, NUC_ENGINEERING_COURSES } from '@/domain/value-objects/academic';
 
 export function SignUpForm() {
   const router = useRouter();
   const [role, setRole] = useState<'STUDENT' | 'EMPLOYER'>('STUDENT');
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Academic dropdown states (instant sync initialization)
+  const [universities] = useState<string[]>(() => getNigerianUniversities());
+  const [selectedUniversity, setSelectedUniversity] = useState<string>('');
+  const [customUniversity, setCustomUniversity] = useState<string>('');
+
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string>('');
+  const [customDiscipline, setCustomDiscipline] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(null);
 
     const formData = new FormData(e.currentTarget);
     formData.append('role', role);
 
-    const result = await signUpAction(formData);
+    if (role === 'STUDENT') {
+      const finalUni = selectedUniversity === 'Other' ? customUniversity : selectedUniversity;
+      const finalDisc = selectedDiscipline === 'Other / Discipline Not Listed' ? customDiscipline : selectedDiscipline;
 
-    if (result.error) {
-      setError(result.error);
-      setLoading(false);
-      return;
+      if (!finalUni) {
+        setError('Please select or enter your University / Institution.');
+        setLoading(false);
+        return;
+      }
+      if (!finalDisc) {
+        setError('Please select or enter your Engineering Discipline / Course.');
+        setLoading(false);
+        return;
+      }
+
+      formData.set('university', finalUni);
+      formData.set('discipline', finalDisc);
     }
 
-    // Automatically sign in upon successful registration
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    try {
+      const result = await signUpAction(formData);
 
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+      if (result.error) {
+        setError(result.error);
+        setLoading(false);
+        return;
+      }
 
-    if (res?.error) {
-      setError('Registration successful, but failed to sign in.');
+      setSuccess('Account created successfully! Redirecting to sign in...');
+      setTimeout(() => {
+        router.push('/sign-in');
+        router.refresh();
+      }, 1000);
+    } catch {
+      setError('An unexpected error occurred during account creation. Please try again.');
       setLoading(false);
-    } else {
-      router.push('/dashboard');
-      router.refresh();
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
+        <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md border border-red-200">
           {error}
         </div>
       )}
 
-      <div className="flex gap-4 mb-4">
-        <label className="flex items-center">
-          <input
-            type="radio"
-            name="role_radio"
-            checked={role === 'STUDENT'}
-            onChange={() => setRole('STUDENT')}
-            className="mr-2"
-          />
-          I'm a Student
-        </label>
-        <label className="flex items-center">
-          <input
-            type="radio"
-            name="role_radio"
-            checked={role === 'EMPLOYER'}
-            onChange={() => setRole('EMPLOYER')}
-            className="mr-2"
-          />
-          I'm an Employer
-        </label>
+      {success && (
+        <div className="p-3 text-sm text-emerald-700 bg-emerald-50 rounded-md border border-emerald-200 font-medium">
+          {success}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-lg mb-6">
+        <button
+          type="button"
+          onClick={() => setRole('STUDENT')}
+          className={`py-2 text-sm font-medium rounded-md transition-all ${role === 'STUDENT'
+              ? 'bg-white text-gray-900 shadow-sm font-semibold'
+              : 'text-gray-600 hover:text-gray-900'
+            }`}
+        >
+          I&apos;m a Student
+        </button>
+        <button
+          type="button"
+          onClick={() => setRole('EMPLOYER')}
+          className={`py-2 text-sm font-medium rounded-md transition-all ${role === 'EMPLOYER'
+              ? 'bg-white text-gray-900 shadow-sm font-semibold'
+              : 'text-gray-600 hover:text-gray-900'
+            }`}
+        >
+          I&apos;m an Employer
+        </button>
       </div>
 
       {role === 'STUDENT' ? (
@@ -101,23 +129,64 @@ export function SignUpForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">University</label>
-            <input
+            <label className="block text-sm font-medium text-gray-700">University / Institution</label>
+            <select
               name="university"
-              type="text"
+              value={selectedUniversity}
+              onChange={(e) => setSelectedUniversity(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-            />
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
+            >
+              <option value="">Select University / Institution</option>
+              {universities.map((uni) => (
+                <option key={uni} value={uni}>
+                  {uni}
+                </option>
+              ))}
+              <option value="Other">Other / Institution Not Listed</option>
+            </select>
+
+            {selectedUniversity === 'Other' && (
+              <input
+                name="customUniversity"
+                type="text"
+                placeholder="Enter institution name"
+                value={customUniversity}
+                onChange={(e) => setCustomUniversity(e.target.value)}
+                required
+                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              />
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Discipline / Course</label>
-            <input
+            <label className="block text-sm font-medium text-gray-700">Discipline / Engineering Course</label>
+            <select
               name="discipline"
-              type="text"
+              value={selectedDiscipline}
+              onChange={(e) => setSelectedDiscipline(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-            />
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
+            >
+              <option value=""> Select Engineering Course   </option>
+              {NUC_ENGINEERING_COURSES.map((course) => (
+                <option key={course} value={course}>
+                  {course}
+                </option>
+              ))}
+            </select>
+
+            {selectedDiscipline === 'Other / Discipline Not Listed' && (
+              <input
+                name="customDiscipline"
+                type="text"
+                placeholder="Enter engineering course name"
+                value={customDiscipline}
+                onChange={(e) => setCustomDiscipline(e.target.value)}
+                required
+                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              />
+            )}
           </div>
 
           <div>

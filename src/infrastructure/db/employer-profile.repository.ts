@@ -38,11 +38,39 @@ export class PrismaEmployerProfileRepository implements EmployerProfileRepositor
       where: { id: data.id },
       data: {
         companyName: data.companyName,
+        cacNumber: data.cacNumber,
         description: data.description,
         logoUrl: data.logoUrl,
         websiteUrl: data.websiteUrl,
         verificationStatus: data.verificationStatus,
-        updatedAt: data.updatedAt,
+        updatedAt: new Date(),
+      },
+    });
+    return this.toDomain(row);
+  }
+
+  async upsert(profile: EmployerProfile): Promise<EmployerProfile> {
+    const data = profile.toObject();
+    const row = await prisma.employerProfile.upsert({
+      where: { userId: data.userId },
+      create: {
+        id: data.id,
+        userId: data.userId,
+        companyName: data.companyName,
+        cacNumber: data.cacNumber,
+        description: data.description,
+        logoUrl: data.logoUrl,
+        websiteUrl: data.websiteUrl,
+        verificationStatus: data.verificationStatus,
+      },
+      update: {
+        companyName: data.companyName,
+        cacNumber: data.cacNumber,
+        description: data.description,
+        logoUrl: data.logoUrl,
+        websiteUrl: data.websiteUrl,
+        verificationStatus: data.verificationStatus,
+        updatedAt: new Date(),
       },
     });
     return this.toDomain(row);

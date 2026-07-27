@@ -37,3 +37,19 @@ export class ValidationError extends DomainError {
     Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }
+
+export class DuplicateApplicationError extends DomainError {
+  constructor(message = 'Already applied to this listing') {
+    super(message, 'DUPLICATE_APPLICATION');
+    this.name = 'DuplicateApplicationError';
+    Object.setPrototypeOf(this, DuplicateApplicationError.prototype);
+  }
+}
+
+export class ListingClosedError extends DomainError {
+  constructor(message = 'Listing is closed for applications') {
+    super(message, 'LISTING_CLOSED');
+    this.name = 'ListingClosedError';
+    Object.setPrototypeOf(this, ListingClosedError.prototype);
+  }
+}

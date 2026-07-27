@@ -2,8 +2,6 @@
 // Student profile entity — profile context.
 // Contains the profile completeness algorithm (ADR-05: domain logic, not DB).
 
-import { DomainError } from '@/lib/errors';
-
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
 
 export interface StudentProfileProps {
@@ -53,8 +51,15 @@ export class StudentProfile {
   get userId() { return this.props.userId; }
   get university() { return this.props.university; }
   get discipline() { return this.props.discipline; }
+  get cgpa() { return this.props.cgpa; }
+  get resumeUrl() { return this.props.resumeUrl; }
+  get linkedinUrl() { return this.props.linkedinUrl; }
+  get portfolioUrl() { return this.props.portfolioUrl; }
+  get bio() { return this.props.bio; }
   get profileCompleteness() { return this.props.profileCompleteness; }
   get verificationStatus() { return this.props.verificationStatus; }
+  get createdAt() { return this.props.createdAt; }
+  get updatedAt() { return this.props.updatedAt; }
   get isVerified() { return this.props.verificationStatus === 'VERIFIED'; }
 
   canApply(): boolean {

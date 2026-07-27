@@ -5,13 +5,28 @@
 import { ValidationError } from '@/lib/errors';
 
 export const VALID_DISCIPLINES = [
+  'Electrical & Electronics Engineering',
   'Electrical',
+  'Mechanical Engineering',
   'Mechanical',
+  'Civil Engineering',
   'Civil',
+  'Computer Engineering',
   'Computer',
+  'Software Engineering',
+  'Chemical Engineering',
   'Chemical',
+  'Petroleum & Gas Engineering',
   'Petroleum',
+  'Agricultural & Bio-Resources Engineering',
   'Agricultural',
+  'Mechatronics Engineering',
+  'Systems Engineering',
+  'Industrial & Production Engineering',
+  'Materials & Metallurgical Engineering',
+  'Biomedical Engineering',
+  'Aerospace Engineering',
+  'Other / Discipline Not Listed',
 ] as const;
 
 export type DisciplineValue = (typeof VALID_DISCIPLINES)[number];

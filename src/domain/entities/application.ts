@@ -1,8 +1,8 @@
 // src/domain/entities/application.ts
-// Application aggregate root — enforces SIWES placement workflow state machine.
-// No external dependencies (Clean Architecture: domain layer is pure).
+// Domain Entity — Application aggregate root with state machine validation and helpers.
+// Pure domain layer: ZERO external dependencies (no Next.js, Prisma, Resend, etc.).
 
-import { DomainError } from '@/lib/errors';
+import { validateTransition, isTerminalStatus } from '../value-objects/application-state-machine';
 
 export type ApplicationStatus =
   | 'APPLIED'
@@ -21,6 +21,10 @@ export interface ApplicationProps {
   updatedAt: Date;
 }
 
+export function isTerminal(status: ApplicationStatus): boolean {
+  return isTerminalStatus(status);
+}
+
 export class Application {
   private readonly props: ApplicationProps;
 
@@ -28,42 +32,44 @@ export class Application {
     this.props = props;
   }
 
-  get id() { return this.props.id; }
-  get listingId() { return this.props.listingId; }
-  get studentId() { return this.props.studentId; }
-  get status() { return this.props.status; }
-  get note() { return this.props.note; }
-  get createdAt() { return this.props.createdAt; }
-  get updatedAt() { return this.props.updatedAt; }
+  get id(): string { return this.props.id; }
+  get listingId(): string { return this.props.listingId; }
+  get studentId(): string { return this.props.studentId; }
+  get status(): ApplicationStatus { return this.props.status; }
+  get note(): string | undefined { return this.props.note; }
+  get createdAt(): Date { return this.props.createdAt; }
+  get updatedAt(): Date { return this.props.updatedAt; }
 
-  // Business rule: employer can only shortlist from APPLIED
-  shortlist(): Application {
-    if (this.props.status !== 'APPLIED') {
-      throw new DomainError('Only APPLIED applications can be shortlisted');
+  isTerminal(): boolean {
+    return isTerminalStatus(this.props.status);
+  }
+
+  canTransitionTo(targetStatus: ApplicationStatus, actorRole: 'EMPLOYER' | 'STUDENT'): boolean {
+    try {
+      validateTransition(this.props.status, targetStatus, actorRole);
+      return true;
+    } catch {
+      return false;
     }
+  }
+
+  shortlist(): Application {
+    validateTransition(this.props.status, 'SHORTLISTED', 'EMPLOYER');
     return new Application({ ...this.props, status: 'SHORTLISTED', updatedAt: new Date() });
   }
 
-  // Business rule: offer requires shortlisted state
   sendOffer(): Application {
-    if (this.props.status !== 'SHORTLISTED') {
-      throw new DomainError('Only SHORTLISTED applications can receive offers');
-    }
+    validateTransition(this.props.status, 'OFFERED', 'EMPLOYER');
     return new Application({ ...this.props, status: 'OFFERED', updatedAt: new Date() });
   }
 
-  // Business rule: student can only accept offers
   accept(): Application {
-    if (this.props.status !== 'OFFERED') {
-      throw new DomainError('Only OFFERED applications can be accepted');
-    }
+    validateTransition(this.props.status, 'ACCEPTED', 'STUDENT');
     return new Application({ ...this.props, status: 'ACCEPTED', updatedAt: new Date() });
   }
 
-  decline(): Application {
-    if (!(['APPLIED', 'SHORTLISTED', 'OFFERED'] as ApplicationStatus[]).includes(this.props.status)) {
-      throw new DomainError('Cannot decline at current status');
-    }
+  decline(actorRole: 'EMPLOYER' | 'STUDENT' = 'EMPLOYER'): Application {
+    validateTransition(this.props.status, 'DECLINED', actorRole);
     return new Application({ ...this.props, status: 'DECLINED', updatedAt: new Date() });
   }
 

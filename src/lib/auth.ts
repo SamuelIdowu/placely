@@ -17,6 +17,7 @@ import bcrypt from 'bcryptjs';
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // Required for Credentials provider — cannot use 'database' strategy
   session: { strategy: 'jwt' },
+  trustHost: true,
 
   providers: [
     Credentials({

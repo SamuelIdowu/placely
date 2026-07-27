@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
 export function SignInForm() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -25,11 +23,11 @@ export function SignInForm() {
 
       if (res?.error) {
         setError('Invalid email or password');
+        setLoading(false);
       } else {
-        router.push('/dashboard'); // Will be redirected by proxy based on role
-        router.refresh();
+        window.location.href = '/dashboard';
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

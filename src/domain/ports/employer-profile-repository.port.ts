@@ -7,4 +7,5 @@ export interface EmployerProfileRepositoryPort {
   findByUserId(userId: string): Promise<EmployerProfile | null>;
   save(profile: EmployerProfile): Promise<EmployerProfile>;
   update(profile: EmployerProfile): Promise<EmployerProfile>;
+  upsert(profile: EmployerProfile): Promise<EmployerProfile>;
 }
