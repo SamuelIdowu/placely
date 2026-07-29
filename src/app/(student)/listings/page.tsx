@@ -39,7 +39,7 @@ export default async function ListingsBrowsePage({
   const totalPages = Math.ceil(result.total / pageSize);
 
   return (
-    <main className="max-w-7xl mx-auto space-y-6">
+    <div className="w-full max-w-full space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
@@ -53,10 +53,10 @@ export default async function ListingsBrowsePage({
         <FilterSheet />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-6 items-start w-full">
         <FilterSidebar />
 
-        <div className="flex-1 space-y-6 w-full">
+        <div className="flex-1 space-y-6 w-full min-w-0">
           <EmployerLogoCarousel />
 
           <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
@@ -116,6 +116,6 @@ export default async function ListingsBrowsePage({
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

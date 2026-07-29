@@ -36,14 +36,14 @@ export function Shell({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden w-full">
       <Header
         userRole={role}
         userEmail={userEmail}
         userName={userName}
         userAvatar={userAvatar}
       />
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative w-full overflow-x-hidden">
         <FloatingNavRail
           role={role}
           isCollapsed={isCollapsed}
@@ -51,11 +51,13 @@ export function Shell({
         />
         <main
           className={cn(
-            "flex-1 p-4 md:p-8 pb-20 md:pb-8 max-w-7xl mx-auto w-full transition-all duration-300 ease-in-out",
-            isCollapsed ? "md:pl-24" : "md:pl-68"
+            "flex-1 p-4 md:p-6 pb-20 md:pb-8 w-full max-w-full overflow-x-hidden transition-all duration-300 ease-in-out",
+            isCollapsed ? "md:pl-22" : "md:pl-68"
           )}
         >
-          {children}
+          <div className="max-w-7xl mx-auto w-full">
+            {children}
+          </div>
         </main>
       </div>
       <BottomNav role={role} />
