@@ -30,35 +30,43 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-app-border bg-white px-4 md:px-6 shadow-2xs">
-      <div className="flex items-center gap-3">
-        <Link href="/" className="font-sans text-xl font-bold tracking-tight text-app-fg">
-          Placely<span className="text-app-secondary-green">.</span>
+    <header className="flex h-14 w-full items-center justify-between px-4 md:px-8 z-30 pointer-events-none">
+      {/* Mobile-only brand title */}
+      <div className="flex md:hidden items-center gap-2.5 pointer-events-auto">
+        <Link href="/" className="font-sans text-lg font-bold tracking-tight text-slate-900">
+          Placely<span className="text-indigo-600">.</span>
         </Link>
-        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 uppercase">
           {userRole}
         </span>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="hidden md:block"></div>
+
+      {/* Top Right Utilities (Notifications Bell + User Avatar Only) */}
+      <div className="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200/80 shadow-xs pointer-events-auto">
         <button
-          className="relative rounded-full p-2 text-muted-foreground hover:bg-accent hover:text-foreground cursor-pointer transition-colors"
+          className="relative rounded-full p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors"
           aria-label="Notifications"
         >
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-app-secondary-green" />
+          <Bell className="h-4 h-4" />
+          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white" />
         </button>
+
+        <div className="h-4 w-px bg-slate-200" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 outline-none cursor-pointer rounded-full p-0.5 hover:ring-2 hover:ring-app-border">
-              <Avatar className="h-9 w-9">
+            <button className="flex items-center gap-2 outline-none cursor-pointer rounded-full p-0.5 hover:ring-2 hover:ring-indigo-500/20">
+              <Avatar className="h-8 w-8 text-xs font-bold text-indigo-700 bg-indigo-50">
                 <AvatarImage src={userAvatar} alt={userName} />
-                <AvatarFallback>{getInitials(userName)}</AvatarFallback>
+                <AvatarFallback className="bg-indigo-50 text-indigo-700 text-xs font-bold">
+                  {getInitials(userName)}
+                </AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 mt-1">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none text-foreground">{userName}</p>

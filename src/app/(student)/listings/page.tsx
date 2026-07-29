@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { browseListingsUseCase } from '@/lib/container';
-import { FilterSidebar } from '@/components/listings/FilterSidebar';
+import { FilterSidebar } from '@/components/shared/FilterSidebar';
 import { FilterSheet } from '@/components/listings/FilterSheet';
 import { ListingCard } from '@/components/listings/ListingCard';
+import { EmployerLogoCarousel } from '@/components/shared/EmployerLogoCarousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { SearchX } from 'lucide-react';
 import Link from 'next/link';
@@ -38,43 +39,45 @@ export default async function ListingsBrowsePage({
   const totalPages = Math.ceil(result.total / pageSize);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <main className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Browse SIWES Internship Placements
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            SIWES Internship Marketplace
           </h1>
-          <p className="text-sm text-slate-500">
-            Discover verified engineering internship opportunities across Nigeria.
+          <p className="text-sm text-slate-500 mt-1">
+            Discover verified industrial training placements across Nigeria&apos;s leading engineering sectors.
           </p>
         </div>
 
         <FilterSheet />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 items-start">
+      <div className="flex flex-col md:flex-row gap-6 items-start">
         <FilterSidebar />
 
         <div className="flex-1 space-y-6 w-full">
+          <EmployerLogoCarousel />
+
           <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
             <span>
-              Showing {result.listings.length} of {result.total} {result.total === 1 ? 'placement' : 'placements'}
+              Showing <span className="font-bold text-slate-900">{result.listings.length}</span> of {result.total} {result.total === 1 ? 'placement' : 'placements'}
             </span>
             {(params.discipline || params.location || params.keyword) && (
-              <span className="text-indigo-600 font-semibold">Filtered results</span>
+              <span className="text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-full">Filtered results</span>
             )}
           </div>
 
           {result.listings.length === 0 ? (
-            <Card className="rounded-lg border border-slate-200 py-12">
+            <Card className="rounded-lg border border-slate-200 py-12 bg-white shadow-md">
               <CardContent className="flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
                   <SearchX className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-slate-900">No listings match your filters</h3>
-                  <p className="text-sm text-slate-500 max-w-sm">
-                    Try adjusting your discipline, location, or keyword search criteria to find available positions.
+                  <h3 className="text-lg font-bold text-slate-900">No listings match your filters</h3>
+                  <p className="text-xs text-slate-500 max-w-sm">
+                    Try adjusting your discipline, location, or keyword search criteria to discover active positions.
                   </p>
                 </div>
               </CardContent>
@@ -99,9 +102,9 @@ export default async function ListingsBrowsePage({
                   <Link
                     key={p}
                     href={`/listings?${newSearchParams.toString()}`}
-                    className={`h-9 w-9 flex items-center justify-center rounded-[4px] text-sm font-medium transition-colors ${
+                    className={`h-9 w-9 flex items-center justify-center rounded-md text-xs font-bold transition-all ${
                       isCurrent
-                        ? 'bg-slate-900 text-white'
+                        ? 'bg-indigo-600 text-white shadow-sm'
                         : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >

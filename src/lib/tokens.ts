@@ -31,17 +31,20 @@ export const landingTokens = {
 export const appTokens = {
   fontHeadline: "var(--font-inter)",
   fontBody: "var(--font-inter)",
-  primary: "var(--app-primary)", // #000000 / #0F172A
+  primary: "var(--app-primary)", // #4F46E5 Brand Indigo
   primaryHover: "var(--app-primary-hover)",
-  secondaryGreen: "var(--app-secondary-green)", // #10B981
+  primaryDark: "var(--app-slate-dark)", // #0F172A Near-Black Slate
+  secondaryGreen: "var(--app-secondary-green)", // #10B981 Emerald
   secondaryGreenHover: "var(--app-secondary-green-hover)", // #059669
-  bg: "var(--app-bg)",
+  bg: "var(--app-bg)", // #F8FAFC
   cardBg: "var(--app-card-bg)",
   fg: "var(--app-fg)",
   mutedFg: "var(--app-muted-fg)",
   border: "var(--app-border)",
-  radiusBtn: "var(--radius-app-btn)", // 4px
-  radiusCard: "var(--radius-app-card)", // 8px
+  radiusBtn: "rounded-md", // 6px
+  radiusCard: "rounded-lg", // 8px
+  cardShadow: "shadow-md",
+  cardHoverShadow: "shadow-lg",
   spacingBase: 4,
 } as const;
 
