@@ -7,6 +7,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { User, LogOut, Settings, Bell } from "lucide-react";
 import { signOut } from "next-auth/react";
 
+import { NotificationBell } from "./NotificationBell";
+
 export interface HeaderProps {
   userRole?: "STUDENT" | "EMPLOYER" | "ADMIN";
   userEmail?: string;
@@ -45,13 +47,7 @@ export function Header({
 
       {/* Top Right Utilities (Notifications Bell + User Avatar Only) */}
       <div className="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200/80 shadow-xs pointer-events-auto">
-        <button
-          className="relative rounded-full p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 cursor-pointer transition-colors"
-          aria-label="Notifications"
-        >
-          <Bell className="h-4 h-4" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white" />
-        </button>
+        <NotificationBell />
 
         <div className="h-4 w-px bg-slate-200" />
 

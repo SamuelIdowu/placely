@@ -47,27 +47,37 @@ export function AnalyticsTrendChart({
   const maxPlacement = Math.max(...points.map((p) => p.placements));
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200/80 shadow-md p-6 space-y-6">
+    /* Cohere lg media card: pale-blue wash bg, 22px radius, Cohere border */
+    <div
+      className="rounded-[22px] p-6 space-y-6"
+      style={{ background: '#f1f5ff', border: '1px solid #e5e7eb' }}
+    >
+      {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-indigo-600" />
+          <h3 className="font-semibold text-base flex items-center gap-2" style={{ color: '#212121' }}>
+            <TrendingUp className="w-4 h-4" style={{ color: '#4f46e5' }} />
             {title}
           </h3>
-          <p className="text-slate-500 text-xs mt-0.5">{subtitle}</p>
+          <p className="text-xs mt-0.5" style={{ color: '#75758a' }}>{subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-md shrink-0">
+        {/* Timeframe toggle */}
+        <div
+          className="flex items-center gap-1 p-1 rounded-lg shrink-0"
+          style={{ background: 'rgba(0,0,0,0.05)' }}
+        >
           {(["Weekly", "Monthly", "Yearly"] as const).map((tf) => (
             <button
               key={tf}
               type="button"
               onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1 text-xs font-semibold rounded transition-all ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                 timeframe === tf
-                  ? "bg-white text-indigo-600 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white shadow-sm"
+                  : "hover:bg-white/60"
               }`}
+              style={{ color: timeframe === tf ? '#4f46e5' : '#75758a' }}
             >
               {tf}
             </button>
@@ -75,60 +85,94 @@ export function AnalyticsTrendChart({
         </div>
       </div>
 
-      {/* KPI Highlights */}
+      {/* KPI tiles — Cohere product band inset tiles */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="p-3.5 rounded-lg bg-indigo-50/60 border border-indigo-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
-            <Briefcase className="w-4 h-4" />
+        <div
+          className="p-3.5 rounded-lg flex items-center gap-3"
+          style={{
+            background: 'rgba(79,70,229,0.08)',
+            border: '1px solid rgba(79,70,229,0.15)',
+          }}
+        >
+          <div
+            className="w-9 h-9 rounded-md flex items-center justify-center shrink-0"
+            style={{ background: '#4f46e5' }}
+          >
+            <Briefcase className="w-4 h-4 text-white" />
           </div>
           <div>
-            <span className="text-[11px] text-slate-500 font-medium block">Active Placements</span>
-            <span className="font-extrabold text-slate-900 text-base">
+            <span className="text-[11px] font-medium block uppercase tracking-[0.05em]" style={{ color: '#75758a' }}>
+              Active Placements
+            </span>
+            <span className="font-bold text-lg" style={{ color: '#212121' }}>
               {points[points.length - 1].placements.toLocaleString()}
             </span>
           </div>
         </div>
 
-        <div className="p-3.5 rounded-lg bg-emerald-50/60 border border-emerald-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shrink-0">
-            <DollarSign className="w-4 h-4" />
+        <div
+          className="p-3.5 rounded-lg flex items-center gap-3"
+          style={{
+            background: 'rgba(16,185,129,0.08)',
+            border: '1px solid rgba(16,185,129,0.15)',
+          }}
+        >
+          <div
+            className="w-9 h-9 rounded-md flex items-center justify-center shrink-0"
+            style={{ background: '#10b981' }}
+          >
+            <DollarSign className="w-4 h-4 text-white" />
           </div>
           <div>
-            <span className="text-[11px] text-slate-500 font-medium block">Avg Stipend Level</span>
-            <span className="font-extrabold text-emerald-700 text-base">
+            <span className="text-[11px] font-medium block uppercase tracking-[0.05em]" style={{ color: '#75758a' }}>
+              Avg Stipend Level
+            </span>
+            <span className="font-bold text-lg" style={{ color: '#10b981' }}>
               ₦{points[points.length - 1].avgStipend.toLocaleString()}/mo
             </span>
           </div>
         </div>
       </div>
 
-      {/* Visual Chart Bars */}
+      {/* Bar chart — gradient fill on pale bg (gradient as media fill, per plan) */}
       <div className="space-y-2 pt-2">
-        <div className="h-44 flex items-end justify-between gap-2 sm:gap-4 border-b border-slate-100 pb-2">
+        <div
+          className="h-44 flex items-end justify-between gap-2 sm:gap-4 pb-2"
+          style={{ borderBottom: '1px solid rgba(79,70,229,0.15)' }}
+        >
           {points.map((p) => {
             const heightPct = Math.round((p.placements / maxPlacement) * 100);
             return (
               <div key={p.label} className="flex-1 flex flex-col items-center gap-2 group relative">
-                {/* Tooltip on hover */}
-                <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md whitespace-nowrap z-10 pointer-events-none">
-                  {p.placements} placements • ₦{p.avgStipend.toLocaleString()}/mo
+                {/* Hover tooltip */}
+                <div
+                  className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity text-white text-[10px] font-bold px-2 py-1 rounded shadow-md whitespace-nowrap z-10 pointer-events-none"
+                  style={{ background: '#17171c' }}
+                >
+                  {p.placements} placements · ₦{p.avgStipend.toLocaleString()}/mo
                 </div>
 
-                <div className="w-full bg-slate-100 rounded-t-md relative overflow-hidden flex items-end h-32">
+                <div
+                  className="w-full rounded-t-md relative overflow-hidden flex items-end h-32"
+                  style={{ background: 'rgba(79,70,229,0.1)' }}
+                >
                   <div
-                    style={{ height: `${heightPct}%` }}
-                    className="w-full bg-gradient-to-t from-indigo-600 to-indigo-500 rounded-t-md transition-all duration-500 group-hover:from-indigo-700 group-hover:to-indigo-600"
+                    style={{
+                      height: `${heightPct}%`,
+                      background: 'linear-gradient(to top, #4f46e5, #818cf8)',
+                    }}
+                    className="w-full rounded-t-md transition-all duration-500 group-hover:brightness-110"
                   />
                 </div>
-                <span className="text-xs font-semibold text-slate-600">{p.label}</span>
+                <span className="text-xs font-semibold" style={{ color: '#75758a' }}>{p.label}</span>
               </div>
             );
           })}
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-1">
-          <span>• Placement Demand Bar Height</span>
-          <span className="text-indigo-600 font-bold">Peak Stipend Avg: ₦95,000/mo</span>
+        <div className="flex items-center justify-between text-[11px] font-medium pt-1" style={{ color: '#93939f' }}>
+          <span>· Placement demand</span>
+          <span className="font-bold" style={{ color: '#4f46e5' }}>Peak Avg: ₦95,000/mo</span>
         </div>
       </div>
     </div>

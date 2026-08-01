@@ -8,6 +8,8 @@ import { PrismaEmployerProfileRepository } from '@/infrastructure/db/employer-pr
 import { PrismaListingRepository } from '@/infrastructure/db/listing.repository';
 import { MessageRepository } from '@/infrastructure/db/MessageRepository';
 import { PrismaVerificationRepository } from '@/infrastructure/db/verification.repository';
+import { PrismaSavedListingRepository } from '@/infrastructure/db/SavedListingRepository';
+import { PrismaNotificationRepository } from '@/infrastructure/db/NotificationRepository';
 import { ResendEmailService } from '@/infrastructure/email/resend-email.service';
 import { VercelBlobStorage } from '@/infrastructure/storage/vercel-blob.storage';
 
@@ -18,6 +20,8 @@ export const employerProfileRepo = new PrismaEmployerProfileRepository();
 export const listingRepo = new PrismaListingRepository();
 export const messageRepo = new MessageRepository();
 export const verificationRepo = new PrismaVerificationRepository();
+export const savedListingRepo = new PrismaSavedListingRepository();
+export const notificationRepo = new PrismaNotificationRepository();
 
 // ── Services (singletons) ────────────────────────────────────────────────────
 export const emailService = new ResendEmailService();
@@ -31,6 +35,8 @@ import { SubmitApplicationUseCase } from '@/application/student/submit-applicati
 import { GetMyApplicationsUseCase } from '@/application/student/get-my-applications';
 import { RespondToOfferUseCase } from '@/application/student/respond-to-offer';
 import { BrowseListingsUseCase } from '@/application/student/browse-listings';
+import { ToggleSaveListingUseCase } from '@/application/student/toggle-save-listing';
+import { GetSavedListingsUseCase } from '@/application/student/get-saved-listings';
 
 import { RegisterEmployerUseCase } from '@/application/employer/register-employer.usecase';
 import { UpdateEmployerProfileUseCase } from '@/application/employer/update-employer-profile';
@@ -51,6 +57,9 @@ import { ModerateListingUseCase } from '@/application/admin/moderate-listing.use
 import { SendMessageUseCase } from '@/application/messaging/send-message';
 import { GetThreadUseCase } from '@/application/messaging/get-thread';
 
+import { GetUserNotificationsUseCase } from '@/application/notifications/get-user-notifications';
+import { MarkNotificationReadUseCase } from '@/application/notifications/mark-notification-read';
+
 // Student
 export const registerStudentUseCase = new RegisterStudentUseCase(studentProfileRepo, emailService);
 export const updateStudentProfileUseCase = new UpdateStudentProfileUseCase(studentProfileRepo);
@@ -59,6 +68,8 @@ export const submitApplicationUseCase = new SubmitApplicationUseCase(application
 export const getMyApplicationsUseCase = new GetMyApplicationsUseCase(applicationRepo);
 export const respondToOfferUseCase = new RespondToOfferUseCase(applicationRepo);
 export const browseListingsUseCase = new BrowseListingsUseCase(listingRepo);
+export const toggleSaveListingUseCase = new ToggleSaveListingUseCase(savedListingRepo);
+export const getSavedListingsUseCase = new GetSavedListingsUseCase(savedListingRepo);
 
 // Employer
 export const registerEmployerUseCase = new RegisterEmployerUseCase(employerProfileRepo);
@@ -81,3 +92,8 @@ export const moderateListingUseCase = new ModerateListingUseCase(listingRepo);
 // Messaging
 export const sendMessageUseCase = new SendMessageUseCase(messageRepo, emailService);
 export const getThreadUseCase = new GetThreadUseCase(messageRepo);
+
+// Notifications
+export const getUserNotificationsUseCase = new GetUserNotificationsUseCase(notificationRepo);
+export const markNotificationReadUseCase = new MarkNotificationReadUseCase(notificationRepo);
+

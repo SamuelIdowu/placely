@@ -1,191 +1,153 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Briefcase,
+  Compass,
   FileText,
-  MessageSquare,
-  BookOpen,
-  User,
-  ShieldCheck,
-  Building2,
-  Users,
+  Bookmark,
   Settings,
+  Building2,
+  ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-} from "lucide-react";
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export interface NavRailItem {
-  title: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-export interface FloatingNavRailProps {
-  role: "STUDENT" | "EMPLOYER" | "ADMIN";
+interface FloatingNavRailProps {
+  role?: 'STUDENT' | 'EMPLOYER' | 'ADMIN';
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 }
 
 export function FloatingNavRail({
-  role,
-  isCollapsed: controlledIsCollapsed,
+  role = 'STUDENT',
+  isCollapsed = false,
   onToggleCollapse,
 }: FloatingNavRailProps) {
   const pathname = usePathname();
-  const [internalIsCollapsed, setInternalIsCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("placely_sidebar_collapsed");
-      return saved === "true";
-    }
-    return false;
-  });
 
-  const isCollapsed = controlledIsCollapsed ?? internalIsCollapsed;
+  const studentItems = [
+    { icon: LayoutDashboard, href: '/dashboard', label: 'Dashboard' },
+    { icon: Compass, href: '/listings', label: 'Explore Placements' },
+    { icon: FileText, href: '/applications', label: 'My Applications' },
+    { icon: Bookmark, href: '/saved', label: 'Saved Placements' },
+    { icon: Settings, href: '/profile', label: 'Settings' },
+  ];
 
-  const toggle = () => {
-    if (onToggleCollapse) {
-      onToggleCollapse();
-    } else {
-      const nextState = !internalIsCollapsed;
-      setInternalIsCollapsed(nextState);
-      localStorage.setItem("placely_sidebar_collapsed", String(nextState));
-    }
-  };
+  const employerItems = [
+    { icon: LayoutDashboard, href: '/employer/dashboard', label: 'Dashboard' },
+    { icon: Building2, href: '/employer/listings', label: 'My Listings' },
+    { icon: FileText, href: '/employer/applications', label: 'Applicants' },
+    { icon: Settings, href: '/employer/profile', label: 'Settings' },
+  ];
 
-  const navItems: Record<FloatingNavRailProps["role"], NavRailItem[]> = {
-    STUDENT: [
-      { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { title: "Browse Placements", href: "/listings", icon: Briefcase },
-      { title: "Applications", href: "/applications", icon: FileText },
-      { title: "Messages", href: "/messages", icon: MessageSquare },
-      { title: "Logbook", href: "/logbook", icon: BookOpen },
-      { title: "Profile Settings", href: "/profile", icon: User },
-    ],
-    EMPLOYER: [
-      { title: "Overview", href: "/employer/dashboard", icon: LayoutDashboard },
-      { title: "My Listings", href: "/employer/listings", icon: Briefcase },
-      { title: "Applicants", href: "/employer/applicants", icon: Users },
-      { title: "Messages", href: "/employer/messages", icon: MessageSquare },
-      { title: "Company Profile", href: "/employer/profile", icon: Building2 },
-    ],
-    ADMIN: [
-      { title: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
-      { title: "Verifications", href: "/admin/verifications", icon: ShieldCheck },
-      { title: "Listings Moderation", href: "/admin/listings", icon: Briefcase },
-      { title: "User Directory", href: "/admin/users", icon: Users },
-      { title: "System Settings", href: "/admin/settings", icon: Settings },
-    ],
-  };
+  const adminItems = [
+    { icon: LayoutDashboard, href: '/admin/dashboard', label: 'Dashboard' },
+    { icon: ShieldCheck, href: '/admin/verification', label: 'Verification Queue' },
+    { icon: Building2, href: '/admin/listings', label: 'Moderation Queue' },
+    { icon: Settings, href: '/admin/users', label: 'User Management' },
+  ];
 
-  const items = navItems[role] ?? navItems.STUDENT;
+  const navItems = role === 'ADMIN' ? adminItems : role === 'EMPLOYER' ? employerItems : studentItems;
 
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col py-5 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-xl fixed left-4 top-4 bottom-4 h-[calc(100vh-2rem)] z-40 transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-16 px-2.5 items-center" : "w-60 px-4"
+        'fixed left-4 top-4 bottom-4 h-[calc(100vh-2rem)] z-40 hidden lg:flex flex-col rounded-xl border transition-all duration-300 ease-in-out py-5 px-3',
+        'bg-[#17171c] border-[rgba(255,255,255,0.08)]',
+        isCollapsed ? 'w-16 items-center' : 'w-60'
       )}
     >
-      {/* Sidebar Header & Toggle */}
-      <div
-        className={cn(
-          "flex items-center pb-4 border-b border-slate-100 mb-3",
-          isCollapsed ? "flex-col gap-3 justify-center" : "justify-between"
-        )}
-      >
-        <Link
-          href={items[0]?.href ?? "/dashboard"}
-          className="flex items-center gap-2.5 group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-base shadow-md shadow-indigo-200 group-hover:scale-105 transition-transform shrink-0">
-            P
-          </div>
-          {!isCollapsed && (
-            <span className="font-extrabold text-slate-900 text-lg tracking-tight">
-              Placely<span className="text-indigo-600">.</span>
-            </span>
-          )}
-        </Link>
+      {/* Brand Header & Toggle */}
+      <div className={cn('flex items-center mb-6 w-full', isCollapsed ? 'justify-center flex-col gap-2' : 'justify-between px-2')}>
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/"
+            title="Placely Home"
+            className="flex items-center gap-2.5 group"
+          >
+            {/* Logo mark — unchanged indigo badge */}
+            <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-extrabold text-lg shrink-0 group-hover:bg-indigo-500 transition-colors">
+              P
+            </div>
+            {!isCollapsed && (
+              <span className="font-sans text-lg font-bold tracking-tight text-white">
+                Placely<span className="text-indigo-400">.</span>
+              </span>
+            )}
+          </Link>
+        </div>
 
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
+        {onToggleCollapse && !isCollapsed && (
+          <button
+            onClick={onToggleCollapse}
+            aria-label="Collapse sidebar"
+            className="p-1.5 rounded-md text-[#93939f] hover:text-white hover:bg-white/5 transition-colors"
+          >
             <ChevronLeft className="w-4 h-4" />
-          )}
-        </button>
+          </button>
+        )}
       </div>
 
-      {!isCollapsed && (
-        <div className="px-1 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
-          Navigation
-        </div>
-      )}
-
-      {/* Nav List */}
-      <nav className="flex-1 space-y-1.5 overflow-y-auto scrollbar-none">
-        {items.map((item) => {
+      {/* Navigation List */}
+      <nav className="flex flex-col gap-1.5 flex-1 w-full">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname?.startsWith(item.href));
           const Icon = item.icon;
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" &&
-              item.href !== "/employer/dashboard" &&
-              item.href !== "/admin/dashboard" &&
-              pathname.startsWith(item.href));
 
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "relative group flex items-center rounded-xl transition-all duration-200 cursor-pointer",
-                isCollapsed
-                  ? "justify-center w-10 h-10 mx-auto"
-                  : "gap-3 px-3 py-2.5 text-sm font-medium",
+                'group relative rounded-lg transition-all duration-200 flex items-center gap-3 text-xs font-semibold',
+                isCollapsed ? 'p-3 justify-center' : 'px-3.5 py-2.5',
                 isActive
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-200 font-semibold"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  ? 'bg-[#4f46e5] text-white'
+                  : 'text-[#93939f] hover:text-white hover:bg-white/5'
               )}
             >
-              <Icon className="w-5 h-5 shrink-0" />
+              <Icon className="w-4 h-4 shrink-0" />
+              {!isCollapsed && <span className="truncate">{item.label}</span>}
 
-              {!isCollapsed && (
-                <span className="truncate text-xs font-semibold">{item.title}</span>
-              )}
-
-              {/* Floating Tooltip when Collapsed */}
+              {/* Tooltip for collapsed mode */}
               {isCollapsed && (
-                <span className="absolute left-14 px-2.5 py-1.5 rounded-md bg-slate-900 text-white text-xs font-semibold whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity shadow-lg z-50">
-                  {item.title}
-                </span>
+                <div className="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-[#17171c] border border-[rgba(255,255,255,0.12)] text-white text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 shadow-lg z-50 flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 bg-[#17171c] border-l border-b border-[rgba(255,255,255,0.12)] rotate-45 absolute -left-1 top-1/2 -translate-y-1/2" />
+                  {item.label}
+                </div>
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Bottom Role Indicator in Expanded Mode */}
-      {!isCollapsed && (
-        <div className="pt-3 border-t border-slate-100 mt-2">
-          <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-100">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-            <span className="text-[11px] font-bold text-slate-700 capitalize">
-              {role.toLowerCase()} portal
-            </span>
+      {/* Separator + Collapse toggle at bottom */}
+      <div className="mt-auto pt-4 w-full border-t border-[rgba(255,255,255,0.08)] flex justify-center">
+        {onToggleCollapse && (
+          <div className="relative group w-full flex justify-center">
+            <button
+              onClick={onToggleCollapse}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="p-2 rounded-lg text-[#93939f] hover:text-white hover:bg-white/5 transition-colors flex items-center justify-center"
+            >
+              {isCollapsed
+                ? <ChevronRight className="w-4 h-4" />
+                : <ChevronLeft className="w-4 h-4" />
+              }
+            </button>
+            {isCollapsed && (
+              <div className="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-[#17171c] border border-[rgba(255,255,255,0.12)] text-white text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 shadow-lg z-50">
+                <div className="w-1.5 h-1.5 bg-[#17171c] border-l border-b border-[rgba(255,255,255,0.12)] rotate-45 absolute -left-1 top-1/2 -translate-y-1/2" />
+                Expand Sidebar
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 }

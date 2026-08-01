@@ -8,10 +8,36 @@ import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
 interface ListingCardProps {
   listing: ListingWithEmployer;
   hrefPrefix?: string;
+  isSavedInitial?: boolean;
 }
 
-export function ListingCard({ listing, hrefPrefix = '/listings' }: ListingCardProps) {
+export function ListingCard({ listing, hrefPrefix = '/listings', isSavedInitial = false }: ListingCardProps) {
   const isVerified = listing.companyVerificationStatus === 'VERIFIED';
+  const [isSaved, setIsSaved] = React.useState(isSavedInitial);
+
+  const handleBookmarkToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Optimistic toggle
+    setIsSaved(!isSaved);
+
+    try {
+      const res = await fetch('/api/student/bookmarks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: listing.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIsSaved(data.isSaved);
+      } else {
+        setIsSaved(isSavedInitial);
+      }
+    } catch {
+      setIsSaved(isSavedInitial);
+    }
+  };
 
   return (
     <Card className="rounded-lg shadow-md hover:shadow-lg border border-slate-100 bg-white transition-all duration-200 group">
@@ -34,10 +60,15 @@ export function ListingCard({ listing, hrefPrefix = '/listings' }: ListingCardPr
             </div>
 
             <button
-              aria-label="Save listing"
-              className="p-1.5 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-colors shrink-0"
+              onClick={handleBookmarkToggle}
+              aria-label={isSaved ? 'Remove from saved' : 'Save listing'}
+              className={`p-2 rounded-md transition-colors shrink-0 ${
+                isSaved
+                  ? 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'
+                  : 'text-slate-400 hover:text-indigo-600 hover:bg-slate-50'
+              }`}
             >
-              <Bookmark className="w-4 h-4" />
+              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
             </button>
           </div>
 

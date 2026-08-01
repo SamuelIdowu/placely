@@ -21,13 +21,14 @@ export function Shell({
   userName,
   userAvatar,
 }: ShellProps) {
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("placely_sidebar_collapsed");
-      return saved === "true";
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  React.useEffect(() => {
+    const saved = localStorage.getItem("placely_sidebar_collapsed");
+    if (saved === "true") {
+      setIsCollapsed(true);
     }
-    return false;
-  });
+  }, []);
 
   const handleToggle = () => {
     const nextState = !isCollapsed;
@@ -36,7 +37,7 @@ export function Shell({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col bg-white text-[#212121] font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden w-full">
       <Header
         userRole={role}
         userEmail={userEmail}
@@ -52,7 +53,7 @@ export function Shell({
         <main
           className={cn(
             "flex-1 p-4 md:p-6 pb-20 md:pb-8 w-full max-w-full overflow-x-hidden transition-all duration-300 ease-in-out",
-            isCollapsed ? "md:pl-22" : "md:pl-68"
+            isCollapsed ? "lg:pl-24" : "lg:pl-68"
           )}
         >
           <div className="max-w-7xl mx-auto w-full">

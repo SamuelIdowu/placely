@@ -1,9 +1,9 @@
 // src/infrastructure/db/prisma.client.ts
 // Prisma 7 singleton — prevents multiple PrismaClient instances during Next.js hot-reload.
-// Import: import { PrismaClient } from '@/generated/prisma/client';
+// Import: import { PrismaClient } from '@/generated/prisma';
 
 import ws from 'ws';
-import { PrismaClient } from '@/generated/prisma/client';
+import { PrismaClient } from '@/generated/prisma';
 import { neonConfig } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
 
@@ -26,7 +26,9 @@ const createPrismaClient = () => {
 };
 
 export const prisma: PrismaClient =
-  globalForPrisma.prisma ?? createPrismaClient();
+  (globalForPrisma.prisma && 'notification' in globalForPrisma.prisma)
+    ? globalForPrisma.prisma
+    : createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
