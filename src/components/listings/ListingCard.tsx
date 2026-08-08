@@ -5,22 +5,13 @@ import Link from 'next/link';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { MapPin, ArrowRight, Bookmark, Banknote, Clock } from 'lucide-react';
 import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 
 interface ListingCardProps {
   listing: ListingWithEmployer;
   hrefPrefix?: string;
   isSavedInitial?: boolean;
   viewMode?: 'grid' | 'list';
-}
-
-function getCompanyColor(name: string): string {
-  const colors = [
-    '#4f46e5', '#1863dc', '#10b981', '#ff7759',
-    '#8b5cf6', '#0891b2', '#d97706', '#059669',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  return colors[Math.abs(hash) % colors.length];
 }
 
 export function ListingCard({
@@ -32,7 +23,7 @@ export function ListingCard({
   const isVerified = listing.companyVerificationStatus === 'VERIFIED';
   const [isSaved, setIsSaved] = React.useState(isSavedInitial);
 
-  const avatarColor = getCompanyColor(listing.companyName || '');
+  const avatarColor = getCompanyAvatarColor(listing.companyName || '');
   const initials = listing.companyName ? listing.companyName.charAt(0).toUpperCase() : '?';
 
   const handleBookmarkToggle = async (e: React.MouseEvent) => {
@@ -61,7 +52,7 @@ export function ListingCard({
   if (viewMode === 'list') {
     return (
       <Link href={`${hrefPrefix}/${listing.id}`} className="block group">
-        <div className="bg-white rounded-xl p-4 sm:p-5 border border-[#e5e7eb] group-hover:border-[#4f46e5] group-hover:bg-[#f8f7ff] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+        <div className="bg-white rounded-xl p-4 sm:p-5 border border-border group-hover:border-brand-indigo group-hover:bg-brand-indigo-light/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
@@ -72,13 +63,13 @@ export function ListingCard({
 
             <div className="space-y-0.5 min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-[#212121] group-hover:text-[#4f46e5] transition-colors truncate">
+                <h3 className="text-sm font-bold text-foreground group-hover:text-brand-indigo transition-colors truncate">
                   {listing.title}
                 </h3>
                 {isVerified && <VerificationBadge size="sm" />}
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs text-[#75758a]">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-body-muted">
                 <span className="font-semibold text-slate-800">{listing.companyName}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
@@ -88,7 +79,7 @@ export function ListingCard({
                 {listing.isRemote && (
                   <>
                     <span>•</span>
-                    <span className="font-semibold text-[#4f46e5]">Remote</span>
+                    <span className="font-semibold text-brand-indigo">Remote</span>
                   </>
                 )}
               </div>
@@ -106,8 +97,8 @@ export function ListingCard({
               aria-label={isSaved ? 'Remove from saved' : 'Save listing'}
               className={`p-2 rounded-full transition-all shrink-0 ${
                 isSaved
-                  ? 'text-[#4f46e5] bg-indigo-50 hover:bg-indigo-100'
-                  : 'text-slate-400 hover:text-[#4f46e5] hover:bg-slate-100'
+                  ? 'text-brand-indigo bg-brand-indigo-light hover:bg-indigo-100'
+                  : 'text-slate-400 hover:text-brand-indigo hover:bg-slate-100'
               }`}
             >
               <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
@@ -120,7 +111,7 @@ export function ListingCard({
 
   // GRID MODE (DEFAULT)
   return (
-    <div className="bg-white rounded-[20px] p-5 border border-[#e5e7eb] hover:border-[#4f46e5] transition-all hover:shadow-xs flex flex-col justify-between group h-full">
+    <div className="bg-white rounded-[20px] p-5 border border-border hover:border-brand-indigo transition-all hover:shadow-xs flex flex-col justify-between group h-full">
       <div className="space-y-3.5">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
@@ -149,8 +140,8 @@ export function ListingCard({
             aria-label={isSaved ? 'Remove from saved' : 'Save listing'}
             className={`p-2 rounded-full transition-all shrink-0 ${
               isSaved
-                ? 'text-[#4f46e5] bg-indigo-50 hover:bg-indigo-100'
-                : 'text-slate-400 hover:text-[#4f46e5] hover:bg-slate-100'
+                ? 'text-brand-indigo bg-brand-indigo-light hover:bg-indigo-100'
+                : 'text-slate-400 hover:text-brand-indigo hover:bg-slate-100'
             }`}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
@@ -159,7 +150,7 @@ export function ListingCard({
 
         {/* Title */}
         <div>
-          <h3 className="text-base font-bold text-[#212121] leading-snug group-hover:text-[#4f46e5] transition-colors">
+          <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-brand-indigo transition-colors">
             <Link href={`${hrefPrefix}/${listing.id}`}>{listing.title}</Link>
           </h3>
           <p className="text-xs text-slate-500 line-clamp-2 mt-1.5 leading-relaxed">
@@ -194,7 +185,7 @@ export function ListingCard({
 
         <Link
           href={`${hrefPrefix}/${listing.id}`}
-          className="inline-flex items-center gap-1 text-xs font-bold text-[#4f46e5] hover:text-[#4338ca] group-hover:translate-x-0.5 transition-transform"
+          className="inline-flex items-center gap-1 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover group-hover:translate-x-0.5 transition-transform"
         >
           View & Apply <ArrowRight className="w-3 h-3" />
         </Link>

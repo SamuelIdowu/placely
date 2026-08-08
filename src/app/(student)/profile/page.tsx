@@ -24,7 +24,7 @@ export default async function StudentProfilePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="w-full">
       <StudentProfileForm
         initialData={
           profileObj

@@ -11,6 +11,8 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { OfferResponseButtons } from './OfferResponseButtons';
 import { ApplicationMessagingSection } from './ApplicationMessagingSection';
+import type { MessageProps } from '@/domain/entities/message';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
   ArrowLeft,
   Calendar,
@@ -23,16 +25,6 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import type { ApplicationStatus } from '@/domain/entities/application';
-
-function getCompanyColor(name: string): string {
-  const colors = [
-    '#4f46e5', '#1863dc', '#10b981', '#ff7759',
-    '#8b5cf6', '#0891b2', '#d97706', '#059669',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  return colors[Math.abs(hash) % colors.length];
-}
 
 export default async function ApplicationDetailPage({
   params,
@@ -60,10 +52,10 @@ export default async function ApplicationDetailPage({
   const student = mockStudentProfiles.find((s) => s.id === application.studentId);
 
   const companyName = employer?.companyName || 'Verified Corporate Partner';
-  const avatarColor = getCompanyColor(companyName);
+  const avatarColor = getCompanyAvatarColor(companyName);
   const initials = companyName.charAt(0).toUpperCase();
 
-  const initialMessages: any[] = [];
+  const initialMessages: MessageProps[] = [];
   const initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
 
   const appliedDate = new Date(application.createdAt).toLocaleDateString('en-GB', {
@@ -86,7 +78,7 @@ export default async function ApplicationDetailPage({
             ? `/employer/listings/${listing.id}/applicants/${application.id}`
             : '/applications'
         }
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#4f46e5] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-indigo transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         {session.user.role === 'EMPLOYER' ? 'Back to Applicants' : 'Back to My Applications'}
@@ -200,7 +192,7 @@ export default async function ApplicationDetailPage({
           {/* Cover Note Section */}
           {application.note && (
             <div className="space-y-2">
-              <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+              <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 Submitted Cover Note
               </h4>
               <div className="rounded-[18px] border border-slate-200/80 p-4.5 text-xs text-slate-800 bg-slate-50/50 leading-relaxed whitespace-pre-wrap">
@@ -211,7 +203,7 @@ export default async function ApplicationDetailPage({
 
           {/* Messaging Section */}
           <div className="pt-6 border-t border-slate-100 space-y-4">
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Direct In-Placement Messaging
             </h4>
             <ApplicationMessagingSection

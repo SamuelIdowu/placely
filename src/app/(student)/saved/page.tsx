@@ -36,7 +36,7 @@ export default async function SavedListingsPage() {
   });
 
   return (
-    <div className="w-full max-w-full space-y-5 pb-8">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900 flex items-center gap-2">
@@ -49,7 +49,7 @@ export default async function SavedListingsPage() {
 
         <Link
           href="/listings"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white font-semibold text-xs transition-colors shadow-xs"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold text-xs transition-colors shadow-xs"
         >
           <Compass className="w-3.5 h-3.5" /> Explore More
         </Link>

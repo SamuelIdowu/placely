@@ -23,6 +23,7 @@ export const colorTokens = {
     popoverFg: "var(--popover-foreground)",
     muted: "var(--muted)",
     mutedFg: "var(--muted-foreground)",
+    bodyMuted: "var(--body-muted)",
     accent: "var(--accent)",
     accentFg: "var(--accent-foreground)",
     border: "var(--border)",
@@ -36,24 +37,40 @@ export const colorTokens = {
     indigo: "var(--brand-indigo)",
     indigoHover: "var(--brand-indigo-hover)",
     indigoLight: "var(--brand-indigo-light)",
+    indigoFg: "var(--brand-indigo-foreground)",
     dark: "var(--surface-dark)",
     darkFg: "var(--surface-dark-foreground)",
     darkMuted: "var(--surface-dark-muted)",
     darkBorder: "var(--surface-dark-border)",
+    darkActive: "var(--surface-dark-active)",
+  },
+  sidebar: {
+    bg: "var(--sidebar-bg)",
+    fg: "var(--sidebar-fg)",
+    muted: "var(--sidebar-muted)",
+    activeBg: "var(--sidebar-active-bg)",
+    activeFg: "var(--sidebar-active-fg)",
+    border: "var(--sidebar-border)",
+    hoverBg: "var(--sidebar-hover-bg)",
   },
   stats: {
     indigo: "var(--stat-indigo)",
+    indigoHover: "var(--stat-indigo-hover)",
     indigoLight: "var(--stat-indigo-light)",
     blue: "var(--stat-blue)",
+    blueHover: "var(--stat-blue-hover)",
     blueLight: "var(--stat-blue-light)",
     coral: "var(--stat-coral)",
     coralLight: "var(--stat-coral-light)",
     emerald: "var(--stat-emerald)",
+    emeraldDark: "var(--stat-emerald-dark)",
     emeraldLight: "var(--stat-emerald-light)",
     purple: "var(--stat-purple)",
     purpleLight: "var(--stat-purple-light)",
     amber: "var(--stat-amber)",
+    amberWarning: "var(--stat-amber-warning)",
     amberLight: "var(--stat-amber-light)",
+    amberBorder: "var(--stat-amber-border)",
   },
 } as const;
 
@@ -70,6 +87,7 @@ export const uiTokens = {
   cardBg: "var(--card)",
   fg: "var(--foreground)",
   mutedFg: "var(--muted-foreground)",
+  bodyMutedFg: "var(--body-muted)",
   border: "var(--border)",
   radiusBtn: "var(--radius-pill)",
   radiusCard: "var(--radius-card)",
@@ -161,15 +179,15 @@ export const statusTokens: Record<ApplicationStatusKey, StatusToken> = {
 /**
  * Deterministic avatar color palette from centralized brand tokens
  */
-const AVATAR_PALETTE = [
-  "#4f46e5", // stat-indigo
-  "#1863dc", // stat-blue
-  "#10b981", // stat-emerald
-  "#ff7759", // stat-coral
-  "#8b5cf6", // stat-purple
-  "#0891b2", // cyan
-  "#d97706", // stat-amber
-  "#059669", // emerald dark
+export const AVATAR_PALETTE = [
+  "var(--stat-indigo)",
+  "var(--stat-blue)",
+  "var(--stat-emerald)",
+  "var(--stat-coral)",
+  "var(--stat-purple)",
+  "var(--stat-amber)",
+  "var(--stat-emerald-dark)",
+  "var(--brand-indigo)",
 ];
 
 export function getCompanyAvatarColor(name: string): string {

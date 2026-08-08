@@ -41,12 +41,12 @@ export default async function ListingsBrowsePage({
   const totalPages = Math.ceil(result.total / pageSize);
 
   return (
-    <div className="w-full max-w-full space-y-5 pb-8">
+    <div className="space-y-5">
       {/* Top Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Direct Industry Attachment
             </span>
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -79,15 +79,15 @@ export default async function ListingsBrowsePage({
               Showing <span className="font-bold text-slate-900">{result.listings.length}</span> of {result.total} {result.total === 1 ? 'placement' : 'placements'}
             </span>
             {(params.discipline || params.location || params.keyword) && (
-              <span className="text-[#4f46e5] font-semibold bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+              <span className="text-brand-indigo font-semibold bg-brand-indigo-light px-2.5 py-0.5 rounded-full border border-indigo-100">
                 Filtered results
               </span>
             )}
           </div>
 
           {result.listings.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[#e5e7eb] py-10 px-6 bg-white text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-[#4f46e5] mx-auto">
+            <div className="rounded-2xl border border-dashed border-border py-10 px-6 bg-white text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-indigo-light flex items-center justify-center text-brand-indigo mx-auto">
                 <SearchX className="w-6 h-6" />
               </div>
               <div className="space-y-1">
@@ -98,7 +98,7 @@ export default async function ListingsBrowsePage({
               </div>
               <Link
                 href="/listings"
-                className="inline-block mt-2 text-xs font-bold text-[#4f46e5] hover:text-[#4338ca]"
+                className="inline-block mt-2 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover"
               >
                 Clear all filters
               </Link>
@@ -125,8 +125,8 @@ export default async function ListingsBrowsePage({
                     href={`/listings?${newSearchParams.toString()}`}
                     className={`h-9 w-9 flex items-center justify-center rounded-full text-xs font-bold transition-all ${
                       isCurrent
-                        ? 'bg-[#4f46e5] text-white shadow-xs'
-                        : 'bg-white border border-[#e5e7eb] text-slate-700 hover:bg-slate-50'
+                        ? 'bg-brand-indigo text-white shadow-xs'
+                        : 'bg-white border border-border text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     {p}

@@ -63,19 +63,19 @@ export default async function ApplicantReviewPage({
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
           <div className="space-y-0.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Placement Applicant Pipeline
             </span>
             <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
               {listingTitle}
             </h1>
-            <p className="text-xs sm:text-sm text-[#75758a]">
+            <p className="text-xs sm:text-sm text-body-muted">
               Review verified engineering students, check coursework portfolios, and extend 6-month placement offers.
             </p>
           </div>
 
           <div className="bg-slate-50 border border-slate-200/80 px-3.5 py-2.5 rounded-xl shrink-0 text-right">
-            <span className="text-xl font-black text-[#4f46e5] block leading-none">
+            <span className="text-xl font-black text-brand-indigo block leading-none">
               {applicants.length}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -124,7 +124,7 @@ export default async function ApplicantReviewPage({
                       <StatusBadge status={app.status as ApplicationStatus} />
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#75758a] font-medium">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-body-muted font-medium">
                       <span className="text-slate-900 font-bold">
                         Discipline: {student.discipline}
                       </span>
@@ -145,7 +145,7 @@ export default async function ApplicantReviewPage({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 transition-colors"
                       >
-                        <FileText className="w-3.5 h-3.5 text-[#4f46e5]" /> View Resume PDF ↗
+                        <FileText className="w-3.5 h-3.5 text-brand-indigo" /> View Resume PDF ↗
                       </a>
                     )}
                   </div>
@@ -154,7 +154,7 @@ export default async function ApplicantReviewPage({
                 {/* Cover Note Section */}
                 {app.note && (
                   <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 space-y-1">
-                    <span className="font-bold uppercase tracking-wider text-[10px] text-[#93939f] block">
+                    <span className="font-bold uppercase tracking-wider text-[10px] text-muted-foreground block">
                       Applicant Cover Statement:
                     </span>
                     <p className="leading-relaxed font-normal italic text-slate-800">
@@ -167,7 +167,7 @@ export default async function ApplicantReviewPage({
                 <div className="border-t border-slate-100 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <Link
                     href={`/employer/listings/${listingId}/applicants/${app.id}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4f46e5] hover:text-[#4338ca] transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover transition-colors"
                   >
                     <MessageSquare className="w-3.5 h-3.5" /> Open Direct Placement Thread →
                   </Link>

@@ -25,6 +25,7 @@
   
   --muted: #f1f5f9;
   --muted-foreground: #93939f;
+  --body-muted: #75758a;
   
   --accent: #f1f5f9;
   --accent-foreground: #212121;
@@ -42,32 +43,42 @@
   --surface-dark: #17171c;
   --surface-dark-foreground: #ffffff;
   --surface-dark-muted: #93939f;
-  --surface-dark-border: rgba(255, 255, 255, 0.08);
-  --surface-dark-active: rgba(255, 255, 255, 0.1);
+  --surface-dark-border: #26262e;
+  --surface-dark-active: #4f46e5;
   --surface-dark-hover: rgba(255, 255, 255, 0.05);
 
   /* Sidebar Tokens */
   --sidebar-bg: #17171c;
   --sidebar-fg: #ffffff;
   --sidebar-muted: #93939f;
-  --sidebar-active-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-active-bg: #4f46e5;
   --sidebar-active-fg: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-border: #26262e;
+  --sidebar-hover-bg: #26262e;
 
   /* Stat & Chart Semantic Colors */
   --stat-indigo: #4f46e5;
+  --stat-indigo-hover: #4338ca;
   --stat-indigo-light: #eef2ff;
+  
   --stat-blue: #1863dc;
+  --stat-blue-hover: #1451b8;
   --stat-blue-light: #eff6ff;
+  
   --stat-coral: #ff7759;
   --stat-coral-light: #fff1f0;
+  
   --stat-emerald: #10b981;
+  --stat-emerald-dark: #059669;
   --stat-emerald-light: #ecfdf5;
+  
   --stat-purple: #8b5cf6;
   --stat-purple-light: #f5f3ff;
+  
   --stat-amber: #d97706;
+  --stat-amber-warning: #f59e0b;
   --stat-amber-light: #fffbeb;
+  --stat-amber-border: #fde68a;
 
   /* Application Status Semantic Tokens */
   --status-draft-bg: #f1f5f9;
@@ -128,6 +139,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-body-muted: var(--body-muted);
+  
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -156,17 +169,27 @@
 
   /* Stat Tokens */
   --color-stat-indigo: var(--stat-indigo);
+  --color-stat-indigo-hover: var(--stat-indigo-hover);
   --color-stat-indigo-light: var(--stat-indigo-light);
+  
   --color-stat-blue: var(--stat-blue);
+  --color-stat-blue-hover: var(--stat-blue-hover);
   --color-stat-blue-light: var(--stat-blue-light);
+  
   --color-stat-coral: var(--stat-coral);
   --color-stat-coral-light: var(--stat-coral-light);
+  
   --color-stat-emerald: var(--stat-emerald);
+  --color-stat-emerald-dark: var(--stat-emerald-dark);
   --color-stat-emerald-light: var(--stat-emerald-light);
+  
   --color-stat-purple: var(--stat-purple);
   --color-stat-purple-light: var(--stat-purple-light);
+  
   --color-stat-amber: var(--stat-amber);
+  --color-stat-amber-warning: var(--stat-amber-warning);
   --color-stat-amber-light: var(--stat-amber-light);
+  --color-stat-amber-border: var(--stat-amber-border);
 
   /* Status Tokens */
   --color-status-draft-bg: var(--status-draft-bg);

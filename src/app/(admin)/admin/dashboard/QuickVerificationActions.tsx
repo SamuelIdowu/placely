@@ -117,7 +117,7 @@ export function QuickVerificationActions({ items }: QuickVerificationActionsProp
                     href={item.documentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#4f46e5] hover:text-[#4338ca] font-bold"
+                    className="inline-flex items-center gap-1 text-xs text-brand-indigo hover:text-brand-indigo-hover font-bold"
                   >
                     <FileText className="h-3.5 w-3.5" />
                     <span>Inspect Doc ↗</span>

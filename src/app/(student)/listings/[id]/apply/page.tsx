@@ -40,17 +40,17 @@ export default async function SubmitApplicationPage({
     <div className="container mx-auto max-w-3xl px-4 py-8 space-y-6 pb-14">
       <Link
         href={`/listings/${listingId}`}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#4f46e5] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-indigo transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to Placement Details
       </Link>
 
-      <div className="bg-white rounded-[24px] border border-[#e5e7eb] shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-[24px] border border-border shadow-2xs overflow-hidden">
         {/* Header */}
         <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50 space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               SIWES Placement Application
             </span>
             {employer && (
@@ -69,7 +69,7 @@ export default async function SubmitApplicationPage({
           {/* Profile Summary Card */}
           <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/80 p-5 space-y-3.5">
             <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-[#4f46e5]" />
+              <UserCheck className="w-4 h-4 text-brand-indigo" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 Verified Student Profile Attached
               </h3>
@@ -104,7 +104,7 @@ export default async function SubmitApplicationPage({
               <div className="pt-2">
                 <Link
                   href="/applications"
-                  className="inline-flex items-center text-xs font-bold text-[#4f46e5] hover:text-[#4338ca]"
+                  className="inline-flex items-center text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover"
                 >
                   Track in My Applications →
                 </Link>

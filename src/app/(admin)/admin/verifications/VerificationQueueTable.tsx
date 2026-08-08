@@ -150,7 +150,7 @@ export function VerificationQueueTable({ items, total, page, totalPages }: Verif
                     href={item.documentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-1 text-[#4f46e5] hover:underline text-xs font-bold"
+                    className="inline-flex items-center space-x-1 text-brand-indigo hover:underline text-xs font-bold"
                   >
                     <FileText className="h-3.5 w-3.5" />
                     <span>View Document</span>

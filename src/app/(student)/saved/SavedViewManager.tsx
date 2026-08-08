@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Bookmark } from 'lucide-react';
 
 export function SavedViewManager({ savedListings }: { savedListings: ListingWithEmployer[] }) {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredListings = savedListings.filter(

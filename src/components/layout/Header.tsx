@@ -35,10 +35,10 @@ export function Header({
     <header className="flex h-14 w-full items-center justify-between px-4 md:px-8 z-30 pointer-events-none">
       {/* Mobile-only brand title */}
       <div className="flex md:hidden items-center gap-2.5 pointer-events-auto">
-        <Link href="/" className="font-sans text-lg font-bold tracking-tight text-slate-900">
-          Placely<span className="text-indigo-600">.</span>
+        <Link href="/" className="font-sans text-lg font-bold tracking-tight text-foreground">
+          Placely<span className="text-brand-indigo">.</span>
         </Link>
-        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 uppercase">
+        <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground uppercase">
           {userRole}
         </span>
       </div>
@@ -46,17 +46,17 @@ export function Header({
       <div className="hidden md:block"></div>
 
       {/* Top Right Utilities (Notifications Bell + User Avatar Only) */}
-      <div className="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200/80 shadow-xs pointer-events-auto">
+      <div className="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-border shadow-xs pointer-events-auto">
         <NotificationBell />
 
-        <div className="h-4 w-px bg-slate-200" />
+        <div className="h-4 w-px bg-border" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 outline-none cursor-pointer rounded-full p-0.5 hover:ring-2 hover:ring-indigo-500/20">
-              <Avatar className="h-8 w-8 text-xs font-bold text-indigo-700 bg-indigo-50">
+            <button className="flex items-center gap-2 outline-none cursor-pointer rounded-full p-0.5 hover:ring-2 hover:ring-brand-indigo/20">
+              <Avatar className="h-8 w-8 text-xs font-bold text-brand-indigo bg-brand-indigo-light">
                 <AvatarImage src={userAvatar} alt={userName} />
-                <AvatarFallback className="bg-indigo-50 text-indigo-700 text-xs font-bold">
+                <AvatarFallback className="bg-brand-indigo-light text-brand-indigo text-xs font-bold">
                   {getInitials(userName)}
                 </AvatarFallback>
               </Avatar>

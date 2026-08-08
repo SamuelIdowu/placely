@@ -15,9 +15,9 @@ export default async function ListingModerationPage() {
   const listings = await listingRepo.findAllForAdmin();
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5 pb-8">
+    <div className="space-y-5">
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col gap-1">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Listing Moderation &amp; Quality Control
         </span>
         <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">

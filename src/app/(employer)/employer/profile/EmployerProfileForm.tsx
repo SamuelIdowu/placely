@@ -85,7 +85,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative overflow-hidden">
         <div className="space-y-1 relative z-10">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Corporate Credentials
             </span>
             <VerificationBadge status={status} size="sm" showLabel />
@@ -128,7 +128,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
             className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4"
           >
             <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
-              <Building2 className="w-4.5 h-4.5 text-[#4f46e5]" />
+              <Building2 className="w-4.5 h-4.5 text-brand-indigo" />
               <div>
                 <h2 className="font-display text-sm font-semibold text-slate-900">
                   Organization Details
@@ -150,7 +150,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                   value={formData.companyName}
                   onChange={(e) => handleInputChange('companyName', e.target.value)}
                   placeholder="e.g. Zenith Automation Systems Ltd."
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 font-medium"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 font-medium"
                 />
               </div>
 
@@ -165,7 +165,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                     value={formData.cacNumber}
                     onChange={(e) => handleInputChange('cacNumber', e.target.value)}
                     placeholder="e.g. RC 1492084"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
 
@@ -178,7 +178,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                     value={formData.websiteUrl}
                     onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
                     placeholder="https://company.com"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
               </div>
@@ -192,7 +192,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   placeholder="Describe your company's core operations, engineering departments, industrial manufacturing processes, and how you train SIWES interns..."
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 leading-relaxed font-normal"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 leading-relaxed font-normal"
                 />
               </div>
             </div>
@@ -201,7 +201,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
               >
                 <Save className="w-3.5 h-3.5" />
                 {isSaving ? 'Saving...' : 'Save Corporate Profile'}
@@ -230,7 +230,7 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                   href={initialData.cacDocumentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#4f46e5] hover:underline shrink-0"
+                  className="font-bold text-brand-indigo hover:underline shrink-0"
                 >
                   View Document ↗
                 </a>

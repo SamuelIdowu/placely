@@ -22,7 +22,7 @@ export function DashboardActionBanner({
   // If an offer is received, this is priority #1
   if (offeredCount > 0) {
     return (
-      <div className="rounded-[18px] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-400/40 shadow-xs">
+      <div className="rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-400/40 shadow-xs">
         <div className="flex items-start sm:items-center gap-3.5">
           <div className="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0 text-amber-600">
             <Sparkles className="w-5 h-5 animate-pulse" />
@@ -58,7 +58,7 @@ export function DashboardActionBanner({
   // If profile completeness is below 50%
   if (profileCompleteness < 50) {
     return (
-      <div className="rounded-[18px] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-indigo-50/60 border border-indigo-200/80">
+      <div className="rounded-2xl p-4 sm:p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 bg-indigo-50/60 border border-indigo-200/80 shadow-2xs">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 text-indigo-600">
             <AlertCircle className="w-4 h-4" />
@@ -85,7 +85,7 @@ export function DashboardActionBanner({
   // If unverified student ID
   if (!isVerified) {
     return (
-      <div className="rounded-[18px] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 border border-slate-200">
+      <div className="rounded-2xl p-4 sm:p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 bg-slate-50/80 border border-slate-200/90 shadow-2xs">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 text-slate-700">
             <AlertCircle className="w-4 h-4" />

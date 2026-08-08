@@ -67,7 +67,7 @@ export function ApplicantActionButtons({
           type="button"
           disabled={isSubmitting}
           onClick={() => handleStatusChange('SHORTLISTED')}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1863dc] hover:bg-[#1451b8] text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-stat-blue hover:bg-stat-blue-hover text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
         >
           <CheckCircle2 className="w-3.5 h-3.5" /> Shortlist for Interview
         </button>
@@ -80,7 +80,7 @@ export function ApplicantActionButtons({
             <button
               type="button"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
             >
               <Sparkles className="w-3.5 h-3.5" /> Issue 6-Month Placement Offer →
             </button>
@@ -100,7 +100,7 @@ export function ApplicantActionButtons({
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => handleStatusChange('OFFERED')}
-                className="rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold px-5"
+                className="rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold px-5"
               >
                 Confirm Placement Offer
               </AlertDialogAction>

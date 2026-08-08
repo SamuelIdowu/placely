@@ -57,12 +57,12 @@ export default async function MyApplicationsPage() {
   const shortlistedCount = applications.filter((a) => a.status === 'SHORTLISTED').length;
 
   return (
-    <div className="w-full max-w-full space-y-5 pb-8">
+    <div className="space-y-5">
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               SIWES Placement Funnel
             </span>
             {offeredCount > 0 && (
@@ -81,7 +81,7 @@ export default async function MyApplicationsPage() {
 
         <Link
           href="/listings"
-          className="inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-semibold transition-all shrink-0 shadow-xs"
+          className="inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-semibold transition-all shrink-0 shadow-xs"
         >
           Explore More Placements <ArrowRight className="w-3.5 h-3.5" />
         </Link>

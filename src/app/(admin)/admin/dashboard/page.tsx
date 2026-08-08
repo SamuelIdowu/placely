@@ -28,15 +28,13 @@ export default async function AdminDashboardPage() {
   const totalUsers = studentCount + employerCount;
 
   return (
-    <div className="container mx-auto max-w-6xl space-y-5 pb-8">
+    <div className="space-y-4 sm:space-y-5">
       {/* ── Top Hero Banner (Deep Black Bento Card) ── */}
       <div
-        className="rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 text-white relative overflow-hidden"
-        style={{ background: '#17171c' }}
+        className="rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 text-white relative overflow-hidden bg-surface-dark"
       >
         <div
-          className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-15 pointer-events-none blur-3xl"
-          style={{ background: '#10b981' }}
+          className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-15 pointer-events-none blur-3xl bg-stat-emerald"
         />
 
         <div className="space-y-1.5 relative z-10">
@@ -48,7 +46,7 @@ export default async function AdminDashboardPage() {
           <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-white flex items-center gap-2.5">
             Verification &amp; Moderation Suite
           </h1>
-          <p className="text-xs sm:text-sm font-medium" style={{ color: '#93939f' }}>
+          <p className="text-xs sm:text-sm font-medium text-surface-dark-muted">
             System overview · {pendingVerifications.total} pending verifications awaiting review.
           </p>
         </div>
@@ -79,24 +77,22 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         {/* Total Users */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs"
-          style={{ borderLeft: '4px solid #4f46e5' }}
+          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-brand-indigo"
         >
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Platform Users
           </span>
           <div className="text-3xl font-bold tracking-tight text-slate-900 mt-1.5">
             {totalUsers}
           </div>
-          <span className="text-xs text-[#75758a] mt-0.5 block">
+          <span className="text-xs text-body-muted mt-0.5 block">
             {studentCount} Students · {employerCount} Employers
           </span>
         </div>
 
         {/* Pending Verifications */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs"
-          style={{ borderLeft: '4px solid #f59e0b' }}
+          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-amber"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-600">
             Pending Queue
@@ -104,27 +100,25 @@ export default async function AdminDashboardPage() {
           <div className="text-3xl font-bold tracking-tight text-amber-600 mt-1.5">
             {pendingVerifications.total}
           </div>
-          <span className="text-xs text-[#75758a] mt-0.5 block">Requires admin review</span>
+          <span className="text-xs text-body-muted mt-0.5 block">Requires admin review</span>
         </div>
 
         {/* Open Placements */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs"
-          style={{ borderLeft: '4px solid #1863dc' }}
+          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-blue"
         >
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#1863dc]">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-stat-blue">
             Open Placements
           </span>
-          <div className="text-3xl font-bold tracking-tight text-[#1863dc] mt-1.5">
+          <div className="text-3xl font-bold tracking-tight text-stat-blue mt-1.5">
             {openListingsCount}
           </div>
-          <span className="text-xs text-[#75758a] mt-0.5 block">Active unmoderated listings</span>
+          <span className="text-xs text-body-muted mt-0.5 block">Active unmoderated listings</span>
         </div>
 
         {/* Total Applications */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs"
-          style={{ borderLeft: '4px solid #10b981' }}
+          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-emerald"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-600">
             Total Applications
@@ -132,7 +126,7 @@ export default async function AdminDashboardPage() {
           <div className="text-3xl font-bold tracking-tight text-slate-900 mt-1.5">
             {totalAppsCount}
           </div>
-          <span className="text-xs text-[#75758a] mt-0.5 block">Submitted across Nigeria</span>
+          <span className="text-xs text-body-muted mt-0.5 block">Submitted across Nigeria</span>
         </div>
       </div>
 
@@ -140,7 +134,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
         <Link
           href="/admin/verifications"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-[#10b981] transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-stat-emerald transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -161,42 +155,42 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/listings"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-[#1863dc] transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-stat-blue transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                 Quality Gate
               </span>
-              <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-[#1863dc] transition-colors" />
+              <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-stat-blue transition-colors" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 pt-0.5">Listings Moderation</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               Moderate engineering training descriptions and accredited discipline targets before student visibility.
             </p>
           </div>
-          <div className="mt-3.5 text-xs font-bold text-[#1863dc] group-hover:underline flex items-center gap-1">
+          <div className="mt-3.5 text-xs font-bold text-stat-blue group-hover:underline flex items-center gap-1">
             Moderate Openings <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </Link>
 
         <Link
           href="/admin/users"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-[#4f46e5] transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-brand-indigo transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider text-indigo-800 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
                 Directory
               </span>
-              <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-[#4f46e5] transition-colors" />
+              <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-brand-indigo transition-colors" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 pt-0.5">User Management</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               Search all student and corporate employer profiles, update roles, and review account compliance.
             </p>
           </div>
-          <div className="mt-3.5 text-xs font-bold text-[#4f46e5] group-hover:underline flex items-center gap-1">
+          <div className="mt-3.5 text-xs font-bold text-brand-indigo group-hover:underline flex items-center gap-1">
             View All Accounts <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </Link>
@@ -205,7 +199,7 @@ export default async function AdminDashboardPage() {
       {/* ── Recent Verifications Queue Section ── */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Pending Verification Requests
           </h2>
           <span className="text-xs text-slate-400">Showing top 5 pending</span>

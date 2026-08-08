@@ -148,7 +148,7 @@ export function AdminUsersClient({ initialUsers }: AdminUsersClientProps) {
                       <button
                         type="button"
                         onClick={() => setSelectedUser(user)}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-[#4f46e5] hover:text-[#4338ca]"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover"
                       >
                         Inspect <ArrowRight className="w-3 h-3" />
                       </button>
@@ -181,7 +181,7 @@ export function AdminUsersClient({ initialUsers }: AdminUsersClientProps) {
               {selectedUser.student && (
                 <div className="space-y-2 p-4 rounded-xl bg-indigo-50/50 border border-indigo-100">
                   <div className="flex items-center gap-1.5 font-bold text-indigo-950">
-                    <GraduationCap className="w-4 h-4 text-[#4f46e5]" /> Student Credentials
+                    <GraduationCap className="w-4 h-4 text-brand-indigo" /> Student Credentials
                   </div>
                   <p className="text-slate-700">
                     <strong>University:</strong> {selectedUser.student.university}
@@ -194,7 +194,7 @@ export function AdminUsersClient({ initialUsers }: AdminUsersClientProps) {
                       href={selectedUser.student.resumeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-bold text-[#4f46e5] hover:underline inline-block pt-1"
+                      className="font-bold text-brand-indigo hover:underline inline-block pt-1"
                     >
                       View Resume PDF ↗
                     </a>

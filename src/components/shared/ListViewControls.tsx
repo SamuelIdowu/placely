@@ -37,28 +37,30 @@ export function ListViewControls({
 
       <div className="flex items-center gap-3 w-full sm:w-auto shrink-0 justify-end">
         {children}
-        <div className="flex items-center bg-secondary rounded-full p-1 shrink-0 ml-auto sm:ml-0">
-          <button
-            onClick={() => onViewChange("list")}
-            className={`p-1.5 rounded-full flex items-center justify-center transition-colors ${
-              viewMode === "list"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-            aria-label="List view"
-          >
-            <List className="h-4 w-4" />
-          </button>
+        <div className="flex items-center bg-slate-100 p-1 rounded-full border border-slate-200 shrink-0 ml-auto sm:ml-0">
           <button
             onClick={() => onViewChange("grid")}
-            className={`p-1.5 rounded-full flex items-center justify-center transition-colors ${
+            className={`p-1.5 rounded-full flex items-center justify-center transition-all ${
               viewMode === "grid"
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-white text-indigo-600 shadow-xs"
+                : "text-slate-500 hover:text-slate-900"
             }`}
             aria-label="Grid view"
+            title="Grid View"
           >
-            <LayoutGrid className="h-4 w-4" />
+            <LayoutGrid className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => onViewChange("list")}
+            className={`p-1.5 rounded-full flex items-center justify-center transition-all ${
+              viewMode === "list"
+                ? "bg-white text-indigo-600 shadow-xs"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+            aria-label="List view"
+            title="List View"
+          >
+            <List className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

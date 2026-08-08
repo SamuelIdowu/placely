@@ -17,8 +17,8 @@ export function CircularProgress({
   size = 120,
   strokeWidth = 10,
   showValue = true,
-  progressColor = "text-app-primary",
-  trackColor = "text-zinc-100",
+  progressColor = "text-brand-indigo",
+  trackColor = "text-muted",
   className,
   ...props
 }: CircularProgressProps) {
@@ -95,7 +95,7 @@ export function CircularProgress({
       </svg>
       {showValue && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold" style={{ color: '#212121' }}>
+          <span className="text-lg font-bold text-foreground">
             {Math.round(safeValue)}%
           </span>
         </div>

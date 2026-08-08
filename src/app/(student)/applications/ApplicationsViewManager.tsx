@@ -8,6 +8,7 @@ import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { MapPin, ArrowRight, Banknote, Sparkles, Building2 } from 'lucide-react';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 
 export type ApplicationItem = {
   id: string;
@@ -21,18 +22,8 @@ export type ApplicationItem = {
   appliedDate: string;
 };
 
-function getCompanyColor(name: string): string {
-  const colors = [
-    '#4f46e5', '#1863dc', '#10b981', '#ff7759',
-    '#8b5cf6', '#0891b2', '#d97706', '#059669',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  return colors[Math.abs(hash) % colors.length];
-}
-
 export function ApplicationsViewManager({ items }: { items: ApplicationItem[] }) {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredItems = items.filter(
@@ -110,7 +101,7 @@ function ApplicationsList({
         </div>
         <Link
           href="/listings"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#4f46e5] hover:text-[#4338ca] pt-1"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover pt-1"
         >
           Browse Open Listings <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -122,12 +113,12 @@ function ApplicationsList({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
         {items.map((app) => {
-          const avatarColor = getCompanyColor(app.companyName);
+          const avatarColor = getCompanyAvatarColor(app.companyName);
           const initials = app.companyName ? app.companyName.charAt(0).toUpperCase() : '?';
 
           return (
             <Link key={app.id} href={`/applications/${app.id}`} className="block group h-full">
-              <div className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 group-hover:border-[#4f46e5] group-hover:bg-[#f8f7ff] transition-all hover:shadow-xs flex flex-col justify-between h-full shadow-2xs">
+              <div className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 group-hover:border-brand-indigo group-hover:bg-brand-indigo-light/30 transition-all hover:shadow-xs flex flex-col justify-between h-full shadow-2xs">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
@@ -152,14 +143,14 @@ function ApplicationsList({
                     <StatusBadge status={app.status as ApplicationStatus} />
                   </div>
 
-                  <h3 className="text-sm font-bold text-[#212121] group-hover:text-[#4f46e5] transition-colors line-clamp-2">
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-brand-indigo transition-colors line-clamp-2">
                     {app.listingTitle}
                   </h3>
                 </div>
 
                 <div className="pt-3.5 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                   <span>Applied {app.appliedDate}</span>
-                  <span className="font-bold text-[#4f46e5] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                  <span className="font-bold text-brand-indigo flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                     View Details <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -175,12 +166,12 @@ function ApplicationsList({
   return (
     <div className="space-y-2.5">
       {items.map((app) => {
-        const avatarColor = getCompanyColor(app.companyName);
+        const avatarColor = getCompanyAvatarColor(app.companyName);
         const initials = app.companyName ? app.companyName.charAt(0).toUpperCase() : '?';
 
         return (
           <Link key={app.id} href={`/applications/${app.id}`} className="block group">
-            <div className="bg-white rounded-xl p-4 sm:p-5 border border-[#e5e7eb] group-hover:border-[#4f46e5] group-hover:bg-[#f8f7ff] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            <div className="bg-white rounded-xl p-4 sm:p-5 border border-border group-hover:border-brand-indigo group-hover:bg-brand-indigo-light/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
               <div className="flex items-center gap-3.5 flex-1 min-w-0">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
@@ -191,13 +182,13 @@ function ApplicationsList({
 
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#212121] group-hover:text-[#4f46e5] transition-colors truncate">
+                    <h3 className="text-sm font-bold text-foreground group-hover:text-brand-indigo transition-colors truncate">
                       {app.listingTitle}
                     </h3>
                     {app.verificationStatus === 'VERIFIED' && <VerificationBadge size="sm" />}
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-[#75758a]">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-body-muted">
                     <span className="font-semibold text-slate-800">{app.companyName}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1">

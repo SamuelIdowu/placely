@@ -161,21 +161,21 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
   };
 
   return (
-    <div className="space-y-5 pb-8">
+    <div className="space-y-5">
       {/* ── Top Header Bento Band ── */}
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative overflow-hidden">
         {/* Ambient subtle dot background */}
         <div
           className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, #000 1px, transparent 0)',
+            backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
         />
 
         <div className="space-y-1 relative z-10">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Academic Credentials
             </span>
             <VerificationBadge status={status} size="sm" showLabel />
@@ -192,10 +192,11 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
         <div className="flex items-center gap-3.5 bg-slate-50 border border-slate-200/80 p-3 sm:p-3.5 rounded-xl shrink-0 relative z-10">
           <CircularProgress
             value={completeness}
+            showValue={false}
             size={60}
             strokeWidth={5}
-            progressColor="text-[#4f46e5]"
-            trackColor="text-slate-200"
+            progressColor="text-brand-indigo"
+            trackColor="text-muted"
           />
           <div className="space-y-0.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
@@ -241,7 +242,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
           {/* Section 1: Academic Institution & Discipline */}
           <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
-              <GraduationCap className="w-4.5 h-4.5 text-[#4f46e5]" />
+              <GraduationCap className="w-4.5 h-4.5 text-brand-indigo" />
               <div>
                 <h2 className="font-display text-sm font-semibold text-slate-900">
                   Academic Institution & Course
@@ -261,7 +262,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                 <select
                   value={selectedUniversity}
                   onChange={(e) => setSelectedUniversity(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 text-slate-800 font-medium"
                 >
                   <option value="">Select your Institution</option>
                   {universities.map((uni) => (
@@ -283,7 +284,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                     value={customUniversity}
                     onChange={(e) => setCustomUniversity(e.target.value)}
                     placeholder="Enter official institution name..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
               )}
@@ -296,7 +297,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                 <select
                   value={selectedDiscipline}
                   onChange={(e) => setSelectedDiscipline(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 text-slate-800 font-medium"
                 >
                   <option value="">Select your Course / Discipline</option>
                   {NUC_ENGINEERING_COURSES.map((course) => (
@@ -318,7 +319,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                     value={customDiscipline}
                     onChange={(e) => setCustomDiscipline(e.target.value)}
                     placeholder="e.g. Mechatronics & Automation..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
               )}
@@ -339,7 +340,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                   value={formData.cgpa}
                   onChange={(e) => handleInputChange('cgpa', e.target.value)}
                   placeholder="e.g. 4.25"
-                  className="w-full sm:w-48 px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                  className="w-full sm:w-48 px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                 />
               </div>
             </div>
@@ -348,7 +349,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
           {/* Section 2: Technical Bio & Portfolio Links */}
           <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
-              <Globe className="w-4.5 h-4.5 text-[#4f46e5]" />
+              <Globe className="w-4.5 h-4.5 text-brand-indigo" />
               <div>
                 <h2 className="font-display text-sm font-semibold text-slate-900">
                   Portfolio & Technical Competencies
@@ -369,7 +370,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                   value={formData.bio}
                   onChange={(e) => handleInputChange('bio', e.target.value)}
                   placeholder="Summarize your engineering interests, hands-on lab work, CAD/programming experience, and what you aim to achieve during your SIWES attachment..."
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 leading-relaxed"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 leading-relaxed"
                 />
               </div>
 
@@ -383,20 +384,20 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                     value={formData.linkedinUrl}
                     onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
                     placeholder="https://linkedin.com/in/username"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5 text-[#4f46e5]" /> GitHub / Portfolio URL
+                    <Globe className="w-3.5 h-3.5 text-brand-indigo" /> GitHub / Portfolio URL
                   </label>
                   <input
                     type="url"
                     value={formData.portfolioUrl}
                     onChange={(e) => handleInputChange('portfolioUrl', e.target.value)}
                     placeholder="https://github.com/username or portfolio"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
                 </div>
               </div>
@@ -406,7 +407,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
               >
                 <Save className="w-3.5 h-3.5" />
                 {isSaving ? 'Saving Changes...' : 'Save Profile Details'}
@@ -439,7 +440,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
           {/* Resume / CV PDF */}
           <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <FileText className="w-4 h-4 text-[#4f46e5]" />
+              <FileText className="w-4 h-4 text-brand-indigo" />
               <h3 className="font-display text-xs font-semibold text-slate-900">
                 Engineering Resume (PDF)
               </h3>
@@ -455,7 +456,7 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
                   href={formData.resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#4f46e5] hover:underline shrink-0"
+                  className="font-bold text-brand-indigo hover:underline shrink-0"
                 >
                   View PDF ↗
                 </a>

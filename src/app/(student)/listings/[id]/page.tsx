@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
   MapPin,
   Calendar,
@@ -28,16 +29,6 @@ export async function generateMetadata({
   if (!listing) return { title: 'Placement Not Found — Placely' };
   const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
   return { title: `${listing.title} at ${employer?.companyName || 'Company'} — Placely` };
-}
-
-function getCompanyColor(name: string): string {
-  const colors = [
-    '#4f46e5', '#1863dc', '#10b981', '#ff7759',
-    '#8b5cf6', '#0891b2', '#d97706', '#059669',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  return colors[Math.abs(hash) % colors.length];
 }
 
 export default async function ListingDetailPage({
@@ -70,7 +61,7 @@ export default async function ListingDetailPage({
   const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
   const isVerifiedEmployer = employer?.verificationStatus === 'VERIFIED';
   const companyName = employer?.companyName || 'Verified Corporate Partner';
-  const avatarColor = getCompanyColor(companyName);
+  const avatarColor = getCompanyAvatarColor(companyName);
   const initials = companyName.charAt(0).toUpperCase();
 
   const formattedDate = new Date(listing.createdAt).toLocaleDateString('en-GB', {
@@ -84,7 +75,7 @@ export default async function ListingDetailPage({
       {/* Back link */}
       <Link
         href="/listings"
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#4f46e5] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-indigo transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to Placement Opportunities
@@ -138,7 +129,7 @@ export default async function ListingDetailPage({
                 isStudentVerified ? (
                   <Link
                     href={`/listings/${listing.id}/apply`}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
                   >
                     Apply for Placement <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -153,7 +144,7 @@ export default async function ListingDetailPage({
               ) : (
                 <Link
                   href="/sign-in"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
                 >
                   Sign In as Student to Apply
                 </Link>

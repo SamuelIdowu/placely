@@ -84,7 +84,7 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#e5e7eb] shadow-2xs">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-border shadow-2xs">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Section 1: Role Title */}
           <div className="space-y-2">
@@ -98,7 +98,7 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
               required
               minLength={3}
               maxLength={120}
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 font-medium"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 font-medium"
             />
           </div>
 
@@ -114,7 +114,7 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
               required
               minLength={20}
               rows={6}
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 leading-relaxed font-normal"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 leading-relaxed font-normal"
             />
           </div>
 
@@ -139,13 +139,13 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
                     onClick={() => toggleDiscipline(disc)}
                     className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-semibold text-left transition-all ${
                       checked
-                        ? 'bg-indigo-50 border-[#4f46e5] text-indigo-950 shadow-2xs'
+                        ? 'bg-brand-indigo-light border-brand-indigo text-indigo-950 shadow-2xs'
                         : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
                     <div
                       className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] shrink-0 ${
-                        checked ? 'bg-[#4f46e5] text-white' : 'border border-slate-300'
+                        checked ? 'bg-brand-indigo text-white' : 'border border-slate-300'
                       }`}
                     >
                       {checked && '✓'}
@@ -169,7 +169,7 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
                   name="location"
                   placeholder="e.g. Ikeja Industrial Estate, Lagos"
                   required
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 font-medium pl-8"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 font-medium pl-8"
                 />
                 <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3.5" />
               </div>
@@ -181,14 +181,14 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
                 onClick={() => setIsRemote((prev) => !prev)}
                 className={`w-full p-2.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all ${
                   isRemote
-                    ? 'bg-indigo-50 border-[#4f46e5] text-indigo-950'
+                    ? 'bg-brand-indigo-light border-brand-indigo text-indigo-950'
                     : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                 }`}
               >
                 <span>Hybrid / Remote Flexibility</span>
                 <span
                   className={`text-[10px] uppercase font-black px-2 py-0.5 rounded-full ${
-                    isRemote ? 'bg-[#4f46e5] text-white' : 'bg-slate-100 text-slate-600'
+                    isRemote ? 'bg-brand-indigo text-white' : 'bg-slate-100 text-slate-600'
                   }`}
                 >
                   {isRemote ? 'YES' : 'ON-SITE ONLY'}
@@ -209,7 +209,7 @@ export function NewListingForm({ isVerified }: NewListingFormProps) {
             <button
               type="submit"
               disabled={loading || !isVerified}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
             >
               {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               Publish SIWES Listing <ArrowRight className="w-3.5 h-3.5" />
