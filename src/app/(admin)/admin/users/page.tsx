@@ -37,10 +37,15 @@ export default async function AdminUsersPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">User Management</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="max-w-6xl mx-auto space-y-5 pb-8">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col gap-1">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+          Identity &amp; Role Management
+        </span>
+        <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
+          User Management
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500">
           Search platform users, view account roles, check verification statuses, and inspect user profile histories.
         </p>
       </div>

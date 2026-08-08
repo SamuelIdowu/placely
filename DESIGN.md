@@ -449,3 +449,4 @@ Primary CTAs and pills meet comfortable touch sizing through 12px-24px padding a
 - Exact proprietary font files are not bundled; use the documented fallbacks when implementing externally.
 - Mobile screenshots were not regenerated in this public update, so mobile behavior is documented from the desktop system and existing responsive patterns.
 - Some live pages lazy-load content blocks late; blank testimonial placeholders are documented as placeholder skeleton surfaces rather than filled testimonial cards.
+- **Implementation Status:** The landing page (`src/app/page.tsx`) and its primitives (`button.tsx`, `card.tsx`, `globals.css`) have been audited and synchronized to correctly inherit `CohereText` (display), `Unica77` (sans), and the required pill-shaped/borderless geometries.

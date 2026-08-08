@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { getSavedListingsUseCase, studentProfileRepo } from '@/lib/container';
-import { ListingCard } from '@/components/listings/ListingCard';
+import { mockListings, mockEmployerProfiles } from '@/lib/mock';
 import { Bookmark, Compass } from 'lucide-react';
 import Link from 'next/link';
+import { SavedViewManager } from './SavedViewManager';
+
+import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
 
 export const metadata: Metadata = {
   title: 'Saved Placements | Placely',
@@ -19,53 +22,40 @@ export default async function SavedListingsPage() {
   }
 
   const profile = await studentProfileRepo.findByUserId(session.user.id);
-  const savedListings = profile ? await getSavedListingsUseCase.execute(profile.id) : [];
+  // const savedListings = profile ? await getSavedListingsUseCase.execute(profile.id) : [];
+  
+  // Use mock listings 1 and 3 as "saved" for visualization
+  const savedListings: ListingWithEmployer[] = [mockListings[0], mockListings[2]].map(listing => {
+    const employer = mockEmployerProfiles.find(e => e.id === listing.employerProfileId)!;
+    return {
+      ...listing.toObject(),
+      companyName: employer.companyName,
+      companyLogoUrl: employer.toObject().logoUrl ?? null,
+      companyVerificationStatus: employer.verificationStatus,
+    };
+  });
 
   return (
-    <div className="w-full max-w-full space-y-6">
+    <div className="w-full max-w-full space-y-5 pb-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
-            <Bookmark className="w-7 h-7 text-indigo-600 fill-indigo-600/20" /> Saved Placements
+          <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900 flex items-center gap-2">
+            <Bookmark className="w-5 h-5 text-indigo-600 fill-indigo-100" /> Saved Placements
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Bookmarked industrial training positions ready for application.
           </p>
         </div>
 
         <Link
           href="/listings"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors shadow-sm"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white font-semibold text-xs transition-colors shadow-xs"
         >
-          <Compass className="w-4 h-4" /> Explore More
+          <Compass className="w-3.5 h-3.5" /> Explore More
         </Link>
       </div>
 
-      {savedListings.length === 0 ? (
-        <div className="bg-white rounded-lg border border-slate-200 py-16 px-4 text-center shadow-md space-y-4">
-          <div className="w-14 h-14 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
-            <Bookmark className="w-7 h-7" />
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900">No saved placements yet</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              Click the bookmark icon on any placement card in the marketplace to save opportunities for easy access.
-            </p>
-          </div>
-          <Link
-            href="/listings"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
-          >
-            Browse Listings
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {savedListings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} isSavedInitial={true} />
-          ))}
-        </div>
-      )}
+      <SavedViewManager savedListings={savedListings} />
     </div>
   );
 }

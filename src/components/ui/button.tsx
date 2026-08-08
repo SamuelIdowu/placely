@@ -5,8 +5,6 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | "default"
-    | "landing"
-    | "landingOutline"
     | "secondary"
     | "outline"
     | "ghost"
@@ -18,19 +16,15 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", disabled, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer";
+      "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer";
 
     const variantStyles = {
       default:
-        "bg-app-primary text-white hover:bg-app-primary-hover rounded-[4px]",
-      landing:
-        "bg-landing-primary text-white hover:bg-landing-primary-hover rounded-none font-serif text-base tracking-wide shadow-none border border-black",
-      landingOutline:
-        "bg-transparent text-black border border-black hover:bg-black hover:text-white rounded-none font-serif text-base shadow-none",
+        "bg-primary text-primary-foreground hover:bg-primary-hover rounded-full font-sans text-sm tracking-wide shadow-none border border-transparent",
       secondary:
-        "bg-app-secondary-green text-white hover:bg-app-secondary-green-hover rounded-[4px]",
+        "bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground rounded-[4px] font-sans shadow-none",
       outline:
-        "border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-[4px]",
+        "bg-transparent text-primary border border-border hover:bg-primary hover:text-primary-foreground rounded-full font-sans shadow-none",
       ghost: "hover:bg-accent hover:text-accent-foreground rounded-[4px]",
       destructive:
         "bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-[4px]",

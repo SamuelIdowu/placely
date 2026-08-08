@@ -1,99 +1,129 @@
 @import "tailwindcss";
 
 :root {
-  /* Fonts */
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-dm-serif: 'DM Serif Display', Georgia, serif;
-  --font-hanken: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  /* Universal Default Color Tokens (App System Default) */
+  /* Core Surface & Text */
   --background: #ffffff;
   --foreground: #212121;
   --card: #ffffff;
   --card-foreground: #212121;
   --popover: #ffffff;
   --popover-foreground: #212121;
-  --primary: #4f46e5;
+  
+  /* Primary & Brand */
+  --primary: #17171c;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
+  --primary-hover: #000000;
+  --primary-muted: rgba(23, 23, 28, 0.06);
+
+  --brand-indigo: #4f46e5;
+  --brand-indigo-hover: #4338ca;
+  --brand-indigo-light: #eef2ff;
+  --brand-indigo-foreground: #ffffff;
+
+  --secondary: #eeece7;
   --secondary-foreground: #212121;
+  
   --muted: #f1f5f9;
-  --muted-foreground: #75758a;
+  --muted-foreground: #93939f;
+  
   --accent: #f1f5f9;
   --accent-foreground: #212121;
+  
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+  
   --border: #e5e7eb;
+  --border-subtle: #f1f5f9;
   --input: #e5e7eb;
   --ring: #4f46e5;
   --radius: 0.5rem;
 
-  /* Editorial Minimalist System (Landing Page Unauthenticated) Tokens */
-  --landing-primary: #4f46e5;
-  --landing-primary-hover: #4338ca;
-  --landing-bg: #ffffff;
-  --landing-fg: #0f172a;
-  --landing-border: #000000;
-  --radius-landing-btn: 0px;
-  --radius-landing-card: 0px;
+  /* Dark Surface Containers (Shells, Bento Dark Cards, Sidebars) */
+  --surface-dark: #17171c;
+  --surface-dark-foreground: #ffffff;
+  --surface-dark-muted: #93939f;
+  --surface-dark-border: rgba(255, 255, 255, 0.08);
+  --surface-dark-active: rgba(255, 255, 255, 0.1);
+  --surface-dark-hover: rgba(255, 255, 255, 0.05);
 
-  /* Cohere-adapted Placely Dashboard System Tokens */
-  --app-primary: #4f46e5;
-  --app-primary-hover: #4338ca;
-  --app-slate-dark: #212121;
-  --app-secondary-green: #10b981;
-  --app-secondary-green-hover: #059669;
-  --app-bg: #ffffff;
-  --app-card-bg: #ffffff;
-  --app-fg: #212121;
-  --app-muted-fg: #75758a;
-  --app-border: #e5e7eb;
-  --radius-app-btn: 0.375rem;  /* 6px */
-  --radius-app-card: 0.5rem;   /* 8px — Cohere sm, standard card */
-  --radius-card-lg: 1.375rem;  /* 22px — Cohere lg, media/stat card */
-  --radius-pill: 2rem;          /* 32px — Cohere pill, CTAs */
-
-  /* Sidebar (Cohere near-black shell) */
+  /* Sidebar Tokens */
   --sidebar-bg: #17171c;
   --sidebar-fg: #ffffff;
   --sidebar-muted: #93939f;
-  --sidebar-active-bg: #4f46e5;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.1);
   --sidebar-active-fg: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
 
-  /* Stat card accent colors */
+  /* Stat & Chart Semantic Colors */
   --stat-indigo: #4f46e5;
+  --stat-indigo-light: #eef2ff;
   --stat-blue: #1863dc;
+  --stat-blue-light: #eff6ff;
   --stat-coral: #ff7759;
+  --stat-coral-light: #fff1f0;
   --stat-emerald: #10b981;
+  --stat-emerald-light: #ecfdf5;
+  --stat-purple: #8b5cf6;
+  --stat-purple-light: #f5f3ff;
+  --stat-amber: #d97706;
+  --stat-amber-light: #fffbeb;
 
-  /* Application Status Semantic Colors */
+  /* Application Status Semantic Tokens */
   --status-draft-bg: #f1f5f9;
   --status-draft-fg: #475569;
+  --status-draft-border: #e2e8f0;
+
   --status-pending-bg: #fef3c7;
   --status-pending-fg: #b45309;
+  --status-pending-border: #fde68a;
+
   --status-shortlisted-bg: #dbeafe;
   --status-shortlisted-fg: #1d4ed8;
+  --status-shortlisted-border: #bfdbfe;
+
+  --status-offered-bg: #f3e8ff;
+  --status-offered-fg: #6b21a8;
+  --status-offered-border: #e9d5ff;
+
   --status-accepted-bg: #d1fae5;
   --status-accepted-fg: #047857;
+  --status-accepted-border: #a7f3d0;
+
   --status-rejected-bg: #ffe4e6;
   --status-rejected-fg: #be123c;
+  --status-rejected-border: #fecdd3;
+
+  --status-declined-bg: #ffe4e6;
+  --status-declined-fg: #be123c;
+  --status-declined-border: #fecdd3;
 }
 
 @theme {
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-dm-serif);
-  --font-hanken: var(--font-hanken);
+  /* Fonts */
+  --font-serif: "DM Serif Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-mono: monospace;
 
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-indigo-hover: var(--brand-indigo-hover);
+  --color-brand-indigo-light: var(--brand-indigo-light);
+  --color-brand-indigo-foreground: var(--brand-indigo-foreground);
+
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -103,59 +133,77 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-landing-primary: var(--landing-primary);
-  --color-landing-primary-hover: var(--landing-primary-hover);
-  --color-landing-bg: var(--landing-bg);
-  --color-landing-fg: var(--landing-fg);
-  --color-landing-border: var(--landing-border);
+  /* Dark Surface */
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-foreground: var(--surface-dark-foreground);
+  --color-surface-dark-muted: var(--surface-dark-muted);
+  --color-surface-dark-border: var(--surface-dark-border);
+  --color-surface-dark-active: var(--surface-dark-active);
+  --color-surface-dark-hover: var(--surface-dark-hover);
 
-  --color-app-primary: var(--app-primary);
-  --color-app-primary-hover: var(--app-primary-hover);
-  --color-app-slate-dark: var(--app-slate-dark);
-  --color-app-secondary-green: var(--app-secondary-green);
-  --color-app-secondary-green-hover: var(--app-secondary-green-hover);
-  --color-app-bg: var(--app-bg);
-  --color-app-card-bg: var(--app-card-bg);
-  --color-app-fg: var(--app-fg);
-  --color-app-muted-fg: var(--app-muted-fg);
-  --color-app-border: var(--app-border);
-
-  /* Sidebar tokens exposed to Tailwind */
+  /* Sidebar */
   --color-sidebar-bg: var(--sidebar-bg);
   --color-sidebar-fg: var(--sidebar-fg);
   --color-sidebar-muted: var(--sidebar-muted);
   --color-sidebar-active-bg: var(--sidebar-active-bg);
   --color-sidebar-active-fg: var(--sidebar-active-fg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-hover-bg: var(--sidebar-hover-bg);
 
-  /* Stat accent tokens */
+  /* Stat Tokens */
   --color-stat-indigo: var(--stat-indigo);
+  --color-stat-indigo-light: var(--stat-indigo-light);
   --color-stat-blue: var(--stat-blue);
+  --color-stat-blue-light: var(--stat-blue-light);
   --color-stat-coral: var(--stat-coral);
+  --color-stat-coral-light: var(--stat-coral-light);
   --color-stat-emerald: var(--stat-emerald);
+  --color-stat-emerald-light: var(--stat-emerald-light);
+  --color-stat-purple: var(--stat-purple);
+  --color-stat-purple-light: var(--stat-purple-light);
+  --color-stat-amber: var(--stat-amber);
+  --color-stat-amber-light: var(--stat-amber-light);
 
+  /* Status Tokens */
   --color-status-draft-bg: var(--status-draft-bg);
   --color-status-draft-fg: var(--status-draft-fg);
+  --color-status-draft-border: var(--status-draft-border);
+
   --color-status-pending-bg: var(--status-pending-bg);
   --color-status-pending-fg: var(--status-pending-fg);
+  --color-status-pending-border: var(--status-pending-border);
+
   --color-status-shortlisted-bg: var(--status-shortlisted-bg);
   --color-status-shortlisted-fg: var(--status-shortlisted-fg);
+  --color-status-shortlisted-border: var(--status-shortlisted-border);
+
+  --color-status-offered-bg: var(--status-offered-bg);
+  --color-status-offered-fg: var(--status-offered-fg);
+  --color-status-offered-border: var(--status-offered-border);
+
   --color-status-accepted-bg: var(--status-accepted-bg);
   --color-status-accepted-fg: var(--status-accepted-fg);
+  --color-status-accepted-border: var(--status-accepted-border);
+
   --color-status-rejected-bg: var(--status-rejected-bg);
   --color-status-rejected-fg: var(--status-rejected-fg);
+  --color-status-rejected-border: var(--status-rejected-border);
 
+  --color-status-declined-bg: var(--status-declined-bg);
+  --color-status-declined-fg: var(--status-declined-fg);
+  --color-status-declined-border: var(--status-declined-border);
+
+  /* Radii */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
-  --radius-landing-btn: var(--radius-landing-btn);
-  --radius-landing-card: var(--radius-landing-card);
-  --radius-app-btn: var(--radius-app-btn);
-  --radius-app-card: var(--radius-app-card);
-  --radius-card-lg: var(--radius-card-lg);
-  --radius-pill: var(--radius-pill);
+  --radius-card: 1.375rem;
+  --radius-card-lg: 1.5rem;
+  --radius-pill: 2rem;
 }
 
 @layer base {

@@ -53,7 +53,7 @@ export function Shell({
         <main
           className={cn(
             "flex-1 p-4 md:p-6 pb-20 md:pb-8 w-full max-w-full overflow-x-hidden transition-all duration-300 ease-in-out",
-            isCollapsed ? "lg:pl-24" : "lg:pl-68"
+            isCollapsed ? "lg:pl-24" : "lg:pl-72"
           )}
         >
           <div className="max-w-7xl mx-auto w-full">

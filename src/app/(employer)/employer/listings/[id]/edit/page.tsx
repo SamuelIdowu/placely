@@ -29,13 +29,13 @@ export default async function EditListingPage({
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Edit Internship Listing</h1>
         <p className="text-sm text-slate-500">Update listing details for applicants.</p>
       </div>
 
       <EditListingForm listing={listing} />
-    </main>
+    </div>
   );
 }

@@ -21,7 +21,21 @@ const createPrismaClient = () => {
     throw new Error('DATABASE_URL or DIRECT_URL environment variable is not defined.');
   }
 
-  const adapter = new PrismaNeon({ connectionString });
+  const adapter = new PrismaNeon(
+    {
+      connectionString,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 15000,
+    },
+    {
+      onPoolError: (err) => {
+        console.warn('[PrismaNeon Pool Warning]:', err.message);
+      },
+      onConnectionError: (err) => {
+        console.warn('[PrismaNeon Connection Warning]:', err.message);
+      },
+    }
+  );
   return new PrismaClient({ adapter });
 };
 

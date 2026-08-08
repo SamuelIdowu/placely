@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { updateApplicantStatusAction } from './actions';
 import type { ApplicationStatus } from '@/domain/entities/application';
+import { CheckCircle2, XCircle, Sparkles, Send } from 'lucide-react';
 
 export function ApplicantActionButtons({
   applicationId,
@@ -49,8 +49,8 @@ export function ApplicantActionButtons({
 
   if (isTerminal) {
     return (
-      <span className="text-xs text-slate-500 font-medium">
-        Final Status Reached
+      <span className="text-xs text-slate-500 font-bold uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-full">
+        Placement {currentStatus}
       </span>
     );
   }
@@ -63,75 +63,82 @@ export function ApplicantActionButtons({
 
       {/* Shortlist action (Available when APPLIED) */}
       {isApplied && (
-        <Button
-          size="sm"
+        <button
+          type="button"
           disabled={isSubmitting}
           onClick={() => handleStatusChange('SHORTLISTED')}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-[4px] text-xs font-semibold px-3 py-1"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1863dc] hover:bg-[#1451b8] text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
         >
-          Shortlist Candidate
-        </Button>
+          <CheckCircle2 className="w-3.5 h-3.5" /> Shortlist for Interview
+        </button>
       )}
 
       {/* Offer action (Available when SHORTLISTED) */}
       {isShortlisted && (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button
-              size="sm"
+            <button
+              type="button"
               disabled={isSubmitting}
-              className="bg-purple-600 hover:bg-purple-700 text-white rounded-[4px] text-xs font-semibold px-3 py-1"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-2xs disabled:opacity-50"
             >
-              Issue Offer →
-            </Button>
+              <Sparkles className="w-3.5 h-3.5" /> Issue 6-Month Placement Offer →
+            </button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="rounded-[24px]">
             <AlertDialogHeader>
-              <AlertDialogTitle>Send SIWES Placement Offer</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to issue a placement offer to this applicant? Sending an offer cannot be undone without the student declining.
+              <AlertDialogTitle className="font-serif text-xl font-normal">
+                Extend SIWES Placement Offer
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-slate-600 leading-relaxed">
+                Are you sure you want to issue an official 6-month placement offer to this student? The student will have 48 hours to accept or decline the offer.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="rounded-full text-xs font-bold">
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => handleStatusChange('OFFERED')}
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold px-5"
               >
-                Confirm Offer
+                Confirm Placement Offer
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
       )}
 
-      {/* Decline action (Available when APPLIED, SHORTLISTED, or OFFERED) */}
+      {/* Decline action */}
       {(isApplied || isShortlisted || isOffered) && (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button
-              size="sm"
-              variant="outline"
+            <button
+              type="button"
               disabled={isSubmitting}
-              className="border-rose-200 text-rose-700 hover:bg-rose-50 rounded-[4px] text-xs font-medium px-3 py-1"
+              className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-bold transition-colors"
             >
-              Decline
-            </Button>
+              <XCircle className="w-3.5 h-3.5" /> Decline
+            </button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="rounded-[24px]">
             <AlertDialogHeader>
-              <AlertDialogTitle>Decline Application</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to decline this student&apos;s application? The student will be notified via email.
+              <AlertDialogTitle className="font-serif text-xl font-normal">
+                Decline Candidate Application
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-slate-600 leading-relaxed">
+                Are you sure you want to decline this student&apos;s application? The student will be notified promptly.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="rounded-full text-xs font-bold">
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => handleStatusChange('DECLINED')}
-                className="bg-rose-600 hover:bg-rose-700 text-white"
+                className="rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-5"
               >
-                Decline Candidate
+                Confirm Decline
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

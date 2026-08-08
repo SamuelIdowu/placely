@@ -2,16 +2,21 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dropzone } from '@/components/shared/Dropzone';
 import { PendingVerificationBanner } from '@/components/shared/PendingVerificationBanner';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { saveEmployerProfile, uploadEmployerCac } from './actions';
 import type { VerificationStatus } from '@/domain/value-objects/verification-status';
+import {
+  Building2,
+  Globe,
+  ShieldCheck,
+  FileText,
+  CheckCircle2,
+  AlertCircle,
+  Save,
+  ArrowRight,
+} from 'lucide-react';
 
 interface EmployerProfileFormProps {
   initialData?: {
@@ -67,24 +72,29 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
 
     const res = await uploadEmployerCac(fd);
     if (res.success && res.url) {
-      setMessage({ type: 'success', text: 'CAC Document uploaded successfully for verification!' });
+      setMessage({ type: 'success', text: 'CAC Document uploaded successfully for admin verification!' });
       router.refresh();
     } else {
-      throw new Error(res.error ?? 'Failed to upload CAC document');
+      setMessage({ type: 'error', text: res.error ?? 'Failed to upload CAC document' });
     }
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header with Verification Status */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold tracking-tight">Company Profile & Verification</h1>
-            {status === 'VERIFIED' && <VerificationBadge size="md" showLabel />}
+    <div className="space-y-5 pb-8">
+      {/* ── Top Header Band ── */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative overflow-hidden">
+        <div className="space-y-1 relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+              Corporate Credentials
+            </span>
+            <VerificationBadge status={status} size="sm" showLabel />
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Setup your company details and upload CAC documents to verify your account and post placement listings.
+          <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
+            Company Profile &amp; CAC Verification
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
+            Maintain your verified corporate presence and attach official CAC registration documentation to post accredited SIWES placement openings.
           </p>
         </div>
       </div>
@@ -94,111 +104,147 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
 
       {message && (
         <div
-          className={`p-3 rounded text-sm ${
+          className={`p-3.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
             message.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
           }`}
         >
-          {message.text}
+          {message.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          )}
+          <span>{message.text}</span>
         </div>
       )}
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Section 1: Company Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">1. Company Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="companyName">Registered Company Name *</Label>
-                <Input
-                  id="companyName"
+      {/* ── 2-Column Form Layout ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 items-start">
+        {/* Left Column (2 Cols): Company Info */}
+        <div className="lg:col-span-2">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4"
+          >
+            <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
+              <Building2 className="w-4.5 h-4.5 text-[#4f46e5]" />
+              <div>
+                <h2 className="font-display text-sm font-semibold text-slate-900">
+                  Organization Details
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Visible to engineering students browsing placement openings.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3.5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Official Corporate Name *
+                </label>
+                <input
+                  type="text"
                   required
-                  placeholder="e.g. Acme Technologies Ltd"
                   value={formData.companyName}
                   onChange={(e) => handleInputChange('companyName', e.target.value)}
+                  placeholder="e.g. Zenith Automation Systems Ltd."
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 font-medium"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="cacNumber">CAC Registration Number (RC/BN) *</Label>
-                <Input
-                  id="cacNumber"
-                  required
-                  placeholder="e.g. RC1234567"
-                  value={formData.cacNumber}
-                  onChange={(e) => handleInputChange('cacNumber', e.target.value)}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    CAC / RC Registration Number *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.cacNumber}
+                    onChange={(e) => handleInputChange('cacNumber', e.target.value)}
+                    placeholder="e.g. RC 1492084"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Company Website URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.websiteUrl}
+                    onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
+                    placeholder="https://company.com"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Company Overview &amp; Industry Profile
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Describe your company's core operations, engineering departments, industrial manufacturing processes, and how you train SIWES interns..."
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 leading-relaxed font-normal"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="websiteUrl">Company Website URL</Label>
-                <Input
-                  id="websiteUrl"
-                  type="url"
-                  placeholder="https://company.com"
-                  value={formData.websiteUrl}
-                  onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="logoUrl">Company Logo URL</Label>
-                <Input
-                  id="logoUrl"
-                  type="url"
-                  placeholder="https://company.com/logo.png"
-                  value={formData.logoUrl}
-                  onChange={(e) => handleInputChange('logoUrl', e.target.value)}
-                />
-              </div>
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {isSaving ? 'Saving...' : 'Save Corporate Profile'}
+              </button>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Company Description & Industry Overview</Label>
-              <Textarea
-                id="description"
-                rows={4}
-                placeholder="Briefly describe your company, mission, and the types of SIWES placement opportunities you offer..."
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Section 2: CAC Document Upload */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">2. Corporate Affairs Commission (CAC) Verification</CardTitle>
-            <CardDescription>
-              Upload your CAC Certificate of Incorporation or Status Report to verify your organization.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Dropzone
-              label="CAC Certificate Document *"
-              description="Upload CAC registration document (PDF, PNG, JPG up to 5MB)"
-              accept=".pdf,.png,.jpg,.jpeg,.webp"
-              existingUrl={initialData?.cacDocumentUrl}
-              onUpload={handleCacUpload}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Submit */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isSaving} className="min-w-[140px]">
-            {isSaving ? 'Saving...' : 'Save Profile'}
-          </Button>
+          </form>
         </div>
-      </form>
+
+        {/* Right Column (1 Col): CAC Document Upload */}
+        <div className="lg:col-span-1 space-y-5">
+          <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <h3 className="font-display text-xs font-semibold text-slate-900">
+                CAC Certificate Upload
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Upload your official CAC Certificate of Incorporation or Status Report to receive the verified emerald corporate badge.
+            </p>
+
+            {initialData?.cacDocumentUrl ? (
+              <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-100 flex items-center justify-between text-xs">
+                <span className="font-semibold text-emerald-900 truncate">CAC Uploaded ✅</span>
+                <a
+                  href={initialData.cacDocumentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-[#4f46e5] hover:underline shrink-0"
+                >
+                  View Document ↗
+                </a>
+              </div>
+            ) : (
+              <Dropzone
+                onUpload={handleCacUpload}
+                accept="application/pdf,image/*"
+                label="Upload CAC Certificate (PDF or Image)"
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

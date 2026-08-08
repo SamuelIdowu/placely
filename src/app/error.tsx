@@ -17,8 +17,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-app-bg text-app-fg px-4 py-12 text-center">
-      <div className="max-w-md bg-white border border-app-border p-8 rounded-lg shadow-sm space-y-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-12 text-center">
+      <div className="bg-card text-card-foreground p-8 rounded-xl max-w-md shadow-sm border border-border space-y-4">
         <div className="p-3 bg-rose-50 text-rose-600 rounded-full w-fit mx-auto">
           <AlertTriangle className="h-8 w-8" />
         </div>

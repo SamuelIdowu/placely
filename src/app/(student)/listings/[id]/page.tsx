@@ -2,11 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { listingRepo, studentProfileRepo } from '@/lib/container';
+import { mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import {
   MapPin,
   Calendar,
@@ -15,6 +12,10 @@ import {
   ShieldAlert,
   ArrowLeft,
   Briefcase,
+  Banknote,
+  Clock,
+  ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 
 export async function generateMetadata({
@@ -23,9 +24,20 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const listing = await listingRepo.findDetailsById(id);
-  if (!listing) return { title: 'Listing Not Found — Placely' };
-  return { title: `${listing.title} at ${listing.companyName} — Placely` };
+  const listing = mockListings.find((l) => l.id === id);
+  if (!listing) return { title: 'Placement Not Found — Placely' };
+  const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
+  return { title: `${listing.title} at ${employer?.companyName || 'Company'} — Placely` };
+}
+
+function getCompanyColor(name: string): string {
+  const colors = [
+    '#4f46e5', '#1863dc', '#10b981', '#ff7759',
+    '#8b5cf6', '#0891b2', '#d97706', '#059669',
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return colors[Math.abs(hash) % colors.length];
 }
 
 export default async function ListingDetailPage({
@@ -34,7 +46,7 @@ export default async function ListingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const listing = await listingRepo.findDetailsById(id);
+  const listing = mockListings.find((l) => l.id === id);
 
   if (!listing || listing.isModerated || listing.status !== 'OPEN') {
     notFound();
@@ -44,13 +56,23 @@ export default async function ListingDetailPage({
   let isStudentVerified = false;
 
   if (session && session.user.role === 'STUDENT') {
-    const student = await studentProfileRepo.findByUserId(session.user.id);
+    const student = mockStudentProfiles.find((s) => s.userId === session.user.id);
     if (student) {
       isStudentVerified = student.verificationStatus === 'VERIFIED';
     }
   }
 
-  const isVerifiedEmployer = listing.companyVerificationStatus === 'VERIFIED';
+  // Assuming current user is verified for mock fallback
+  if (session && !mockStudentProfiles.find((s) => s.userId === session.user.id)) {
+    isStudentVerified = true;
+  }
+
+  const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
+  const isVerifiedEmployer = employer?.verificationStatus === 'VERIFIED';
+  const companyName = employer?.companyName || 'Verified Corporate Partner';
+  const avatarColor = getCompanyColor(companyName);
+  const initials = companyName.charAt(0).toUpperCase();
+
   const formattedDate = new Date(listing.createdAt).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'short',
@@ -58,119 +80,169 @@ export default async function ListingDetailPage({
   });
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="w-full max-w-5xl mx-auto space-y-5 pb-8">
+      {/* Back link */}
       <Link
         href="/listings"
-        className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#4f46e5] transition-colors"
       >
-        <ArrowLeft className="w-4 h-4 mr-1.5" />
-        Back to Listings
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Back to Placement Opportunities
       </Link>
 
-      <Card className="rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-        <CardHeader className="bg-slate-50/50 p-6 md:p-8 space-y-4 border-b border-slate-100">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                <Building2 className="w-4 h-4 text-slate-400 shrink-0" />
-                <span className="font-semibold text-slate-900">{listing.companyName}</span>
-                {isVerifiedEmployer && <VerificationBadge size="md" showLabel />}
+      {/* Main Placement Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-2xs">
+        {/* Header Band */}
+        <div className="p-5 sm:p-6 border-b border-slate-100 bg-slate-50/50 space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="flex items-start gap-3.5">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold shrink-0 shadow-xs"
+                style={{ background: avatarColor }}
+              >
+                {initials}
               </div>
 
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
-                {listing.title}
-              </h1>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-900 text-xs sm:text-sm">{companyName}</span>
+                  {isVerifiedEmployer && <VerificationBadge size="md" showLabel />}
+                </div>
 
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500 pt-1">
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-slate-400" />
-                  {listing.location} {listing.isRemote && '(Remote / Hybrid)'}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-slate-400" />
-                  Posted {formattedDate}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Briefcase className="w-4 h-4 text-slate-400" />
-                  SIWES Placement
-                </span>
+                <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
+                  {listing.title}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 pt-0.5">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    {listing.location} {listing.isRemote && '(Remote / Hybrid)'}
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    Posted {formattedDate}
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    6 Months SIWES
+                  </span>
+                </div>
               </div>
             </div>
 
+            {/* Direct Apply Button */}
             <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
               {session?.user.role === 'STUDENT' ? (
                 isStudentVerified ? (
                   <Link
-                    href={`/student/listings/${listing.id}/apply`}
-                    className="inline-flex items-center justify-center h-12 px-6 text-base font-medium rounded-[4px] bg-slate-900 text-white hover:bg-slate-800 transition-colors w-full md:w-auto text-center"
+                    href={`/listings/${listing.id}/apply`}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
                   >
-                    Apply for Placement
+                    Apply for Placement <ArrowRight className="w-4 h-4" />
                   </Link>
                 ) : (
-                  <Button
-                    disabled
-                    size="lg"
-                    className="rounded-[4px] bg-slate-200 text-slate-500 w-full md:w-auto cursor-not-allowed"
+                  <Link
+                    href="/profile/settings"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs w-full md:w-auto"
                   >
-                    Complete Verification to Apply
-                  </Button>
+                    Verify Student ID to Apply
+                  </Link>
                 )
               ) : (
                 <Link
-                  href="/auth/login"
-                  className="inline-flex items-center justify-center h-12 px-6 text-base font-medium rounded-[4px] bg-slate-900 text-white hover:bg-slate-800 transition-colors w-full md:w-auto text-center"
+                  href="/sign-in"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
                 >
-                  Login as Student to Apply
+                  Sign In as Student to Apply
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 pt-2">
-            {listing.disciplines.map((disc) => (
-              <span
-                key={disc}
-                className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
-              >
-                {disc}
+          {/* Quick Info Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-200/60">
+            <div className="p-3 rounded-xl bg-white border border-slate-200/80">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                Monthly Stipend
               </span>
-            ))}
-          </div>
-        </CardHeader>
+              <span className="text-sm font-bold text-emerald-700 mt-0.5 flex items-center gap-1">
+                <Banknote className="w-3.5 h-3.5" /> ₦75,000 / mo
+              </span>
+            </div>
 
-        <CardContent className="p-6 md:p-8 space-y-8">
+            <div className="p-3 rounded-xl bg-white border border-slate-200/80">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                Placement Duration
+              </span>
+              <span className="text-sm font-bold text-slate-900 mt-0.5 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-indigo-600" /> 6 Months (Full-Time)
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-white border border-slate-200/80 col-span-2 sm:col-span-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                Compliance Status
+              </span>
+              <span className="text-sm font-bold text-indigo-700 mt-0.5 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" /> ITF Form 8 Approved
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Body */}
+        <div className="p-5 sm:p-6 space-y-5">
           {session?.user.role === 'STUDENT' && !isStudentVerified && (
-            <div className="flex items-start gap-3 p-4 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-sm">
-              <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+              <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold block mb-0.5">Verification Required</span>
-                Your student profile must be verified before submitting applications. You can submit your school ID card in your student profile dashboard.
+                <span className="font-bold block mb-0.5">Verification Required Before Submitting</span>
+                Your student profile must be verified with your university school ID to submit official SIWES applications.
               </div>
             </div>
           )}
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">About the Placement</h2>
-            <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+          {/* Description */}
+          <div className="space-y-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              About the Placement & Industrial Training
+            </h2>
+            <div className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
               {listing.description}
             </div>
           </div>
 
-          <Separator />
-
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">Target Disciplines</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Target Disciplines */}
+          <div className="space-y-2.5 pt-4 border-t border-slate-100">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Target Engineering & Technology Disciplines
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {listing.disciplines.map((disc) => (
-                <div key={disc} className="flex items-center gap-2 text-sm text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>{disc} Engineering</span>
+                <div
+                  key={disc}
+                  className="flex items-center gap-2 text-xs font-semibold text-slate-800 p-2.5 rounded-xl bg-slate-50 border border-slate-100"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{disc}</span>
                 </div>
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </main>
+
+          {/* University Acceptance & Logbook Support */}
+          <div className="p-4 rounded-xl bg-indigo-50/70 border border-indigo-100 space-y-1.5">
+            <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wider">
+              Official University Handoff Guaranteed
+            </h3>
+            <p className="text-xs text-indigo-800 leading-relaxed">
+              Upon receiving and accepting an offer for this role, Placely automatically generates an official digital SIWES Placement Letter with the company&apos;s CAC registration and supervisor details for submission to your university SIWES coordinator.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -33,7 +33,7 @@ export function OpportunityCard({
   onBookmarkToggle,
 }: OpportunityCardProps) {
   return (
-    <div className="group bg-white rounded-lg border border-slate-100 shadow-md hover:shadow-lg transition-all duration-200 p-5 flex flex-col justify-between space-y-4 relative">
+    <div className="group bg-white rounded-lg border border-slate-100 shadow-md hover:shadow-lg transition-[shadow,border-color,transform] duration-150 ease-out active:scale-[0.99] p-5 flex flex-col justify-between space-y-4 relative">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-lg bg-slate-50 border border-slate-200 p-2 flex items-center justify-center font-bold text-slate-700 text-base shrink-0 overflow-hidden">
@@ -50,7 +50,7 @@ export function OpportunityCard({
           <div>
             <Link
               href={`${hrefPrefix}/${id}`}
-              className="font-bold text-slate-900 text-base leading-snug hover:text-indigo-600 transition-colors line-clamp-1 group-hover:text-indigo-600"
+              className="font-bold text-slate-900 text-base leading-snug hover:text-indigo-600 transition-colors duration-150 line-clamp-1 group-hover:text-indigo-600"
             >
               {title}
             </Link>
@@ -63,7 +63,7 @@ export function OpportunityCard({
           aria-label="Save listing"
           onClick={() => onBookmarkToggle?.(id)}
           className={cn(
-            "p-2 rounded-md transition-colors shrink-0",
+            "p-2 rounded-md transition-all duration-150 ease-out active:scale-95 shrink-0",
             isBookmarked
               ? "text-indigo-600 bg-indigo-50"
               : "text-slate-400 hover:text-indigo-600 hover:bg-slate-50"
@@ -95,7 +95,7 @@ export function OpportunityCard({
           <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
             Stipend
           </span>
-          <span className="font-extrabold text-indigo-600 text-sm sm:text-base">
+          <span className="font-extrabold text-indigo-600 text-sm sm:text-base tabular-nums">
             {stipend}
           </span>
         </div>
@@ -108,7 +108,7 @@ export function OpportunityCard({
 
           <Link
             href={`${hrefPrefix}/${id}`}
-            className="p-1.5 rounded-md bg-slate-50 text-slate-600 hover:bg-indigo-600 hover:text-white transition-colors"
+            className="p-1.5 rounded-md bg-slate-50 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all duration-150 ease-out active:scale-95"
             title="View Details"
           >
             <ArrowUpRight className="w-4 h-4" />

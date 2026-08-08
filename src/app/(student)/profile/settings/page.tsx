@@ -24,7 +24,7 @@ export default async function StudentSettingsPage() {
   }
 
   return (
-    <main className="container max-w-5xl py-8 px-4 sm:px-6 space-y-6">
+    <div className="max-w-5xl space-y-6 mx-auto">
       <div className="border-b pb-4">
         <h1 className="text-2xl font-bold tracking-tight">Account & Profile Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -50,6 +50,6 @@ export default async function StudentSettingsPage() {
             : undefined
         }
       />
-    </main>
+    </div>
   );
 }

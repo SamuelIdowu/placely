@@ -25,11 +25,16 @@ export default async function VerificationsQueuePage({ searchParams }: PageProps
   const paginatedResult = await verificationRepo.findPendingAll({ page, limit });
 
   return (
-    <main className="container max-w-6xl py-8 px-4 sm:px-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Admin Verification Queue</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Review pending Student ID cards and Corporate CAC documents submitted for verification.
+    <div className="max-w-6xl space-y-5 pb-8 mx-auto">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col gap-1">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#93939f]">
+          Institutional Compliance
+        </span>
+        <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
+          Admin Verification Queue
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500">
+          Review pending Student ID cards and Corporate CAC documents submitted for institutional verification.
         </p>
       </div>
 
@@ -39,6 +44,6 @@ export default async function VerificationsQueuePage({ searchParams }: PageProps
         page={paginatedResult.page}
         totalPages={paginatedResult.totalPages}
       />
-    </main>
+    </div>
   );
 }
