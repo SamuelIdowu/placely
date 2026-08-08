@@ -67,32 +67,32 @@ export function AdminListingsTable({ initialListings }: AdminListingsTableProps)
       )}
 
       <Tabs value={tab} onValueChange={(val) => setTab(val as 'all' | 'active' | 'flagged')}>
-        <TabsList className="bg-slate-100 p-1 rounded-[4px]">
-          <TabsTrigger value="all" className="text-xs">
+        <TabsList className="bg-slate-100/80 p-1 rounded-xl">
+          <TabsTrigger value="all" className="text-xs rounded-lg font-bold">
             All Listings ({initialListings.length})
           </TabsTrigger>
-          <TabsTrigger value="active" className="text-xs">
+          <TabsTrigger value="active" className="text-xs rounded-lg font-bold">
             Active ({initialListings.filter((l) => !l.isModerated).length})
           </TabsTrigger>
-          <TabsTrigger value="flagged" className="text-xs">
+          <TabsTrigger value="flagged" className="text-xs rounded-lg font-bold">
             Flagged ({initialListings.filter((l) => l.isModerated).length})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value={tab} className="mt-4">
+        <TabsContent value={tab} className="mt-3.5">
           {filteredListings.length === 0 ? (
-            <div className="p-12 text-center bg-white border border-app-border rounded-lg">
-              <ShieldAlert className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-              <h3 className="font-semibold text-slate-800">No listings found</h3>
-              <p className="text-xs text-muted-foreground mt-1">
+            <div className="p-10 text-center bg-white border border-dashed border-slate-200 rounded-2xl shadow-2xs">
+              <ShieldAlert className="h-7 w-7 text-slate-400 mx-auto mb-2" />
+              <h3 className="font-bold text-sm text-slate-900">No listings found</h3>
+              <p className="text-xs text-slate-500 mt-0.5">
                 There are no listings matching the selected filter tab.
               </p>
             </div>
           ) : (
-            <div className="bg-white border border-app-border rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 border-b border-app-border text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50/70 border-b border-slate-100 text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                     <tr>
                       <th className="py-3.5 px-4">Title & Employer</th>
                       <th className="py-3.5 px-4">Disciplines</th>
@@ -174,25 +174,25 @@ export function AdminListingsTable({ initialListings }: AdminListingsTableProps)
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-emerald-700 border-emerald-200 hover:bg-emerald-50 h-8 text-xs"
+                                  className="text-emerald-700 border-emerald-200 hover:bg-emerald-50 h-7.5 rounded-full px-3 text-[11px] font-bold"
                                   disabled={isSubmitting === listing.id}
                                 >
-                                  <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                                  <RotateCcw className="h-3 w-3 mr-1" />
                                   Restore
                                 </Button>
                               </AlertDialogTrigger>
-                              <AlertDialogContent>
+                              <AlertDialogContent className="rounded-2xl">
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Restore Listing</AlertDialogTitle>
-                                  <AlertDialogDescription>
+                                  <AlertDialogTitle className="font-serif text-lg font-normal">Restore Listing</AlertDialogTitle>
+                                  <AlertDialogDescription className="text-xs text-slate-600 leading-relaxed">
                                     Are you sure you want to restore &quot;{listing.title}&quot;? It will become visible again in public student search results.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel className="rounded-full text-xs font-bold">Cancel</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() => handleRestore(listing.id)}
-                                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4"
                                   >
                                     Restore Listing
                                   </AlertDialogAction>
@@ -205,25 +205,25 @@ export function AdminListingsTable({ initialListings }: AdminListingsTableProps)
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-rose-600 border-rose-200 hover:bg-rose-50 h-8 text-xs"
+                                  className="text-rose-600 border-rose-200 hover:bg-rose-50 h-7.5 rounded-full px-3 text-[11px] font-bold"
                                   disabled={isSubmitting === listing.id}
                                 >
-                                  <Flag className="h-3.5 w-3.5 mr-1" />
+                                  <Flag className="h-3 w-3 mr-1" />
                                   Flag
                                 </Button>
                               </AlertDialogTrigger>
-                              <AlertDialogContent>
+                              <AlertDialogContent className="rounded-2xl">
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Flag Listing</AlertDialogTitle>
-                                  <AlertDialogDescription>
+                                  <AlertDialogTitle className="font-serif text-lg font-normal">Flag Listing</AlertDialogTitle>
+                                  <AlertDialogDescription className="text-xs text-slate-600 leading-relaxed">
                                     Are you sure you want to flag &quot;{listing.title}&quot; for moderation? Flagged listings will be hidden from public student searches.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel className="rounded-full text-xs font-bold">Cancel</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() => handleFlag(listing.id)}
-                                    className="bg-rose-600 hover:bg-rose-700 text-white"
+                                    className="rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4"
                                   >
                                     Confirm Flag
                                   </AlertDialogAction>

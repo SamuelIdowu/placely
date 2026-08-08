@@ -45,6 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           email: user.email,
           role: user.role,
+          name: [user.firstName, user.lastName].filter(Boolean).join(' ') || undefined,
         };
       },
     }),
@@ -52,17 +53,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      // Persist role and id into JWT on first sign-in
+      // Persist role, id and name into JWT on first sign-in
       if (user) {
-        token.role = (user as { id: string; email: string; role: string }).role;
+        token.role = (user as { id: string; email: string; role: string; name?: string }).role;
         token.id = user.id;
+        if (user.name) {
+          token.name = user.name;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      // Expose role and id on the session object (type extended in types/next-auth.d.ts)
+      // Expose role, id and name on the session object (type extended in types/next-auth.d.ts)
       session.user.role = token.role as string;
       session.user.id = token.id as string;
+      if (token.name) {
+        session.user.name = token.name as string;
+      }
       return session;
     },
   },

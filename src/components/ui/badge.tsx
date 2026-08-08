@@ -26,14 +26,14 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
     outline: "text-foreground border-border",
     destructive:
       "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-    applied: "border-slate-200 bg-slate-100 text-slate-700",
-    shortlisted: "border-blue-200 bg-blue-100 text-blue-800",
-    offered: "border-purple-200 bg-purple-100 text-purple-800",
-    accepted: "border-emerald-200 bg-emerald-100 text-emerald-800",
-    declined: "border-rose-200 bg-rose-100 text-rose-800",
-    draft: "border-slate-200 bg-slate-100 text-slate-700",
-    pending: "border-amber-200 bg-amber-100 text-amber-800",
-    rejected: "border-rose-200 bg-rose-100 text-rose-800",
+    applied: "border-status-draft-border bg-status-draft-bg text-status-draft-fg",
+    shortlisted: "border-status-shortlisted-border bg-status-shortlisted-bg text-status-shortlisted-fg",
+    offered: "border-status-offered-border bg-status-offered-bg text-status-offered-fg",
+    accepted: "border-status-accepted-border bg-status-accepted-bg text-status-accepted-fg",
+    declined: "border-status-declined-border bg-status-declined-bg text-status-declined-fg",
+    draft: "border-status-draft-border bg-status-draft-bg text-status-draft-fg",
+    pending: "border-status-pending-border bg-status-pending-bg text-status-pending-fg",
+    rejected: "border-status-rejected-border bg-status-rejected-bg text-status-rejected-fg",
   };
 
   return (

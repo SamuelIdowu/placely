@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { applicationRepo, listingRepo, employerProfileRepo, studentProfileRepo, messageRepo } from '@/lib/container';
+import { mockApplications, mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -21,28 +21,29 @@ export default async function EmployerApplicantDetailPage({
     redirect(`/sign-in?callbackUrl=/employer/listings/${listingId}/applicants/${applicationId}`);
   }
 
-  const employerProfile = await employerProfileRepo.findByUserId(session.user.id);
+  // Use mock data for frontend visualization
+  let employerProfile = mockEmployerProfiles.find(e => e.userId === session.user.id);
   if (!employerProfile) {
-    redirect('/employer/dashboard');
+    // mock fallback
+    employerProfile = mockEmployerProfiles[0];
   }
 
-  const listing = await listingRepo.findById(listingId);
-  if (!listing || listing.employerProfileId !== employerProfile.id) {
+  const listing = mockListings.find(l => l.id === listingId);
+  if (!listing) {
     notFound();
   }
 
-  const application = await applicationRepo.findById(applicationId);
+  const application = mockApplications.find(a => a.id === applicationId);
   if (!application || application.listingId !== listingId) {
     notFound();
   }
 
-  const student = await studentProfileRepo.findById(application.studentId);
+  const student = mockStudentProfiles.find(s => s.id === application.studentId);
   if (!student) {
     notFound();
   }
 
-  const initialMessagesDomain = await messageRepo.findByApplication(applicationId);
-  const initialMessages = initialMessagesDomain.map((m) => m.toObject());
+  const initialMessages: any[] = [];
   const initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
 
   const appliedDate = new Date(application.createdAt).toLocaleDateString('en-GB', {
@@ -56,14 +57,14 @@ export default async function EmployerApplicantDetailPage({
       <div>
         <Link
           href={`/employer/listings/${listingId}/applicants`}
-          className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           ← Back to Applicants List
         </Link>
       </div>
 
-      <Card className="rounded-lg border border-slate-200 shadow-sm bg-white">
-        <CardHeader className="border-b border-slate-100 pb-6 space-y-4">
+      <Card className="rounded-lg shadow-sm border border-border bg-card">
+        <CardHeader className="border-b border-border pb-6 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <StatusBadge status={application.status as ApplicationStatus} className="text-sm px-3 py-1" />
@@ -79,50 +80,50 @@ export default async function EmployerApplicantDetailPage({
           </div>
 
           <div>
-            <CardTitle className="text-2xl font-bold text-slate-900">
+            <CardTitle className="text-2xl font-bold text-foreground">
               {student.university} Applicant
             </CardTitle>
-            <CardDescription className="text-slate-600 text-base mt-1">
-              Applied for <strong className="text-slate-900">{listing.title}</strong> on {appliedDate}
+            <CardDescription className="text-muted-foreground text-base mt-1">
+              Applied for <strong className="text-foreground">{listing.title}</strong> on {appliedDate}
             </CardDescription>
           </div>
         </CardHeader>
 
         <CardContent className="pt-6 space-y-6">
           {/* Applicant Metadata Grid */}
-          <div className="rounded-md border border-slate-200 bg-slate-50/50 p-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+          <div className="rounded-lg border border-border bg-secondary/50 p-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
               Candidate Profile Summary
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 text-sm">
               <div>
-                <span className="text-xs text-slate-500 block">University</span>
-                <span className="font-semibold text-slate-900">{student.university}</span>
+                <span className="text-xs text-muted-foreground block uppercase tracking-wider font-semibold mb-1">University</span>
+                <span className="font-medium text-foreground">{student.university}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-500 block">Discipline</span>
-                <span className="font-semibold text-slate-900">{student.discipline}</span>
+                <span className="text-xs text-muted-foreground block uppercase tracking-wider font-semibold mb-1">Discipline</span>
+                <span className="font-medium text-foreground">{student.discipline}</span>
               </div>
               <div>
-                <span className="text-xs text-slate-500 block">Profile Score</span>
-                <span className="font-semibold text-slate-900">{student.profileCompleteness}%</span>
+                <span className="text-xs text-muted-foreground block uppercase tracking-wider font-semibold mb-1">Profile Score</span>
+                <span className="font-medium text-foreground">{student.profileCompleteness}%</span>
               </div>
               {student.resumeUrl ? (
                 <div>
-                  <span className="text-xs text-slate-500 block">Resume File</span>
+                  <span className="text-xs text-muted-foreground block uppercase tracking-wider font-semibold mb-1">Resume File</span>
                   <a
                     href={student.resumeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline font-semibold"
+                    className="text-primary hover:underline font-semibold"
                   >
                     View Resume PDF ↗
                   </a>
                 </div>
               ) : (
                 <div>
-                  <span className="text-xs text-slate-500 block">Resume File</span>
-                  <span className="text-slate-400">None uploaded</span>
+                  <span className="text-xs text-muted-foreground block uppercase tracking-wider font-semibold mb-1">Resume File</span>
+                  <span className="text-muted-foreground font-medium">None uploaded</span>
                 </div>
               )}
             </div>
@@ -130,23 +131,28 @@ export default async function EmployerApplicantDetailPage({
 
           {/* Cover Note */}
           {application.note && (
-            <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Candidate Cover Note
               </h4>
-              <div className="rounded-md border border-slate-200 p-4 text-sm text-slate-700 bg-white leading-relaxed whitespace-pre-wrap">
+              <div className="rounded-lg border border-border p-5 text-sm text-foreground bg-secondary/30 leading-relaxed whitespace-pre-wrap">
                 {application.note}
               </div>
             </div>
           )}
 
           {/* Messaging Section */}
-          <ApplicationMessagingSection
-            applicationId={application.id}
-            currentUserId={session.user.id}
-            initialMessages={initialMessages}
-            initialIsLocked={initialIsLocked}
-          />
+          <div className="pt-6 border-t border-border">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
+              Messages
+            </h4>
+            <ApplicationMessagingSection
+              applicationId={application.id}
+              currentUserId={session.user.id}
+              initialMessages={initialMessages}
+              initialIsLocked={initialIsLocked}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

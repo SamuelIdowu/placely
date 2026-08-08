@@ -4,45 +4,96 @@
  */
 
 export const typographyTokens = {
-  inter: "var(--font-inter)",
-  dmSerif: "var(--font-dm-serif)",
-  hanken: "var(--font-hanken)",
+  inter: "var(--font-sans)",
+  dmSerif: "var(--font-serif)",
+  spaceGrotesk: "var(--font-display)",
+  mono: "var(--font-mono)",
 } as const;
 
 /**
- * Editorial Minimalist Design Tokens (Landing Page / Unauthenticated)
+ * Centralized Color System Tokens
  */
-export const landingTokens = {
-  fontHeadline: "var(--font-dm-serif)",
-  fontBody: "var(--font-hanken)",
-  primary: "var(--landing-primary)",
-  primaryHover: "var(--landing-primary-hover)",
-  bg: "var(--landing-bg)",
-  fg: "var(--landing-fg)",
-  border: "var(--landing-border)",
-  radiusBtn: "var(--radius-landing-btn)", // 0px
-  radiusCard: "var(--radius-landing-card)", // 0px
+export const colorTokens = {
+  surface: {
+    bg: "var(--background)",
+    fg: "var(--foreground)",
+    card: "var(--card)",
+    cardFg: "var(--card-foreground)",
+    popover: "var(--popover)",
+    popoverFg: "var(--popover-foreground)",
+    muted: "var(--muted)",
+    mutedFg: "var(--muted-foreground)",
+    bodyMuted: "var(--body-muted)",
+    accent: "var(--accent)",
+    accentFg: "var(--accent-foreground)",
+    border: "var(--border)",
+    borderSubtle: "var(--border-subtle)",
+  },
+  brand: {
+    primary: "var(--primary)",
+    primaryFg: "var(--primary-foreground)",
+    primaryHover: "var(--primary-hover)",
+    primaryMuted: "var(--primary-muted)",
+    indigo: "var(--brand-indigo)",
+    indigoHover: "var(--brand-indigo-hover)",
+    indigoLight: "var(--brand-indigo-light)",
+    indigoFg: "var(--brand-indigo-foreground)",
+    dark: "var(--surface-dark)",
+    darkFg: "var(--surface-dark-foreground)",
+    darkMuted: "var(--surface-dark-muted)",
+    darkBorder: "var(--surface-dark-border)",
+    darkActive: "var(--surface-dark-active)",
+  },
+  sidebar: {
+    bg: "var(--sidebar-bg)",
+    fg: "var(--sidebar-fg)",
+    muted: "var(--sidebar-muted)",
+    activeBg: "var(--sidebar-active-bg)",
+    activeFg: "var(--sidebar-active-fg)",
+    border: "var(--sidebar-border)",
+    hoverBg: "var(--sidebar-hover-bg)",
+  },
+  stats: {
+    indigo: "var(--stat-indigo)",
+    indigoHover: "var(--stat-indigo-hover)",
+    indigoLight: "var(--stat-indigo-light)",
+    blue: "var(--stat-blue)",
+    blueHover: "var(--stat-blue-hover)",
+    blueLight: "var(--stat-blue-light)",
+    coral: "var(--stat-coral)",
+    coralLight: "var(--stat-coral-light)",
+    emerald: "var(--stat-emerald)",
+    emeraldDark: "var(--stat-emerald-dark)",
+    emeraldLight: "var(--stat-emerald-light)",
+    purple: "var(--stat-purple)",
+    purpleLight: "var(--stat-purple-light)",
+    amber: "var(--stat-amber)",
+    amberWarning: "var(--stat-amber-warning)",
+    amberLight: "var(--stat-amber-light)",
+    amberBorder: "var(--stat-amber-border)",
+  },
+} as const;
+
+/**
+ * Unified UI Tokens
+ */
+export const uiTokens = {
+  fontHeadline: "var(--font-display)",
+  fontBody: "var(--font-sans)",
+  primary: "var(--primary)", 
+  primaryHover: "var(--primary-hover)",
+  secondary: "var(--secondary)", 
+  bg: "var(--background)",
+  cardBg: "var(--card)",
+  fg: "var(--foreground)",
+  mutedFg: "var(--muted-foreground)",
+  bodyMutedFg: "var(--body-muted)",
+  border: "var(--border)",
+  radiusBtn: "var(--radius-pill)",
+  radiusCard: "var(--radius-card)",
+  cardShadow: "none",
+  cardHoverShadow: "shadow-sm",
   spacingBase: 8,
-} as const;
-
-/**
- * Placely Corporate Minimalism Tokens (App / Authenticated Dashboard)
- */
-export const appTokens = {
-  fontHeadline: "var(--font-inter)",
-  fontBody: "var(--font-inter)",
-  primary: "var(--app-primary)", // #000000 / #0F172A
-  primaryHover: "var(--app-primary-hover)",
-  secondaryGreen: "var(--app-secondary-green)", // #10B981
-  secondaryGreenHover: "var(--app-secondary-green-hover)", // #059669
-  bg: "var(--app-bg)",
-  cardBg: "var(--app-card-bg)",
-  fg: "var(--app-fg)",
-  mutedFg: "var(--app-muted-fg)",
-  border: "var(--app-border)",
-  radiusBtn: "var(--radius-app-btn)", // 4px
-  radiusCard: "var(--radius-app-card)", // 8px
-  spacingBase: 4,
 } as const;
 
 /**
@@ -61,57 +112,86 @@ export type ApplicationStatusKey =
 export interface StatusToken {
   bg: string;
   fg: string;
+  border: string;
   label: string;
   className: string;
 }
 
 export const statusTokens: Record<ApplicationStatusKey, StatusToken> = {
   APPLIED: {
-    bg: "var(--status-applied-bg, #F1F5F9)",
-    fg: "var(--status-applied-fg, #475569)",
+    bg: "var(--status-draft-bg)",
+    fg: "var(--status-draft-fg)",
+    border: "var(--status-draft-border)",
     label: "Applied",
-    className: "bg-slate-100 text-slate-700 border-slate-200",
+    className: "bg-status-draft-bg text-status-draft-fg border-status-draft-border",
   },
   SHORTLISTED: {
-    bg: "var(--status-shortlisted-bg, #DBEAFE)",
-    fg: "var(--status-shortlisted-fg, #1D4ED8)",
+    bg: "var(--status-shortlisted-bg)",
+    fg: "var(--status-shortlisted-fg)",
+    border: "var(--status-shortlisted-border)",
     label: "Shortlisted",
-    className: "bg-blue-100 text-blue-800 border-blue-200",
+    className: "bg-status-shortlisted-bg text-status-shortlisted-fg border-status-shortlisted-border",
   },
   OFFERED: {
-    bg: "var(--status-offered-bg, #F3E8FF)",
-    fg: "var(--status-offered-fg, #6B21A8)",
+    bg: "var(--status-offered-bg)",
+    fg: "var(--status-offered-fg)",
+    border: "var(--status-offered-border)",
     label: "Offered",
-    className: "bg-purple-100 text-purple-800 border-purple-200",
+    className: "bg-status-offered-bg text-status-offered-fg border-status-offered-border",
   },
   ACCEPTED: {
-    bg: "var(--status-accepted-bg, #D1FAE5)",
-    fg: "var(--status-accepted-fg, #047857)",
+    bg: "var(--status-accepted-bg)",
+    fg: "var(--status-accepted-fg)",
+    border: "var(--status-accepted-border)",
     label: "Accepted",
-    className: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    className: "bg-status-accepted-bg text-status-accepted-fg border-status-accepted-border",
   },
   DECLINED: {
-    bg: "var(--status-declined-bg, #FFE4E6)",
-    fg: "var(--status-declined-fg, #BE123C)",
+    bg: "var(--status-declined-bg)",
+    fg: "var(--status-declined-fg)",
+    border: "var(--status-declined-border)",
     label: "Declined",
-    className: "bg-rose-100 text-rose-800 border-rose-200",
+    className: "bg-status-declined-bg text-status-declined-fg border-status-declined-border",
   },
   DRAFT: {
-    bg: "var(--status-draft-bg, #F1F5F9)",
-    fg: "var(--status-draft-fg, #475569)",
+    bg: "var(--status-draft-bg)",
+    fg: "var(--status-draft-fg)",
+    border: "var(--status-draft-border)",
     label: "Draft",
-    className: "bg-slate-100 text-slate-700 border-slate-200",
+    className: "bg-status-draft-bg text-status-draft-fg border-status-draft-border",
   },
   PENDING: {
-    bg: "var(--status-pending-bg, #FEF3C7)",
-    fg: "var(--status-pending-fg, #B45309)",
+    bg: "var(--status-pending-bg)",
+    fg: "var(--status-pending-fg)",
+    border: "var(--status-pending-border)",
     label: "Pending Review",
-    className: "bg-amber-100 text-amber-800 border-amber-200",
+    className: "bg-status-pending-bg text-status-pending-fg border-status-pending-border",
   },
   REJECTED: {
-    bg: "var(--status-rejected-bg, #FFE4E6)",
-    fg: "var(--status-rejected-fg, #BE123C)",
+    bg: "var(--status-rejected-bg)",
+    fg: "var(--status-rejected-fg)",
+    border: "var(--status-rejected-border)",
     label: "Rejected",
-    className: "bg-rose-100 text-rose-800 border-rose-200",
+    className: "bg-status-rejected-bg text-status-rejected-fg border-status-rejected-border",
   },
 } as const;
+
+/**
+ * Deterministic avatar color palette from centralized brand tokens
+ */
+export const AVATAR_PALETTE = [
+  "var(--stat-indigo)",
+  "var(--stat-blue)",
+  "var(--stat-emerald)",
+  "var(--stat-coral)",
+  "var(--stat-purple)",
+  "var(--stat-amber)",
+  "var(--stat-emerald-dark)",
+  "var(--brand-indigo)",
+];
+
+export function getCompanyAvatarColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+}

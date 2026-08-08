@@ -1,9 +1,9 @@
 // src/infrastructure/db/prisma.client.ts
 // Prisma 7 singleton — prevents multiple PrismaClient instances during Next.js hot-reload.
-// Import: import { PrismaClient } from '@/generated/prisma/client';
+// Import: import { PrismaClient } from '@/generated/prisma';
 
 import ws from 'ws';
-import { PrismaClient } from '@/generated/prisma/client';
+import { PrismaClient } from '@/generated/prisma';
 import { neonConfig } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
 
@@ -21,12 +21,28 @@ const createPrismaClient = () => {
     throw new Error('DATABASE_URL or DIRECT_URL environment variable is not defined.');
   }
 
-  const adapter = new PrismaNeon({ connectionString });
+  const adapter = new PrismaNeon(
+    {
+      connectionString,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 15000,
+    },
+    {
+      onPoolError: (err) => {
+        console.warn('[PrismaNeon Pool Warning]:', err.message);
+      },
+      onConnectionError: (err) => {
+        console.warn('[PrismaNeon Connection Warning]:', err.message);
+      },
+    }
+  );
   return new PrismaClient({ adapter });
 };
 
 export const prisma: PrismaClient =
-  globalForPrisma.prisma ?? createPrismaClient();
+  (globalForPrisma.prisma && 'notification' in globalForPrisma.prisma)
+    ? globalForPrisma.prisma
+    : createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;

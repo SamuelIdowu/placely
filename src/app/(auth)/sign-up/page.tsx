@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 export default function SignUpPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Join Placely</h1>
-      <p className="text-sm text-gray-500 mb-6">
+      <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900 mb-1">Join Placely</h1>
+      <p className="text-xs text-slate-500 mb-5">
         Create your account to find or post SIWES placements
       </p>
       <SignUpForm />
-      <p className="mt-6 text-center text-sm text-gray-500">
+      <p className="mt-5 text-center text-xs text-slate-500">
         Already have an account?{' '}
-        <a href="/sign-in" className="text-blue-600 font-medium hover:underline">
+        <a href="/sign-in" className="text-brand-indigo font-bold hover:underline">
           Sign in
         </a>
       </p>

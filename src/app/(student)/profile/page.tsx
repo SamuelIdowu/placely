@@ -24,7 +24,7 @@ export default async function StudentProfilePage() {
   }
 
   return (
-    <main className="container max-w-5xl py-8 px-4 sm:px-6">
+    <div className="w-full">
       <StudentProfileForm
         initialData={
           profileObj
@@ -43,6 +43,6 @@ export default async function StudentProfilePage() {
             : undefined
         }
       />
-    </main>
+    </div>
   );
 }

@@ -7,6 +7,8 @@ export type UserRole = 'STUDENT' | 'EMPLOYER' | 'ADMIN';
 export interface UserProps {
   id: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   role: UserRole;
   emailVerified?: Date;
   createdAt: Date;
@@ -22,6 +24,8 @@ export class User {
 
   get id() { return this.props.id; }
   get email() { return this.props.email; }
+  get firstName() { return this.props.firstName; }
+  get lastName() { return this.props.lastName; }
   get role() { return this.props.role; }
   get emailVerified() { return this.props.emailVerified; }
   get isEmailVerified() { return !!this.props.emailVerified; }

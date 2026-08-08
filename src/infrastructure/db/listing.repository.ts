@@ -27,117 +27,19 @@ interface ListingDbRow {
 
 export class PrismaListingRepository implements IListingRepository {
   async findById(id: string): Promise<Listing | null> {
-    const row = await prisma.listing.findUnique({ where: { id } });
-    return row ? this.toDomain(row) : null;
+    try {
+      const row = await prisma.listing.findUnique({ where: { id } });
+      return row ? this.toDomain(row) : null;
+    } catch (err) {
+      console.error(`[PrismaListingRepository] findById(${id}) error:`, err);
+      return null;
+    }
   }
 
   async findDetailsById(id: string): Promise<ListingWithEmployer | null> {
-    const row = await prisma.listing.findUnique({
-      where: { id },
-      include: {
-        employerProfile: {
-          select: {
-            companyName: true,
-            logoUrl: true,
-            verificationStatus: true,
-          },
-        },
-        _count: {
-          select: { applications: true },
-        },
-      },
-    });
-
-    if (!row) return null;
-
-    return {
-      id: row.id,
-      employerProfileId: row.employerProfileId,
-      companyName: row.employerProfile.companyName,
-      companyLogoUrl: row.employerProfile.logoUrl,
-      companyVerificationStatus: row.employerProfile.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED',
-      title: row.title,
-      description: row.description,
-      disciplines: row.disciplines,
-      location: row.location,
-      isRemote: row.isRemote,
-      status: row.status as ListingStatus,
-      isModerated: row.isModerated,
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-      applicantCount: row._count.applications,
-    };
-  }
-
-  async findByEmployerProfileId(employerProfileId: string): Promise<Listing[]> {
-    const rows = await prisma.listing.findMany({
-      where: { employerProfileId },
-      orderBy: { createdAt: 'desc' },
-    });
-    return rows.map((r) => this.toDomain(r));
-  }
-
-  async findByEmployer(employerProfileId: string): Promise<EmployerListingItem[]> {
-    const rows = await prisma.listing.findMany({
-      where: { employerProfileId },
-      include: {
-        _count: {
-          select: { applications: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return rows.map((r) => ({
-      listing: this.toDomain(r),
-      applicantCount: r._count.applications,
-    }));
-  }
-
-  async findPublic(filters: ListingFilterInput): Promise<PublicListingsResult> {
-    const page = filters.page || 1;
-    const pageSize = filters.pageSize || 10;
-    const skip = (page - 1) * pageSize;
-
-    const whereClause: {
-      status?: 'OPEN' | 'CLOSED';
-      isModerated?: boolean;
-      disciplines?: { has: string };
-      location?: { contains: string; mode: 'insensitive' };
-      isRemote?: boolean;
-      OR?: Array<{ title?: { contains: string; mode: 'insensitive' }; description?: { contains: string; mode: 'insensitive' } }>;
-    } = {
-      status: 'OPEN',
-      isModerated: false,
-    };
-
-    if (filters.discipline) {
-      whereClause.disciplines = {
-        has: filters.discipline,
-      };
-    }
-
-    if (filters.location) {
-      whereClause.location = {
-        contains: filters.location,
-        mode: 'insensitive',
-      };
-    }
-
-    if (filters.isRemote !== undefined) {
-      whereClause.isRemote = filters.isRemote;
-    }
-
-    if (filters.keyword) {
-      whereClause.OR = [
-        { title: { contains: filters.keyword, mode: 'insensitive' } },
-        { description: { contains: filters.keyword, mode: 'insensitive' } },
-      ];
-    }
-
-    const [rows, total] = await Promise.all([
-      prisma.listing.findMany({
-        where: whereClause,
+    try {
+      const row = await prisma.listing.findUnique({
+        where: { id },
         include: {
           employerProfile: {
             select: {
@@ -150,32 +52,155 @@ export class PrismaListingRepository implements IListingRepository {
             select: { applications: true },
           },
         },
+      });
+
+      if (!row) return null;
+
+      return {
+        id: row.id,
+        employerProfileId: row.employerProfileId,
+        companyName: row.employerProfile?.companyName ?? 'Verified Employer',
+        companyLogoUrl: row.employerProfile?.logoUrl ?? null,
+        companyVerificationStatus: (row.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
+        title: row.title,
+        description: row.description,
+        disciplines: row.disciplines,
+        location: row.location,
+        isRemote: row.isRemote,
+        status: row.status as ListingStatus,
+        isModerated: row.isModerated,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        applicantCount: row._count?.applications ?? 0,
+      };
+    } catch (err) {
+      console.error(`[PrismaListingRepository] findDetailsById(${id}) error:`, err);
+      return null;
+    }
+  }
+
+  async findByEmployerProfileId(employerProfileId: string): Promise<Listing[]> {
+    try {
+      const rows = await prisma.listing.findMany({
+        where: { employerProfileId },
         orderBy: { createdAt: 'desc' },
-        skip,
-        take: pageSize,
-      }),
-      prisma.listing.count({ where: whereClause }),
-    ]);
+      });
+      return rows.map((r) => this.toDomain(r));
+    } catch (err) {
+      console.error(`[PrismaListingRepository] findByEmployerProfileId(${employerProfileId}) error:`, err);
+      return [];
+    }
+  }
 
-    const listings: ListingWithEmployer[] = rows.map((r) => ({
-      id: r.id,
-      employerProfileId: r.employerProfileId,
-      companyName: r.employerProfile.companyName,
-      companyLogoUrl: r.employerProfile.logoUrl,
-      companyVerificationStatus: r.employerProfile.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED',
-      title: r.title,
-      description: r.description,
-      disciplines: r.disciplines,
-      location: r.location,
-      isRemote: r.isRemote,
-      status: r.status as ListingStatus,
-      isModerated: r.isModerated,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-      applicantCount: r._count.applications,
-    }));
+  async findByEmployer(employerProfileId: string): Promise<EmployerListingItem[]> {
+    try {
+      const rows = await prisma.listing.findMany({
+        where: { employerProfileId },
+        include: {
+          _count: {
+            select: { applications: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
 
-    return { listings, total };
+      return rows.map((r) => ({
+        listing: this.toDomain(r),
+        applicantCount: r._count?.applications ?? 0,
+      }));
+    } catch (err) {
+      console.error(`[PrismaListingRepository] findByEmployer(${employerProfileId}) error:`, err);
+      return [];
+    }
+  }
+
+  async findPublic(filters: ListingFilterInput): Promise<PublicListingsResult> {
+    try {
+      const page = filters.page || 1;
+      const pageSize = filters.pageSize || 10;
+      const skip = (page - 1) * pageSize;
+
+      const whereClause: {
+        status?: 'OPEN' | 'CLOSED';
+        isModerated?: boolean;
+        disciplines?: { has: string };
+        location?: { contains: string; mode: 'insensitive' };
+        isRemote?: boolean;
+        OR?: Array<{ title?: { contains: string; mode: 'insensitive' }; description?: { contains: string; mode: 'insensitive' } }>;
+      } = {
+        status: 'OPEN',
+        isModerated: false,
+      };
+
+      if (filters.discipline) {
+        whereClause.disciplines = {
+          has: filters.discipline,
+        };
+      }
+
+      if (filters.location) {
+        whereClause.location = {
+          contains: filters.location,
+          mode: 'insensitive',
+        };
+      }
+
+      if (filters.isRemote !== undefined) {
+        whereClause.isRemote = filters.isRemote;
+      }
+
+      if (filters.keyword) {
+        whereClause.OR = [
+          { title: { contains: filters.keyword, mode: 'insensitive' } },
+          { description: { contains: filters.keyword, mode: 'insensitive' } },
+        ];
+      }
+
+      const [rows, total] = await Promise.all([
+        prisma.listing.findMany({
+          where: whereClause,
+          include: {
+            employerProfile: {
+              select: {
+                companyName: true,
+                logoUrl: true,
+                verificationStatus: true,
+              },
+            },
+            _count: {
+              select: { applications: true },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: pageSize,
+        }),
+        prisma.listing.count({ where: whereClause }),
+      ]);
+
+      const listings: ListingWithEmployer[] = rows.map((r) => ({
+        id: r.id,
+        employerProfileId: r.employerProfileId,
+        companyName: r.employerProfile?.companyName ?? 'Verified Employer',
+        companyLogoUrl: r.employerProfile?.logoUrl ?? null,
+        companyVerificationStatus: (r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
+        title: r.title,
+        description: r.description,
+        disciplines: r.disciplines,
+        location: r.location,
+        isRemote: r.isRemote,
+        status: r.status as ListingStatus,
+        isModerated: r.isModerated,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+        applicantCount: r._count?.applications ?? 0,
+      }));
+
+      return { listings, total };
+    } catch (err) {
+      console.error('[PrismaListingRepository] findPublic error:', err);
+      return { listings: [], total: 0 };
+    }
   }
 
   async create(data: Partial<ListingProps> & { employerProfileId: string; title: string; description: string; disciplines: string[]; location: string }): Promise<Listing> {
@@ -249,48 +274,53 @@ export class PrismaListingRepository implements IListingRepository {
   }
 
   async findAllForAdmin(filters?: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' }): Promise<ListingWithEmployer[]> {
-    const whereClause: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' } = {};
-    if (filters?.isModerated !== undefined) {
-      whereClause.isModerated = filters.isModerated;
-    }
-    if (filters?.status) {
-      whereClause.status = filters.status;
-    }
+    try {
+      const whereClause: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' } = {};
+      if (filters?.isModerated !== undefined) {
+        whereClause.isModerated = filters.isModerated;
+      }
+      if (filters?.status) {
+        whereClause.status = filters.status;
+      }
 
-    const rows = await prisma.listing.findMany({
-      where: whereClause,
-      include: {
-        employerProfile: {
-          select: {
-            companyName: true,
-            logoUrl: true,
-            verificationStatus: true,
+      const rows = await prisma.listing.findMany({
+        where: whereClause,
+        include: {
+          employerProfile: {
+            select: {
+              companyName: true,
+              logoUrl: true,
+              verificationStatus: true,
+            },
+          },
+          _count: {
+            select: { applications: true },
           },
         },
-        _count: {
-          select: { applications: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+        orderBy: { createdAt: 'desc' },
+      });
 
-    return rows.map((r) => ({
-      id: r.id,
-      employerProfileId: r.employerProfileId,
-      companyName: r.employerProfile.companyName,
-      companyLogoUrl: r.employerProfile.logoUrl,
-      companyVerificationStatus: r.employerProfile.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED',
-      title: r.title,
-      description: r.description,
-      disciplines: r.disciplines,
-      location: r.location,
-      isRemote: r.isRemote,
-      status: r.status as ListingStatus,
-      isModerated: r.isModerated,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-      applicantCount: r._count.applications,
-    }));
+      return rows.map((r) => ({
+        id: r.id,
+        employerProfileId: r.employerProfileId,
+        companyName: r.employerProfile?.companyName ?? 'Verified Employer',
+        companyLogoUrl: r.employerProfile?.logoUrl ?? null,
+        companyVerificationStatus: (r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
+        title: r.title,
+        description: r.description,
+        disciplines: r.disciplines,
+        location: r.location,
+        isRemote: r.isRemote,
+        status: r.status as ListingStatus,
+        isModerated: r.isModerated,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+        applicantCount: r._count?.applications ?? 0,
+      }));
+    } catch (err) {
+      console.error('[PrismaListingRepository] findAllForAdmin error:', err);
+      return [];
+    }
   }
 
   async moderate(id: string, isModerated: boolean): Promise<Listing> {

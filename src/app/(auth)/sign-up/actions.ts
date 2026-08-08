@@ -9,6 +9,8 @@ export async function signUpAction(formData: FormData) {
   const role = (formData.get('role') as string)?.trim();
   const email = (formData.get('email') as string)?.trim();
   const password = formData.get('password') as string;
+  const firstName = (formData.get('firstName') as string)?.trim() || undefined;
+  const lastName = (formData.get('lastName') as string)?.trim() || undefined;
 
   if (role === 'STUDENT') {
     const university = (formData.get('university') as string)?.trim();
@@ -68,6 +70,8 @@ export async function signUpAction(formData: FormData) {
     const user = await prisma.user.create({
       data: {
         email,
+        firstName,
+        lastName,
         passwordHash,
         role: role as 'STUDENT' | 'EMPLOYER',
       },

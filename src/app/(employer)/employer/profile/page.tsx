@@ -30,7 +30,7 @@ export default async function EmployerProfilePage() {
   }
 
   return (
-    <main className="container max-w-5xl py-8 px-4 sm:px-6">
+    <div className="max-w-5xl mx-auto">
       <EmployerProfileForm
         initialData={
           profileObj
@@ -47,6 +47,6 @@ export default async function EmployerProfilePage() {
             : undefined
         }
       />
-    </main>
+    </div>
   );
 }

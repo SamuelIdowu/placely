@@ -2,18 +2,25 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CircularProgress } from '@/components/ui/circular-progress';
 import { Dropzone } from '@/components/shared/Dropzone';
 import { PendingVerificationBanner } from '@/components/shared/PendingVerificationBanner';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { saveStudentProfile, uploadStudentDocument } from './actions';
 import type { VerificationStatus } from '@/domain/value-objects/verification-status';
 import { getNigerianUniversities, NUC_ENGINEERING_COURSES } from '@/domain/value-objects/academic';
+import {
+  GraduationCap,
+  FileText,
+  ShieldCheck,
+  Globe,
+  Link2,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
+  Save,
+  ArrowRight,
+} from 'lucide-react';
 
 interface StudentProfileFormProps {
   initialData?: {
@@ -66,8 +73,6 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
     bio: initialData?.bio ?? '',
   });
 
-
-
   const completeness = initialData?.profileCompleteness ?? 0;
   const status = initialData?.verificationStatus ?? 'PENDING';
 
@@ -90,250 +95,380 @@ export function StudentProfileForm({ initialData }: StudentProfileFormProps) {
     }
 
     if (!finalDisc) {
-      setMessage({ type: 'error', text: 'Please select or specify your Engineering Discipline / Course.' });
+      setMessage({ type: 'error', text: 'Please select or specify your Engineering Discipline.' });
       setIsSaving(false);
       return;
     }
 
     const parsedCgpa = formData.cgpa ? parseFloat(formData.cgpa) : undefined;
 
-    const res = await saveStudentProfile({
-      university: finalUni,
-      discipline: finalDisc,
-      cgpa: parsedCgpa,
-      resumeUrl: formData.resumeUrl,
-      linkedinUrl: formData.linkedinUrl,
-      portfolioUrl: formData.portfolioUrl,
-      bio: formData.bio,
-    });
+    try {
+      const res = await saveStudentProfile({
+        university: finalUni,
+        discipline: finalDisc,
+        cgpa: parsedCgpa,
+        linkedinUrl: formData.linkedinUrl || undefined,
+        portfolioUrl: formData.portfolioUrl || undefined,
+        bio: formData.bio || undefined,
+      });
 
-    setIsSaving(false);
-    if (res.success) {
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      router.refresh();
-    } else {
-      setMessage({ type: 'error', text: res.error ?? 'Failed to update profile' });
+      if (res.success) {
+        setMessage({ type: 'success', text: 'Profile updated successfully!' });
+        router.refresh();
+      } else {
+        setMessage({ type: 'error', text: res.error || 'Failed to save profile.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'An unexpected error occurred while saving.' });
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleFileUpload = async (file: File, type: 'RESUME' | 'SCHOOL_ID') => {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('type', type);
-
-    const res = await uploadStudentDocument(fd);
-    if (res.success && res.url) {
-      if (type === 'RESUME') {
-        setFormData((prev) => ({ ...prev, resumeUrl: res.url }));
+  const handleIdUpload = async (file: File) => {
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('type', 'SCHOOL_ID');
+      const res = await uploadStudentDocument(fd);
+      if (res.success) {
+        setMessage({ type: 'success', text: 'School ID uploaded for verification!' });
+        router.refresh();
+      } else {
+        setMessage({ type: 'error', text: res.error || 'Failed to submit document.' });
       }
-      setMessage({ type: 'success', text: `${type === 'RESUME' ? 'Resume' : 'School ID'} uploaded successfully!` });
-      router.refresh();
-    } else {
-      throw new Error(res.error ?? 'Failed to upload document');
+    } catch {
+      setMessage({ type: 'error', text: 'Error uploading verification document.' });
+    }
+  };
+
+  const handleResumeUpload = async (file: File) => {
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('type', 'RESUME');
+      const res = await uploadStudentDocument(fd);
+      if (res.success && res.url) {
+        setFormData((prev) => ({ ...prev, resumeUrl: res.url }));
+        setMessage({ type: 'success', text: 'Resume PDF uploaded and attached to profile!' });
+        router.refresh();
+      } else {
+        setMessage({ type: 'error', text: res.error || 'Error uploading resume.' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error attaching resume.' });
     }
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header with Verification Status */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold tracking-tight">Student Profile Setup</h1>
-            {status === 'VERIFIED' && <VerificationBadge size="md" showLabel />}
+    <div className="space-y-5">
+      {/* ── Top Header Bento Band ── */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 relative overflow-hidden">
+        {/* Ambient subtle dot background */}
+        <div
+          className="absolute inset-0 opacity-5 pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+
+        <div className="space-y-1 relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Academic Credentials
+            </span>
+            <VerificationBadge status={status} size="sm" showLabel />
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Complete your academic details and upload documents to get verified for SIWES placements.
+          <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
+            Student Profile & SIWES Verification
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
+            Keep your academic records, technical portfolio, and school ID up to date to qualify for direct placement applications.
           </p>
+        </div>
+
+        {/* Circular Completeness Indicator */}
+        <div className="flex items-center gap-3.5 bg-slate-50 border border-slate-200/80 p-3 sm:p-3.5 rounded-xl shrink-0 relative z-10">
+          <CircularProgress
+            value={completeness}
+            showValue={false}
+            size={60}
+            strokeWidth={5}
+            progressColor="text-brand-indigo"
+            trackColor="text-muted"
+          />
+          <div className="space-y-0.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Profile Score
+            </span>
+            <span className="text-sm font-bold text-slate-900 block">
+              {completeness}% Complete
+            </span>
+            <span className="text-[11px] text-emerald-600 font-semibold block">
+              {completeness >= 50 ? 'Ready to Apply' : '50% Threshold Needed'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Verification Status Banner */}
-      <PendingVerificationBanner status={status} adminNote={initialData?.adminNote} />
-
-      {/* Completeness Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-base font-semibold">Profile Completeness</CardTitle>
-            <span className="text-sm font-bold text-primary">{completeness}%</span>
-          </div>
-          <CardDescription>A completed profile improves your visibility to employers.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Progress value={completeness} className="h-2" />
-        </CardContent>
-      </Card>
+      {/* Verification status feedback */}
+      <PendingVerificationBanner
+        status={status}
+        adminNote={initialData?.adminNote}
+      />
 
       {message && (
         <div
-          className={`p-3 rounded text-sm ${
+          className={`p-3.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
             message.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
           }`}
         >
-          {message.text}
+          {message.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          )}
+          <span>{message.text}</span>
         </div>
       )}
 
-      {/* Multi-section Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Section 1: Academic Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">1. Academic Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="university">University / Institution *</Label>
+      {/* ── Main 2-Column Form Layout ── */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 items-start">
+        {/* Left Column (2 Cols): Academic Rigor & Portfolio Details */}
+        <div className="lg:col-span-2 space-y-5">
+          {/* Section 1: Academic Institution & Discipline */}
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
+              <GraduationCap className="w-4.5 h-4.5 text-brand-indigo" />
+              <div>
+                <h2 className="font-display text-sm font-semibold text-slate-900">
+                  Academic Institution & Course
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Select your university and accredited engineering track.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3.5">
+              {/* University Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Nigerian University / Tertiary Institution *
+                </label>
                 <select
-                  id="university"
                   value={selectedUniversity}
                   onChange={(e) => setSelectedUniversity(e.target.value)}
-                  required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 text-slate-800 font-medium"
                 >
-                  <option value="">Select University / Institution</option>
+                  <option value="">Select your Institution</option>
                   {universities.map((uni) => (
                     <option key={uni} value={uni}>
                       {uni}
                     </option>
                   ))}
-                  <option value="Other">Other / Institution Not Listed</option>
+                  <option value="Other">Other / Polytechnic / Not Listed</option>
                 </select>
-
-                {selectedUniversity === 'Other' && (
-                  <Input
-                    placeholder="Enter institution name"
-                    value={customUniversity}
-                    onChange={(e) => setCustomUniversity(e.target.value)}
-                    required
-                    className="mt-2"
-                  />
-                )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="discipline">Field of Study / Discipline *</Label>
+              {selectedUniversity === 'Other' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Custom Institution Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={customUniversity}
+                    onChange={(e) => setCustomUniversity(e.target.value)}
+                    placeholder="Enter official institution name..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
+                  />
+                </div>
+              )}
+
+              {/* Discipline Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Engineering or Technology Discipline *
+                </label>
                 <select
-                  id="discipline"
                   value={selectedDiscipline}
                   onChange={(e) => setSelectedDiscipline(e.target.value)}
-                  required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 text-slate-800 font-medium"
                 >
-                  <option value="">Select Engineering Course</option>
+                  <option value="">Select your Course / Discipline</option>
                   {NUC_ENGINEERING_COURSES.map((course) => (
                     <option key={course} value={course}>
                       {course}
                     </option>
                   ))}
+                  <option value="Other / Discipline Not Listed">Other / Not Listed</option>
                 </select>
+              </div>
 
-                {selectedDiscipline === 'Other / Discipline Not Listed' && (
-                  <Input
-                    placeholder="Enter engineering course name"
+              {selectedDiscipline === 'Other / Discipline Not Listed' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Custom Course Name *
+                  </label>
+                  <input
+                    type="text"
                     value={customDiscipline}
                     onChange={(e) => setCustomDiscipline(e.target.value)}
-                    required
-                    className="mt-2"
+                    placeholder="e.g. Mechatronics & Automation..."
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
-                )}
-              </div>
-            </div>
+                </div>
+              )}
 
-            <div className="space-y-2 max-w-xs">
-              <Label htmlFor="cgpa">Current CGPA (out of 5.0)</Label>
-              <Input
-                id="cgpa"
-                type="number"
-                step="0.01"
-                min="0"
-                max="5"
-                placeholder="e.g. 4.25"
-                value={formData.cgpa}
-                onChange={(e) => handleInputChange('cgpa', e.target.value)}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Section 2: Links & Bio */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">2. Links & Overview</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="linkedinUrl">LinkedIn Profile URL</Label>
-                <Input
-                  id="linkedinUrl"
-                  type="url"
-                  placeholder="https://linkedin.com/in/username"
-                  value={formData.linkedinUrl}
-                  onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="portfolioUrl">Portfolio / GitHub URL</Label>
-                <Input
-                  id="portfolioUrl"
-                  type="url"
-                  placeholder="https://github.com/username"
-                  value={formData.portfolioUrl}
-                  onChange={(e) => handleInputChange('portfolioUrl', e.target.value)}
+              {/* Cumulative GPA */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700">
+                    Cumulative GPA (out of 5.0)
+                  </label>
+                  <span className="text-[11px] text-slate-400">Optional / Verified</span>
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="1.0"
+                  max="5.0"
+                  value={formData.cgpa}
+                  onChange={(e) => handleInputChange('cgpa', e.target.value)}
+                  placeholder="e.g. 4.25"
+                  className="w-full sm:w-48 px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                 />
               </div>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio & Career Objectives</Label>
-              <Textarea
-                id="bio"
-                rows={4}
-                placeholder="Share your interests, key skills, and goals for your SIWES placement..."
-                value={formData.bio}
-                onChange={(e) => handleInputChange('bio', e.target.value)}
-              />
+          {/* Section 2: Technical Bio & Portfolio Links */}
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
+              <Globe className="w-4.5 h-4.5 text-brand-indigo" />
+              <div>
+                <h2 className="font-display text-sm font-semibold text-slate-900">
+                  Portfolio & Technical Competencies
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Showcase projects, GitHub repos, CAD portfolios, and technical interests.
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Section 3: Verification & Resume Documents */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">3. Document Uploads</CardTitle>
-            <CardDescription>
-              Upload your School ID to verify your student status, and your CV / Resume for applications.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+            <div className="space-y-3.5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Technical Bio & Placement Objectives
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
+                  placeholder="Summarize your engineering interests, hands-on lab work, CAD/programming experience, and what you aim to achieve during your SIWES attachment..."
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50 leading-relaxed"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Link2 className="w-3.5 h-3.5 text-blue-600" /> LinkedIn Profile
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.linkedinUrl}
+                    onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
+                    placeholder="https://linkedin.com/in/username"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-brand-indigo" /> GitHub / Portfolio URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.portfolioUrl}
+                    onChange={(e) => handleInputChange('portfolioUrl', e.target.value)}
+                    placeholder="https://github.com/username or portfolio"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {isSaving ? 'Saving Changes...' : 'Save Profile Details'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (1 Col): Document Uploads & ID Verification */}
+        <div className="lg:col-span-1 space-y-5">
+          {/* School ID Card Verification */}
+          <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <h3 className="font-display text-xs font-semibold text-slate-900">
+                School ID Verification
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Upload your official University School ID card or signed Admission Letter to receive the verified student badge.
+            </p>
+
             <Dropzone
-              label="School ID Card (Required for Verification)"
-              description="Upload your valid Student ID card (PDF, PNG, JPG up to 5MB)"
-              accept=".pdf,.png,.jpg,.jpeg,.webp"
-              onUpload={(file) => handleFileUpload(file, 'SCHOOL_ID')}
+              onUpload={handleIdUpload}
+              accept="image/*,application/pdf"
+              label="Upload Student ID (JPG, PNG, PDF)"
             />
+          </div>
 
-            <Dropzone
-              label="CV / Resume"
-              description="Upload your latest CV/Resume for employers (PDF up to 5MB)"
-              accept=".pdf,.png,.jpg,.jpeg,.webp"
-              existingUrl={formData.resumeUrl}
-              onUpload={(file) => handleFileUpload(file, 'RESUME')}
-            />
-          </CardContent>
-        </Card>
+          {/* Resume / CV PDF */}
+          <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <FileText className="w-4 h-4 text-brand-indigo" />
+              <h3 className="font-display text-xs font-semibold text-slate-900">
+                Engineering Resume (PDF)
+              </h3>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Attach your updated resume or coursework portfolio for 1-click SIWES applications.
+            </p>
 
-        {/* Submit */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isSaving} className="min-w-[140px]">
-            {isSaving ? 'Saving...' : 'Save Profile'}
-          </Button>
+            {formData.resumeUrl ? (
+              <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100 flex items-center justify-between text-xs">
+                <span className="font-semibold text-indigo-900 truncate">Resume Attached ✅</span>
+                <a
+                  href={formData.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-brand-indigo hover:underline shrink-0"
+                >
+                  View PDF ↗
+                </a>
+              </div>
+            ) : (
+              <Dropzone
+                onUpload={handleResumeUpload}
+                accept="application/pdf"
+                label="Upload Resume (PDF up to 5MB)"
+              />
+            )}
+          </div>
         </div>
       </form>
     </div>

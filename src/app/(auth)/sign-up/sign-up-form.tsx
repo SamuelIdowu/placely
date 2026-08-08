@@ -105,28 +105,29 @@ export function SignUpForm() {
         </button>
       </div>
 
+      <div className="flex gap-4 mb-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700">First Name</label>
+          <input
+            name="firstName"
+            type="text"
+            required
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700">Last Name</label>
+          <input
+            name="lastName"
+            type="text"
+            required
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
+      </div>
+
       {role === 'STUDENT' ? (
         <>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">First Name</label>
-              <input
-                name="firstName"
-                type="text"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">Last Name</label>
-              <input
-                name="lastName"
-                type="text"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-              />
-            </div>
-          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">University / Institution</label>

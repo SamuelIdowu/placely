@@ -20,6 +20,8 @@ datasource db {
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
+  firstName     String?
+  lastName      String?
   passwordHash  String?                        // credentials auth; null = OAuth only
   role          Role     @default(STUDENT)
   emailVerified DateTime?
@@ -29,6 +31,7 @@ model User {
   student      StudentProfile?
   employer     EmployerProfile?
   sentMessages Message[]
+  notifications Notification[]
 
   @@map("users")
 }
@@ -61,6 +64,7 @@ model StudentProfile {
   verificationRequest VerificationRequest?
 
   applications        Application[]
+  savedListings       SavedListing[]
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
 
@@ -140,6 +144,7 @@ model Listing {
   isModerated       Boolean         @default(false) // admin flag
 
   applications      Application[]
+  savedBy           SavedListing[]
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -174,6 +179,47 @@ enum ApplicationStatus {
   OFFERED
   ACCEPTED
   DECLINED
+}
+
+// ──────────────────────────────────────────────
+// SAVED LISTINGS CONTEXT
+// ──────────────────────────────────────────────
+
+model SavedListing {
+  id               String         @id @default(cuid())
+  studentProfileId String
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  listingId        String
+  listing          Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+
+  @@unique([studentProfileId, listingId])
+  @@map("saved_listings")
+}
+
+// ──────────────────────────────────────────────
+// NOTIFICATION CONTEXT
+// ──────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType
+  linkUrl   String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  APPLICATION_STATUS
+  NEW_MESSAGE
+  VERIFICATION_UPDATE
+  LISTING_ALERT
 }
 
 // ──────────────────────────────────────────────
