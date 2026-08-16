@@ -34,4 +34,15 @@ export interface EmailServicePort {
     messagePreview: string;
     applicationUrl: string;
   }): Promise<void>;
+
+  sendSiwesOutreachEmail(params: {
+    to: string;
+    companyName: string;
+    studentName: string;
+    university: string;
+    discipline: string;
+    letterHtml: string;
+    claimUrl: string;
+  }): Promise<void>;
 }
+

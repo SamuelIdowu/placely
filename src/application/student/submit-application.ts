@@ -83,7 +83,7 @@ export class SubmitApplicationUseCase {
 
     // Notify employer if profiles are resolvable
     try {
-      if (this.employerProfileRepo) {
+      if (this.employerProfileRepo && listing.employerProfileId) {
         const employer = await this.employerProfileRepo.findById(listing.employerProfileId);
         if (employer) {
           const appUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://placely.ng'}/employer/listings/${listing.id}/applicants`;

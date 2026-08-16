@@ -7,13 +7,18 @@ import type {
   ListingWithEmployer,
   EmployerListingItem,
 } from '@/domain/ports/IListingRepository';
-import { Listing, type ListingStatus, type ListingProps } from '@/domain/entities/listing';
+import { Listing, type ListingStatus, type ListingSourceType, type ListingProps } from '@/domain/entities/listing';
 import type { ListingFilterInput } from '@/domain/value-objects/listing';
 import { createId } from '@paralleldrive/cuid2';
 
 interface ListingDbRow {
   id: string;
-  employerProfileId: string;
+  employerProfileId: string | null;
+  sourceType: string;
+  externalUrl: string | null;
+  contactEmail: string | null;
+  externalCompany: string | null;
+  externalLogoUrl: string | null;
   title: string;
   description: string;
   disciplines: string[];
@@ -29,7 +34,7 @@ export class PrismaListingRepository implements IListingRepository {
   async findById(id: string): Promise<Listing | null> {
     try {
       const row = await prisma.listing.findUnique({ where: { id } });
-      return row ? this.toDomain(row) : null;
+      return row ? this.toDomain(row as unknown as ListingDbRow) : null;
     } catch (err) {
       console.error(`[PrismaListingRepository] findById(${id}) error:`, err);
       return null;
@@ -56,12 +61,28 @@ export class PrismaListingRepository implements IListingRepository {
 
       if (!row) return null;
 
+      const isExternal = row.sourceType === 'CURATED_EXTERNAL';
+      const companyName = isExternal
+        ? (row.externalCompany ?? 'Industry Partner')
+        : (row.employerProfile?.companyName ?? 'Verified Employer');
+      const companyLogoUrl = isExternal
+        ? row.externalLogoUrl
+        : (row.employerProfile?.logoUrl ?? null);
+      const companyVerificationStatus = isExternal
+        ? 'VERIFIED'
+        : ((row.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED');
+
       return {
         id: row.id,
         employerProfileId: row.employerProfileId,
-        companyName: row.employerProfile?.companyName ?? 'Verified Employer',
-        companyLogoUrl: row.employerProfile?.logoUrl ?? null,
-        companyVerificationStatus: (row.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
+        sourceType: row.sourceType as ListingSourceType,
+        externalUrl: row.externalUrl,
+        contactEmail: row.contactEmail,
+        externalCompany: row.externalCompany,
+        externalLogoUrl: row.externalLogoUrl,
+        companyName,
+        companyLogoUrl,
+        companyVerificationStatus,
         title: row.title,
         description: row.description,
         disciplines: row.disciplines,
@@ -85,7 +106,7 @@ export class PrismaListingRepository implements IListingRepository {
         where: { employerProfileId },
         orderBy: { createdAt: 'desc' },
       });
-      return rows.map((r) => this.toDomain(r));
+      return rows.map((r) => this.toDomain(r as unknown as ListingDbRow));
     } catch (err) {
       console.error(`[PrismaListingRepository] findByEmployerProfileId(${employerProfileId}) error:`, err);
       return [];
@@ -105,7 +126,7 @@ export class PrismaListingRepository implements IListingRepository {
       });
 
       return rows.map((r) => ({
-        listing: this.toDomain(r),
+        listing: this.toDomain(r as unknown as ListingDbRow),
         applicantCount: r._count?.applications ?? 0,
       }));
     } catch (err) {
@@ -116,21 +137,30 @@ export class PrismaListingRepository implements IListingRepository {
 
   async findPublic(filters: ListingFilterInput): Promise<PublicListingsResult> {
     try {
-      const page = filters.page || 1;
-      const pageSize = filters.pageSize || 10;
+      const page = Number(filters.page) || 1;
+      const pageSize = Number(filters.pageSize) || 10;
       const skip = (page - 1) * pageSize;
 
       const whereClause: {
         status?: 'OPEN' | 'CLOSED';
         isModerated?: boolean;
+        sourceType?: 'NATIVE' | 'CURATED_EXTERNAL';
         disciplines?: { has: string };
         location?: { contains: string; mode: 'insensitive' };
         isRemote?: boolean;
-        OR?: Array<{ title?: { contains: string; mode: 'insensitive' }; description?: { contains: string; mode: 'insensitive' } }>;
+        OR?: Array<{
+          title?: { contains: string; mode: 'insensitive' };
+          description?: { contains: string; mode: 'insensitive' };
+          externalCompany?: { contains: string; mode: 'insensitive' };
+        }>;
       } = {
         status: 'OPEN',
         isModerated: false,
       };
+
+      if (filters.sourceType && filters.sourceType !== 'ALL') {
+        whereClause.sourceType = filters.sourceType as 'NATIVE' | 'CURATED_EXTERNAL';
+      }
 
       if (filters.discipline) {
         whereClause.disciplines = {
@@ -153,6 +183,7 @@ export class PrismaListingRepository implements IListingRepository {
         whereClause.OR = [
           { title: { contains: filters.keyword, mode: 'insensitive' } },
           { description: { contains: filters.keyword, mode: 'insensitive' } },
+          { externalCompany: { contains: filters.keyword, mode: 'insensitive' } },
         ];
       }
 
@@ -178,23 +209,41 @@ export class PrismaListingRepository implements IListingRepository {
         prisma.listing.count({ where: whereClause }),
       ]);
 
-      const listings: ListingWithEmployer[] = rows.map((r) => ({
-        id: r.id,
-        employerProfileId: r.employerProfileId,
-        companyName: r.employerProfile?.companyName ?? 'Verified Employer',
-        companyLogoUrl: r.employerProfile?.logoUrl ?? null,
-        companyVerificationStatus: (r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
-        title: r.title,
-        description: r.description,
-        disciplines: r.disciplines,
-        location: r.location,
-        isRemote: r.isRemote,
-        status: r.status as ListingStatus,
-        isModerated: r.isModerated,
-        createdAt: r.createdAt,
-        updatedAt: r.updatedAt,
-        applicantCount: r._count?.applications ?? 0,
-      }));
+      const listings: ListingWithEmployer[] = rows.map((r) => {
+        const isExternal = r.sourceType === 'CURATED_EXTERNAL';
+        const companyName = isExternal
+          ? (r.externalCompany ?? 'Industry Partner')
+          : (r.employerProfile?.companyName ?? 'Verified Employer');
+        const companyLogoUrl = isExternal
+          ? r.externalLogoUrl
+          : (r.employerProfile?.logoUrl ?? null);
+        const companyVerificationStatus = isExternal
+          ? 'VERIFIED'
+          : ((r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED');
+
+        return {
+          id: r.id,
+          employerProfileId: r.employerProfileId,
+          sourceType: r.sourceType as ListingSourceType,
+          externalUrl: r.externalUrl,
+          contactEmail: r.contactEmail,
+          externalCompany: r.externalCompany,
+          externalLogoUrl: r.externalLogoUrl,
+          companyName,
+          companyLogoUrl,
+          companyVerificationStatus,
+          title: r.title,
+          description: r.description,
+          disciplines: r.disciplines,
+          location: r.location,
+          isRemote: r.isRemote,
+          status: r.status as ListingStatus,
+          isModerated: r.isModerated,
+          createdAt: r.createdAt,
+          updatedAt: r.updatedAt,
+          applicantCount: r._count?.applications ?? 0,
+        };
+      });
 
       return { listings, total };
     } catch (err) {
@@ -203,12 +252,17 @@ export class PrismaListingRepository implements IListingRepository {
     }
   }
 
-  async create(data: Partial<ListingProps> & { employerProfileId: string; title: string; description: string; disciplines: string[]; location: string }): Promise<Listing> {
+  async create(data: Partial<ListingProps> & { employerProfileId?: string | null; title: string; description: string; disciplines: string[]; location: string }): Promise<Listing> {
     const id = data.id || createId();
     const row = await prisma.listing.create({
       data: {
         id,
-        employerProfileId: data.employerProfileId,
+        employerProfileId: data.employerProfileId ?? null,
+        sourceType: (data.sourceType ?? 'NATIVE') as 'NATIVE' | 'CURATED_EXTERNAL',
+        externalUrl: data.externalUrl ?? null,
+        contactEmail: data.contactEmail ?? null,
+        externalCompany: data.externalCompany ?? null,
+        externalLogoUrl: data.externalLogoUrl ?? null,
         title: data.title,
         description: data.description,
         disciplines: data.disciplines,
@@ -218,7 +272,7 @@ export class PrismaListingRepository implements IListingRepository {
         isModerated: data.isModerated ?? false,
       },
     });
-    return this.toDomain(row);
+    return this.toDomain(row as unknown as ListingDbRow);
   }
 
   async save(listing: Listing): Promise<Listing> {
@@ -226,7 +280,12 @@ export class PrismaListingRepository implements IListingRepository {
     const row = await prisma.listing.create({
       data: {
         id: data.id,
-        employerProfileId: data.employerProfileId,
+        employerProfileId: data.employerProfileId ?? null,
+        sourceType: (data.sourceType ?? 'NATIVE') as 'NATIVE' | 'CURATED_EXTERNAL',
+        externalUrl: data.externalUrl ?? null,
+        contactEmail: data.contactEmail ?? null,
+        externalCompany: data.externalCompany ?? null,
+        externalLogoUrl: data.externalLogoUrl ?? null,
         title: data.title,
         description: data.description,
         disciplines: data.disciplines,
@@ -236,7 +295,7 @@ export class PrismaListingRepository implements IListingRepository {
         isModerated: data.isModerated,
       },
     });
-    return this.toDomain(row);
+    return this.toDomain(row as unknown as ListingDbRow);
   }
 
   async update(listing: Listing): Promise<Listing> {
@@ -251,10 +310,15 @@ export class PrismaListingRepository implements IListingRepository {
         isRemote: data.isRemote,
         status: data.status,
         isModerated: data.isModerated,
+        sourceType: (data.sourceType ?? 'NATIVE') as 'NATIVE' | 'CURATED_EXTERNAL',
+        externalUrl: data.externalUrl ?? null,
+        contactEmail: data.contactEmail ?? null,
+        externalCompany: data.externalCompany ?? null,
+        externalLogoUrl: data.externalLogoUrl ?? null,
         updatedAt: data.updatedAt,
       },
     });
-    return this.toDomain(row);
+    return this.toDomain(row as unknown as ListingDbRow);
   }
 
   async toggleStatus(id: string): Promise<Listing> {
@@ -273,14 +337,17 @@ export class PrismaListingRepository implements IListingRepository {
     });
   }
 
-  async findAllForAdmin(filters?: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' }): Promise<ListingWithEmployer[]> {
+  async findAllForAdmin(filters?: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED'; sourceType?: ListingSourceType }): Promise<ListingWithEmployer[]> {
     try {
-      const whereClause: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' } = {};
+      const whereClause: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED'; sourceType?: 'NATIVE' | 'CURATED_EXTERNAL' } = {};
       if (filters?.isModerated !== undefined) {
         whereClause.isModerated = filters.isModerated;
       }
       if (filters?.status) {
         whereClause.status = filters.status;
+      }
+      if (filters?.sourceType) {
+        whereClause.sourceType = filters.sourceType as 'NATIVE' | 'CURATED_EXTERNAL';
       }
 
       const rows = await prisma.listing.findMany({
@@ -300,23 +367,41 @@ export class PrismaListingRepository implements IListingRepository {
         orderBy: { createdAt: 'desc' },
       });
 
-      return rows.map((r) => ({
-        id: r.id,
-        employerProfileId: r.employerProfileId,
-        companyName: r.employerProfile?.companyName ?? 'Verified Employer',
-        companyLogoUrl: r.employerProfile?.logoUrl ?? null,
-        companyVerificationStatus: (r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED',
-        title: r.title,
-        description: r.description,
-        disciplines: r.disciplines,
-        location: r.location,
-        isRemote: r.isRemote,
-        status: r.status as ListingStatus,
-        isModerated: r.isModerated,
-        createdAt: r.createdAt,
-        updatedAt: r.updatedAt,
-        applicantCount: r._count?.applications ?? 0,
-      }));
+      return rows.map((r) => {
+        const isExternal = r.sourceType === 'CURATED_EXTERNAL';
+        const companyName = isExternal
+          ? (r.externalCompany ?? 'Industry Partner')
+          : (r.employerProfile?.companyName ?? 'Verified Employer');
+        const companyLogoUrl = isExternal
+          ? r.externalLogoUrl
+          : (r.employerProfile?.logoUrl ?? null);
+        const companyVerificationStatus = isExternal
+          ? 'VERIFIED'
+          : ((r.employerProfile?.verificationStatus as 'PENDING' | 'VERIFIED' | 'REJECTED') ?? 'VERIFIED');
+
+        return {
+          id: r.id,
+          employerProfileId: r.employerProfileId,
+          sourceType: r.sourceType as ListingSourceType,
+          externalUrl: r.externalUrl,
+          contactEmail: r.contactEmail,
+          externalCompany: r.externalCompany,
+          externalLogoUrl: r.externalLogoUrl,
+          companyName,
+          companyLogoUrl,
+          companyVerificationStatus,
+          title: r.title,
+          description: r.description,
+          disciplines: r.disciplines,
+          location: r.location,
+          isRemote: r.isRemote,
+          status: r.status as ListingStatus,
+          isModerated: r.isModerated,
+          createdAt: r.createdAt,
+          updatedAt: r.updatedAt,
+          applicantCount: r._count?.applications ?? 0,
+        };
+      });
     } catch (err) {
       console.error('[PrismaListingRepository] findAllForAdmin error:', err);
       return [];
@@ -328,13 +413,18 @@ export class PrismaListingRepository implements IListingRepository {
       where: { id },
       data: { isModerated },
     });
-    return this.toDomain(row);
+    return this.toDomain(row as unknown as ListingDbRow);
   }
 
   private toDomain(row: ListingDbRow): Listing {
     return new Listing({
       id: row.id,
       employerProfileId: row.employerProfileId,
+      sourceType: row.sourceType as ListingSourceType,
+      externalUrl: row.externalUrl,
+      contactEmail: row.contactEmail,
+      externalCompany: row.externalCompany,
+      externalLogoUrl: row.externalLogoUrl,
       title: row.title,
       description: row.description,
       disciplines: row.disciplines,
@@ -347,3 +437,4 @@ export class PrismaListingRepository implements IListingRepository {
     });
   }
 }
+

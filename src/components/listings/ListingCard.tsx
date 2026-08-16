@@ -3,9 +3,10 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
-import { MapPin, ArrowRight, Bookmark, Banknote, Clock } from 'lucide-react';
+import { MapPin, ArrowRight, Bookmark, Banknote, Clock, ExternalLink, Sparkles } from 'lucide-react';
 import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
 import { getCompanyAvatarColor } from '@/lib/tokens';
+import { Badge } from '@/components/ui/badge';
 
 interface ListingCardProps {
   listing: ListingWithEmployer;
@@ -20,11 +21,16 @@ export function ListingCard({
   isSavedInitial = false,
   viewMode = 'grid',
 }: ListingCardProps) {
-  const isVerified = listing.companyVerificationStatus === 'VERIFIED';
+  const isExternal = listing.sourceType === 'CURATED_EXTERNAL';
+  const isVerified = !isExternal && listing.companyVerificationStatus === 'VERIFIED';
   const [isSaved, setIsSaved] = React.useState(isSavedInitial);
 
-  const avatarColor = getCompanyAvatarColor(listing.companyName || '');
-  const initials = listing.companyName ? listing.companyName.charAt(0).toUpperCase() : '?';
+  const companyDisplayName = isExternal
+    ? (listing.externalCompany || listing.companyName || 'Industry Partner')
+    : (listing.companyName || 'Verified Employer');
+
+  const avatarColor = getCompanyAvatarColor(companyDisplayName);
+  const initials = companyDisplayName ? companyDisplayName.charAt(0).toUpperCase() : '?';
 
   const handleBookmarkToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -67,10 +73,15 @@ export function ListingCard({
                   {listing.title}
                 </h3>
                 {isVerified && <VerificationBadge size="sm" />}
+                {isExternal && (
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[9px] px-1.5 py-0">
+                    <Sparkles className="w-2.5 h-2.5 mr-0.5" /> Curated
+                  </Badge>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-body-muted">
-                <span className="font-semibold text-slate-800">{listing.companyName}</span>
+                <span className="font-semibold text-slate-800">{companyDisplayName}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3 h-3 text-slate-400" />
@@ -125,8 +136,13 @@ export function ListingCard({
 
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-slate-900">{listing.companyName}</span>
+                <span className="text-xs font-bold text-slate-900">{companyDisplayName}</span>
                 {isVerified && <VerificationBadge size="sm" />}
+                {isExternal && (
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[9px] px-1.5 py-0">
+                    <Sparkles className="w-2.5 h-2.5 mr-0.5" /> Curated
+                  </Badge>
+                )}
               </div>
               <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-slate-400" />
@@ -187,9 +203,14 @@ export function ListingCard({
           href={`${hrefPrefix}/${listing.id}`}
           className="inline-flex items-center gap-1 text-xs font-bold text-brand-indigo hover:text-brand-indigo-hover group-hover:translate-x-0.5 transition-transform"
         >
-          View & Apply <ArrowRight className="w-3 h-3" />
+          {isExternal ? (
+            <>Outreach &amp; Apply <ArrowRight className="w-3 h-3" /></>
+          ) : (
+            <>View &amp; Apply <ArrowRight className="w-3 h-3" /></>
+          )}
         </Link>
       </div>
     </div>
   );
 }
+

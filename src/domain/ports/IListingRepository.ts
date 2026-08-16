@@ -1,6 +1,6 @@
 // src/domain/ports/IListingRepository.ts
 
-import type { Listing } from '@/domain/entities/listing';
+import type { Listing, ListingProps, ListingSourceType } from '@/domain/entities/listing';
 import type { ListingFilterInput } from '@/domain/value-objects/listing';
 
 export interface PublicListingsResult {
@@ -10,7 +10,12 @@ export interface PublicListingsResult {
 
 export interface ListingWithEmployer {
   id: string;
-  employerProfileId: string;
+  employerProfileId?: string | null;
+  sourceType?: ListingSourceType;
+  externalUrl?: string | null;
+  contactEmail?: string | null;
+  externalCompany?: string | null;
+  externalLogoUrl?: string | null;
   companyName: string;
   companyLogoUrl?: string | null;
   companyVerificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED';
@@ -32,7 +37,7 @@ export interface EmployerListingItem {
 }
 
 export interface IListingRepository {
-  create(data: Omit<Listing, 'id' | 'createdAt' | 'updatedAt' | 'close' | 'open' | 'toggleStatus' | 'moderate' | 'toObject' | 'isOpen'> & { id?: string }): Promise<Listing>;
+  create(data: Partial<ListingProps> & { employerProfileId?: string | null; title: string; description: string; disciplines: string[]; location: string }): Promise<Listing>;
   save(listing: Listing): Promise<Listing>;
   findById(id: string): Promise<Listing | null>;
   findDetailsById(id: string): Promise<ListingWithEmployer | null>;
@@ -42,6 +47,7 @@ export interface IListingRepository {
   update(listing: Listing): Promise<Listing>;
   toggleStatus(id: string): Promise<Listing>;
   flagForModeration(id: string): Promise<void>;
-  findAllForAdmin(filters?: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED' }): Promise<ListingWithEmployer[]>;
+  findAllForAdmin(filters?: { isModerated?: boolean; status?: 'OPEN' | 'CLOSED'; sourceType?: ListingSourceType }): Promise<ListingWithEmployer[]>;
   moderate(id: string, isModerated: boolean): Promise<Listing>;
 }
+

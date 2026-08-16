@@ -148,11 +148,7 @@ export function SiwesPipelineStages({
               <div
                 className={`relative h-full bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col justify-between ${stage.bgGlow}`}
               >
-                {/* Top Accent Gradient Line */}
-                <div
-                  className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stage.accentGradient} opacity-80 group-hover:opacity-100 transition-opacity`}
-                />
-
+               
                 {/* Card Top: Stage Badge + Icon */}
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">

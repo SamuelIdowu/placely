@@ -11,12 +11,30 @@ export type ApplicationStatus =
   | 'ACCEPTED'
   | 'DECLINED';
 
+export type ApplicationType =
+  | 'NATIVE'
+  | 'EXTERNAL_PORTAL'
+  | 'SIWES_OUTREACH';
+
+export type OutreachStatus =
+  | 'DRAFT'
+  | 'LETTER_GENERATED'
+  | 'SENT'
+  | 'FOLLOWED_UP'
+  | 'ACCEPTED'
+  | 'REJECTED';
+
 export interface ApplicationProps {
   id: string;
   listingId: string;
   studentId: string;
   status: ApplicationStatus;
   note?: string;
+  applicationType?: ApplicationType;
+  outreachStatus?: OutreachStatus | null;
+  outreachLetterUrl?: string | null;
+  externalCompanyContact?: string | null;
+  claimToken?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,7 +47,14 @@ export class Application {
   private readonly props: ApplicationProps;
 
   constructor(props: ApplicationProps) {
-    this.props = props;
+    this.props = {
+      ...props,
+      applicationType: props.applicationType ?? 'NATIVE',
+      outreachStatus: props.outreachStatus ?? null,
+      outreachLetterUrl: props.outreachLetterUrl ?? null,
+      externalCompanyContact: props.externalCompanyContact ?? null,
+      claimToken: props.claimToken ?? null,
+    };
   }
 
   get id(): string { return this.props.id; }
@@ -37,6 +62,11 @@ export class Application {
   get studentId(): string { return this.props.studentId; }
   get status(): ApplicationStatus { return this.props.status; }
   get note(): string | undefined { return this.props.note; }
+  get applicationType(): ApplicationType { return this.props.applicationType ?? 'NATIVE'; }
+  get outreachStatus(): OutreachStatus | null | undefined { return this.props.outreachStatus; }
+  get outreachLetterUrl(): string | null | undefined { return this.props.outreachLetterUrl; }
+  get externalCompanyContact(): string | null | undefined { return this.props.externalCompanyContact; }
+  get claimToken(): string | null | undefined { return this.props.claimToken; }
   get createdAt(): Date { return this.props.createdAt; }
   get updatedAt(): Date { return this.props.updatedAt; }
 
@@ -73,7 +103,12 @@ export class Application {
     return new Application({ ...this.props, status: 'DECLINED', updatedAt: new Date() });
   }
 
+  updateOutreachStatus(status: OutreachStatus): Application {
+    return new Application({ ...this.props, outreachStatus: status, updatedAt: new Date() });
+  }
+
   toObject(): ApplicationProps {
     return { ...this.props };
   }
 }
+

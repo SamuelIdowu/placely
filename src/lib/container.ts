@@ -10,8 +10,10 @@ import { MessageRepository } from '@/infrastructure/db/MessageRepository';
 import { PrismaVerificationRepository } from '@/infrastructure/db/verification.repository';
 import { PrismaSavedListingRepository } from '@/infrastructure/db/SavedListingRepository';
 import { PrismaNotificationRepository } from '@/infrastructure/db/NotificationRepository';
+import { PrismaCompanyDirectoryRepository } from '@/infrastructure/db/company-directory.repository';
 import { ResendEmailService } from '@/infrastructure/email/resend-email.service';
 import { VercelBlobStorage } from '@/infrastructure/storage/vercel-blob.storage';
+import { SiwesLetterGeneratorService } from '@/infrastructure/services/siwes-letter-generator.service';
 
 // ── Repositories (singletons) ────────────────────────────────────────────────
 export const applicationRepo = new PrismaApplicationRepository();
@@ -22,10 +24,12 @@ export const messageRepo = new MessageRepository();
 export const verificationRepo = new PrismaVerificationRepository();
 export const savedListingRepo = new PrismaSavedListingRepository();
 export const notificationRepo = new PrismaNotificationRepository();
+export const companyDirectoryRepo = new PrismaCompanyDirectoryRepository();
 
 // ── Services (singletons) ────────────────────────────────────────────────────
 export const emailService = new ResendEmailService();
 export const fileStorage = new VercelBlobStorage();
+export const siwesLetterGenerator = new SiwesLetterGeneratorService();
 
 // ── Use Cases ─────────────────────────────────────────────────────────────────
 import { RegisterStudentUseCase } from '@/application/student/register-student.usecase';
@@ -37,6 +41,9 @@ import { RespondToOfferUseCase } from '@/application/student/respond-to-offer';
 import { BrowseListingsUseCase } from '@/application/student/browse-listings';
 import { ToggleSaveListingUseCase } from '@/application/student/toggle-save-listing';
 import { GetSavedListingsUseCase } from '@/application/student/get-saved-listings';
+import { GenerateSiwesLetterUseCase } from '@/application/student/generate-siwes-letter.usecase';
+import { DispatchSiwesOutreachUseCase } from '@/application/student/dispatch-siwes-outreach.usecase';
+import { SearchCompanyDirectoryUseCase } from '@/application/student/search-company-directory.usecase';
 
 import { RegisterEmployerUseCase } from '@/application/employer/register-employer.usecase';
 import { UpdateEmployerProfileUseCase } from '@/application/employer/update-employer-profile';
@@ -49,10 +56,12 @@ import { ReviewApplicantsUseCase } from '@/application/employer/review-applicant
 import { SendOfferUseCase } from '@/application/employer/send-offer.usecase';
 import { UpdateApplicationStatusUseCase } from '@/application/employer/update-application-status';
 import { GetApplicantsUseCase } from '@/application/employer/get-applicants';
+import { ClaimCompanyProfileUseCase } from '@/application/employer/claim-company-profile.usecase';
 
 import { ApproveVerificationUseCase } from '@/application/admin/approve-verification.usecase';
 import { RejectVerificationUseCase } from '@/application/admin/reject-verification';
 import { ModerateListingUseCase } from '@/application/admin/moderate-listing.usecase';
+import { ImportCompanyDirectoryUseCase } from '@/application/admin/import-company-directory.usecase';
 
 import { SendMessageUseCase } from '@/application/messaging/send-message';
 import { GetThreadUseCase } from '@/application/messaging/get-thread';
@@ -70,6 +79,9 @@ export const respondToOfferUseCase = new RespondToOfferUseCase(applicationRepo);
 export const browseListingsUseCase = new BrowseListingsUseCase(listingRepo);
 export const toggleSaveListingUseCase = new ToggleSaveListingUseCase(savedListingRepo);
 export const getSavedListingsUseCase = new GetSavedListingsUseCase(savedListingRepo);
+export const generateSiwesLetterUseCase = new GenerateSiwesLetterUseCase(studentProfileRepo, siwesLetterGenerator);
+export const dispatchSiwesOutreachUseCase = new DispatchSiwesOutreachUseCase(studentProfileRepo, listingRepo, applicationRepo, emailService, siwesLetterGenerator);
+export const searchCompanyDirectoryUseCase = new SearchCompanyDirectoryUseCase(companyDirectoryRepo);
 
 // Employer
 export const registerEmployerUseCase = new RegisterEmployerUseCase(employerProfileRepo);
@@ -83,11 +95,13 @@ export const reviewApplicantsUseCase = new ReviewApplicantsUseCase(applicationRe
 export const sendOfferUseCase = new SendOfferUseCase(applicationRepo, emailService);
 export const updateApplicationStatusUseCase = new UpdateApplicationStatusUseCase(applicationRepo, listingRepo, emailService);
 export const getApplicantsUseCase = new GetApplicantsUseCase(applicationRepo, listingRepo);
+export const claimCompanyProfileUseCase = new ClaimCompanyProfileUseCase(applicationRepo, listingRepo, employerProfileRepo, emailService);
 
 // Admin
 export const approveVerificationUseCase = new ApproveVerificationUseCase(verificationRepo, studentProfileRepo, employerProfileRepo, emailService);
 export const rejectVerificationUseCase = new RejectVerificationUseCase(verificationRepo, studentProfileRepo, employerProfileRepo, emailService);
 export const moderateListingUseCase = new ModerateListingUseCase(listingRepo);
+export const importCompanyDirectoryUseCase = new ImportCompanyDirectoryUseCase(companyDirectoryRepo);
 
 // Messaging
 export const sendMessageUseCase = new SendMessageUseCase(messageRepo, emailService);
@@ -96,4 +110,5 @@ export const getThreadUseCase = new GetThreadUseCase(messageRepo);
 // Notifications
 export const getUserNotificationsUseCase = new GetUserNotificationsUseCase(notificationRepo);
 export const markNotificationReadUseCase = new MarkNotificationReadUseCase(notificationRepo);
+
 

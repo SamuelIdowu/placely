@@ -9,7 +9,7 @@ import {
   ApplicationWithDetails,
   ApplicationWithStudentProfile,
 } from '@/domain/ports/IApplicationRepository';
-import { Application, ApplicationStatus } from '@/domain/entities/application';
+import { Application, ApplicationStatus, ApplicationType, OutreachStatus } from '@/domain/entities/application';
 import { DuplicateApplicationError } from '@/lib/errors';
 import { createId } from '@paralleldrive/cuid2';
 
@@ -28,6 +28,8 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     }
 
     const statusValue = (data.status ?? 'APPLIED') as ApplicationStatus;
+    const applicationTypeValue = (data.applicationType ?? 'NATIVE') as 'NATIVE' | 'EXTERNAL_PORTAL' | 'SIWES_OUTREACH';
+    const outreachStatusValue = data.outreachStatus as ('DRAFT' | 'LETTER_GENERATED' | 'SENT' | 'FOLLOWED_UP' | 'ACCEPTED' | 'REJECTED') | undefined;
 
     const row = await prisma.application.create({
       data: {
@@ -36,6 +38,11 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         studentId: data.studentId,
         note: data.note,
         status: statusValue,
+        applicationType: applicationTypeValue,
+        outreachStatus: outreachStatusValue ?? null,
+        outreachLetterUrl: data.outreachLetterUrl ?? null,
+        externalCompanyContact: data.externalCompanyContact ?? null,
+        claimToken: data.claimToken ?? null,
       },
     });
 
@@ -49,6 +56,91 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     return row ? this.toDomain(row) : null;
   }
 
+  async findByClaimToken(claimToken: string): Promise<{ application: Application; student: ApplicationWithStudentProfile['student']; listing: ApplicationWithDetails['listing'] } | null> {
+    const row = await prisma.application.findUnique({
+      where: { claimToken },
+      include: {
+        listing: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            isRemote: true,
+            sourceType: true,
+            externalCompany: true,
+            externalUrl: true,
+            contactEmail: true,
+            employerProfile: {
+              select: {
+                id: true,
+                companyName: true,
+                verificationStatus: true,
+              },
+            },
+          },
+        },
+        student: {
+          select: {
+            id: true,
+            userId: true,
+            university: true,
+            discipline: true,
+            resumeUrl: true,
+            profileCompleteness: true,
+            verificationStatus: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!row) return null;
+
+    const isExternal = row.listing.sourceType === 'CURATED_EXTERNAL';
+    const companyName = isExternal
+      ? (row.listing.externalCompany ?? 'Industry Partner')
+      : (row.listing.employerProfile?.companyName ?? 'Corporate Partner');
+
+    return {
+      application: this.toDomain(row),
+      student: {
+        id: row.student.id,
+        userId: row.student.userId,
+        university: row.student.university,
+        discipline: row.student.discipline,
+        resumeUrl: row.student.resumeUrl,
+        profileCompleteness: row.student.profileCompleteness,
+        verificationStatus: row.student.verificationStatus,
+        user: {
+          firstName: row.student.user.firstName,
+          lastName: row.student.user.lastName,
+          email: row.student.user.email,
+        },
+      },
+      listing: {
+        id: row.listing.id,
+        title: row.listing.title,
+        location: row.listing.location,
+        isRemote: row.listing.isRemote,
+        sourceType: row.listing.sourceType as 'NATIVE' | 'CURATED_EXTERNAL',
+        externalCompany: row.listing.externalCompany,
+        externalUrl: row.listing.externalUrl,
+        contactEmail: row.listing.contactEmail,
+        employer: {
+          id: row.listing.employerProfile?.id ?? '',
+          companyName,
+          verificationStatus: row.listing.employerProfile?.verificationStatus ?? 'VERIFIED',
+        },
+      },
+    };
+  }
+
   async findByStudent(studentId: string): Promise<ApplicationWithDetails[]> {
     const rows = await prisma.application.findMany({
       where: { studentId },
@@ -59,6 +151,10 @@ export class PrismaApplicationRepository implements IApplicationRepository {
             title: true,
             location: true,
             isRemote: true,
+            sourceType: true,
+            externalCompany: true,
+            externalUrl: true,
+            contactEmail: true,
             employerProfile: {
               select: {
                 id: true,
@@ -72,20 +168,31 @@ export class PrismaApplicationRepository implements IApplicationRepository {
       orderBy: { updatedAt: 'desc' },
     });
 
-    return rows.map((row) => ({
-      application: this.toDomain(row),
-      listing: {
-        id: row.listing.id,
-        title: row.listing.title,
-        location: row.listing.location,
-        isRemote: row.listing.isRemote,
-        employer: {
-          id: row.listing.employerProfile.id,
-          companyName: row.listing.employerProfile.companyName,
-          verificationStatus: row.listing.employerProfile.verificationStatus,
+    return rows.map((row) => {
+      const isExternal = row.listing.sourceType === 'CURATED_EXTERNAL';
+      const companyName = isExternal
+        ? (row.listing.externalCompany ?? 'Industry Partner')
+        : (row.listing.employerProfile?.companyName ?? 'Corporate Partner');
+
+      return {
+        application: this.toDomain(row),
+        listing: {
+          id: row.listing.id,
+          title: row.listing.title,
+          location: row.listing.location,
+          isRemote: row.listing.isRemote,
+          sourceType: row.listing.sourceType as 'NATIVE' | 'CURATED_EXTERNAL',
+          externalCompany: row.listing.externalCompany,
+          externalUrl: row.listing.externalUrl,
+          contactEmail: row.listing.contactEmail,
+          employer: {
+            id: row.listing.employerProfile?.id ?? '',
+            companyName,
+            verificationStatus: row.listing.employerProfile?.verificationStatus ?? 'VERIFIED',
+          },
         },
-      },
-    }));
+      };
+    });
   }
 
   async findByListing(listingId: string): Promise<ApplicationWithStudentProfile[]> {
@@ -103,6 +210,8 @@ export class PrismaApplicationRepository implements IApplicationRepository {
             verificationStatus: true,
             user: {
               select: {
+                firstName: true,
+                lastName: true,
                 email: true,
               },
             },
@@ -127,6 +236,8 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         profileCompleteness: row.student.profileCompleteness,
         verificationStatus: row.student.verificationStatus,
         user: {
+          firstName: row.student.user.firstName,
+          lastName: row.student.user.lastName,
           email: row.student.user.email,
         },
       },
@@ -138,6 +249,17 @@ export class PrismaApplicationRepository implements IApplicationRepository {
       where: { id },
       data: {
         status,
+        updatedAt: new Date(),
+      },
+    });
+    return this.toDomain(row);
+  }
+
+  async updateOutreachStatus(id: string, status: OutreachStatus): Promise<Application> {
+    const row = await prisma.application.update({
+      where: { id },
+      data: {
+        outreachStatus: status,
         updatedAt: new Date(),
       },
     });
@@ -178,10 +300,20 @@ export class PrismaApplicationRepository implements IApplicationRepository {
         studentId: data.studentId,
         status: data.status,
         note: data.note,
+        applicationType: data.applicationType as 'NATIVE' | 'EXTERNAL_PORTAL' | 'SIWES_OUTREACH',
+        outreachStatus: data.outreachStatus as ('DRAFT' | 'LETTER_GENERATED' | 'SENT' | 'FOLLOWED_UP' | 'ACCEPTED' | 'REJECTED') | null,
+        outreachLetterUrl: data.outreachLetterUrl ?? null,
+        externalCompanyContact: data.externalCompanyContact ?? null,
+        claimToken: data.claimToken ?? null,
       },
       update: {
         status: data.status,
         note: data.note,
+        applicationType: data.applicationType as 'NATIVE' | 'EXTERNAL_PORTAL' | 'SIWES_OUTREACH',
+        outreachStatus: data.outreachStatus as ('DRAFT' | 'LETTER_GENERATED' | 'SENT' | 'FOLLOWED_UP' | 'ACCEPTED' | 'REJECTED') | null,
+        outreachLetterUrl: data.outreachLetterUrl ?? null,
+        externalCompanyContact: data.externalCompanyContact ?? null,
+        claimToken: data.claimToken ?? null,
         updatedAt: new Date(),
       },
     });
@@ -194,6 +326,11 @@ export class PrismaApplicationRepository implements IApplicationRepository {
     studentId: string;
     status: string;
     note: string | null;
+    applicationType?: string;
+    outreachStatus?: string | null;
+    outreachLetterUrl?: string | null;
+    externalCompanyContact?: string | null;
+    claimToken?: string | null;
     createdAt: Date;
     updatedAt: Date;
   }): Application {
@@ -203,8 +340,14 @@ export class PrismaApplicationRepository implements IApplicationRepository {
       studentId: row.studentId,
       status: row.status as ApplicationStatus,
       note: row.note ?? undefined,
+      applicationType: (row.applicationType ?? 'NATIVE') as ApplicationType,
+      outreachStatus: (row.outreachStatus as OutreachStatus) ?? null,
+      outreachLetterUrl: row.outreachLetterUrl ?? null,
+      externalCompanyContact: row.externalCompanyContact ?? null,
+      claimToken: row.claimToken ?? null,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
   }
 }
+

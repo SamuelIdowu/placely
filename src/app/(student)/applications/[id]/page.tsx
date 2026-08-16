@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { getThreadUseCase } from '@/lib/container';
 import {
   mockApplications,
   mockListings,
@@ -55,8 +56,21 @@ export default async function ApplicationDetailPage({
   const avatarColor = getCompanyAvatarColor(companyName);
   const initials = companyName.charAt(0).toUpperCase();
 
-  const initialMessages: MessageProps[] = [];
-  const initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
+  let initialMessages: MessageProps[] = [];
+  let initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
+
+  try {
+    const threadResult = await getThreadUseCase.execute({
+      applicationId: application.id,
+      userId: session.user.id,
+    });
+    initialMessages = threadResult.messages.map((m) => m.toObject());
+    if (typeof threadResult.isLocked === 'boolean') {
+      initialIsLocked = threadResult.isLocked;
+    }
+  } catch (err) {
+    console.error('Error prefetching messages on server:', err);
+  }
 
   const appliedDate = new Date(application.createdAt).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -71,7 +85,7 @@ export default async function ApplicationDetailPage({
   });
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-14">
+    <div className="max-w-7xl space-y-6 pb-14">
       <Link
         href={
           session.user.role === 'EMPLOYER'

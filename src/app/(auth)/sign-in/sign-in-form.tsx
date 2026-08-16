@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -49,19 +51,30 @@ export function SignInForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Password</label>
-        <input
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
+        <div className="relative mt-1">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            title={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
 
       <button
