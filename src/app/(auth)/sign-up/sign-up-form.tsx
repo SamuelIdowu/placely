@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { signUpAction } from './actions';
 import { getNigerianUniversities, NUC_ENGINEERING_COURSES } from '@/domain/value-objects/academic';
 
-export function SignUpForm() {
+function SignUpFormComponent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialEmail = searchParams.get('email') || '';
+
   const [role, setRole] = useState<'STUDENT' | 'EMPLOYER'>('STUDENT');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -261,6 +264,7 @@ export function SignUpForm() {
           name="email"
           type="email"
           required
+          defaultValue={initialEmail}
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
         />
       </div>
@@ -297,3 +301,12 @@ export function SignUpForm() {
     </form>
   );
 }
+
+export function SignUpForm() {
+  return (
+    <Suspense fallback={<div className="h-48 flex items-center justify-center text-xs text-slate-400">Loading form...</div>}>
+      <SignUpFormComponent />
+    </Suspense>
+  );
+}
+
