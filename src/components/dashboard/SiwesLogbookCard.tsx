@@ -21,7 +21,7 @@ export function SiwesLogbookCard({
 
   return (
     <div
-      className="rounded-2xl p-5 sm:p-5.5 flex flex-col justify-between relative overflow-hidden text-surface-dark-foreground bg-surface-dark shadow-2xs"
+      className="rounded-2xl p-5 sm:p-5 flex flex-col justify-between relative overflow-hidden text-surface-dark-foreground bg-surface-dark shadow-2xs"
     >
       {/* Background ambient gradient */}
       <div
@@ -30,8 +30,8 @@ export function SiwesLogbookCard({
 
       <div>
         {/* Card Header */}
-        <div className="flex items-center justify-between gap-3 mb-3.5">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-white/10"
             >
@@ -86,16 +86,16 @@ export function SiwesLogbookCard({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+      <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
         <Link
           href="/logbook/new"
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 transition-colors w-full sm:w-auto shrink-0 shadow-xs"
+          className="inline-flex items-center justify-center gap-1 px-3.5 py-2 rounded-full text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 transition-colors w-full sm:w-auto shrink-0 shadow-xs"
         >
-          <Plus className="w-3.5 h-3.5" /> Quick Log Today
+          <Plus className="w-3 h-3" /> Quick Log Today
         </Link>
         <Link
           href="/logbook"
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold text-white hover:bg-white/10 border border-white/15 transition-colors w-full sm:w-auto shrink-0"
+          className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-white hover:bg-white/10 border border-white/15 transition-colors sm:w-auto shrink-0"
         >
           View Full Logbook <ArrowRight className="w-3 h-3" />
         </Link>

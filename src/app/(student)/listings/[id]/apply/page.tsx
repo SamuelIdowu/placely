@@ -27,7 +27,7 @@ export default async function SubmitApplicationPage({
     notFound();
   }
 
-  const employer = await employerProfileRepo.findById(listing.employerProfileId);
+  const employer = listing.employerProfileId ? await employerProfileRepo.findById(listing.employerProfileId) : null;
   const studentProfile = await studentProfileRepo.findByUserId(session.user.id);
 
   if (!studentProfile) {

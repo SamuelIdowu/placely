@@ -1,158 +1,130 @@
-# Placely Component Library (`src/components/ui/`)
+# Placely Design System & Component Library (`src/components/ui/`)
 
-> Built directly on **Radix UI primitives** styled with **Tailwind CSS v4**.
+> Built directly on **Radix UI primitives**, typed tokens in `src/lib/design-system/tokens.ts`, and styled with **Tailwind CSS v4**.
 
 ---
 
-## Component Index & Usage Reference
+## 🎨 Design Tokens & Principles
 
-### 1. Button (`button.tsx`)
-Supports dual design system variants (`default`, `landing`, `landingOutline`, `secondary`, `outline`, `ghost`, `destructive`, `link`).
+- **Primary Colors:** `--primary` (Midnight Black `#17171c`), `--brand-indigo` (`#4f46e5`), `--background` (`#ffffff`), `--card` (`#ffffff`).
+- **Typography:** DM Serif Display (`--font-serif`) for editorial headings, Inter (`--font-sans`) for crisp UI and body text, Space Grotesk (`--font-display`) for badges and labels.
+- **Radii:** `rounded-card` (1.375rem / 22px) for main container cards, `rounded-pill` (full) for primary CTA buttons, `rounded-md` for inputs/menus.
+- **Semantic Statuses:** Use `StatusBadge` or `statusTokens` for application and listing states (`applied`, `shortlisted`, `offered`, `accepted`, `declined`, `rejected`, `pending`, `draft`).
+
+---
+
+## 📦 Component Index & Usage Recipes
+
+### 1. PageHeader (`page-header.tsx`)
+Standardized header for all views (supports breadcrumbs, title, description, badge, actions, and back link).
 ```tsx
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
-// App Black Button
-<Button variant="default">Save Changes</Button>
-
-// Landing Indigo Button (Sharp 0px)
-<Button variant="landing" size="lg">Explore Placements</Button>
-
-// Emerald Secondary Button
-<Button variant="secondary">Approve Applicant</Button>
+<PageHeader
+  title="Placements & Openings"
+  description="Manage verified SIWES openings for engineering candidates."
+  breadcrumbs={[
+    { label: "Employer", href: "/employer/dashboard" },
+    { label: "Listings" },
+  ]}
+  actions={
+    <Button variant="indigo">
+      <Plus className="w-4 h-4" /> Post New Listing
+    </Button>
+  }
+/>
 ```
 
-### 2. Input (`input.tsx`)
+### 2. StatCard (`stat-card.tsx`)
+Standardized metric/KPI card.
 ```tsx
-import { Input } from "@/components/ui/input";
+import { StatCard } from "@/components/ui/stat-card";
+import { Users } from "lucide-react";
 
-<Input placeholder="Enter your email" type="email" />
+<StatCard
+  title="Active Candidates"
+  value="1,420"
+  delta={{ value: "+18.4%", isPositive: true, label: "vs last month" }}
+  icon={<Users className="w-5 h-5" />}
+/>
 ```
 
-### 3. Label (`label.tsx`)
-```tsx
-import { Label } from "@/components/ui/label";
-
-<Label htmlFor="email">Email Address</Label>
-```
-
-### 4. Card (`card.tsx`)
+### 3. Card (`card.tsx`)
+Container primitive with `default`, `interactive`, `subtle`, `dark`, and `flat` variants.
 ```tsx
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
-// App Soft Card
-<Card variant="default">
+// Interactive clickable card
+<Card variant="interactive">
   <CardHeader>
-    <CardTitle>Application Overview</CardTitle>
-    <CardDescription>Track status</CardDescription>
+    <CardTitle>Mechanical Engineering Track</CardTitle>
+    <CardDescription>32 Verified Openings</CardDescription>
   </CardHeader>
+  <CardContent>
+    ...
+  </CardContent>
 </Card>
 ```
 
-### 5. Badge (`badge.tsx`)
+### 4. Button (`button.tsx`)
+Supports `default` (black pill), `indigo` (brand pill), `secondary`, `outline`, `ghost`, `destructive`, `link`, `accent`.
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button variant="default">Save Draft</Button>
+<Button variant="indigo">Apply Now</Button>
+<Button variant="outline">Learn More</Button>
+<Button variant="accent">Download Letter</Button>
+```
+
+### 5. EmptyState (`empty-state.tsx`)
+Standardized no-data container.
+```tsx
+import { EmptyState } from "@/components/ui/empty-state";
+import { Button } from "@/components/ui/button";
+import { Briefcase } from "lucide-react";
+
+<EmptyState
+  icon={Briefcase}
+  title="No Placements Saved Yet"
+  description="Bookmark opportunities you find interesting to track deadlines and application status."
+  action={<Button variant="indigo">Browse Openings</Button>}
+/>
+```
+
+### 6. FormGroup (`form-group.tsx`)
+Form control layout wrapper with label, helper text, and error validation.
+```tsx
+import { FormGroup } from "@/components/ui/form-group";
+import { Input } from "@/components/ui/input";
+
+<FormGroup
+  id="companyName"
+  label="Company Name"
+  required
+  error={errors.companyName?.message}
+>
+  <Input id="companyName" placeholder="e.g. Dangote Group" />
+</FormGroup>
+```
+
+### 7. Badge & StatusBadge (`badge.tsx` / `StatusBadge.tsx`)
 ```tsx
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
-<Badge variant="accepted">Accepted</Badge>
-<Badge variant="pending">Pending</Badge>
+<StatusBadge status="SHORTLISTED" />
+<Badge variant="outline">6 Months</Badge>
 ```
 
-### 6. Avatar (`avatar.tsx`)
-```tsx
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+---
 
-<Avatar>
-  <AvatarImage src="/user.png" alt="User" />
-  <AvatarFallback>UN</AvatarFallback>
-</Avatar>
-```
+## ⚡ How to Build a New Page with Design Consistency
 
-### 7. Dialog (`dialog.tsx`)
-```tsx
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-
-<Dialog>
-  <DialogTrigger>Open Modal</DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Confirm Action</DialogTitle>
-    </DialogHeader>
-  </DialogContent>
-</Dialog>
-```
-
-### 8. Select (`select.tsx`)
-```tsx
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-
-<Select>
-  <SelectTrigger><SelectValue placeholder="Select discipline" /></SelectTrigger>
-  <SelectContent>
-    <SelectItem value="mechanical">Mechanical Engineering</SelectItem>
-  </SelectContent>
-</Select>
-```
-
-### 9. Checkbox (`checkbox.tsx`)
-```tsx
-import { Checkbox } from "@/components/ui/checkbox";
-
-<Checkbox id="terms" />
-```
-
-### 10. RadioGroup (`radio-group.tsx`)
-```tsx
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-<RadioGroup defaultValue="student">
-  <RadioGroupItem value="student" id="r1" />
-  <RadioGroupItem value="employer" id="r2" />
-</RadioGroup>
-```
-
-### 11. Toast (`toast.tsx`)
-```tsx
-import { ToastProvider, ToastViewport, Toast, ToastTitle } from "@/components/ui/toast";
-```
-
-### 12. Separator (`separator.tsx`)
-```tsx
-import { Separator } from "@/components/ui/separator";
-
-<Separator orientation="horizontal" />
-```
-
-### 13. Tabs (`tabs.tsx`)
-```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-<Tabs defaultValue="overview">
-  <TabsList>
-    <TabsTrigger value="overview">Overview</TabsTrigger>
-  </TabsList>
-  <TabsContent value="overview">Content</TabsContent>
-</Tabs>
-```
-
-### 14. DropdownMenu (`dropdown-menu.tsx`)
-```tsx
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-```
-
-### 15. ScrollArea (`scroll-area.tsx`)
-```tsx
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-<ScrollArea className="h-72">Content</ScrollArea>
-```
-
-### 16. Progress (`progress.tsx`)
-```tsx
-import { Progress } from "@/components/ui/progress";
-
-<Progress value={60} />
-```
-
-### 17. AlertDialog (`alert-dialog.tsx`)
-```tsx
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
-```
+1. Wrap the page content in the standard layout (`Shell` or `Container`).
+2. Insert `PageHeader` at the top.
+3. Use a 2/3/4-column responsive grid (`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5`).
+4. Place `StatCard`, `Card`, or `EmptyState` primitives inside.
+5. Use design token colors (`text-foreground`, `text-body-muted`, `bg-card`, `border-border`, `bg-brand-indigo`). Never write arbitrary slate classes or custom hex values.

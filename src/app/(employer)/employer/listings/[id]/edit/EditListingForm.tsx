@@ -84,7 +84,6 @@ export function EditListingForm({ listing }: EditListingFormProps) {
               required
               minLength={3}
               maxLength={120}
-              className="rounded-[4px]"
             />
           </div>
 
@@ -99,7 +98,6 @@ export function EditListingForm({ listing }: EditListingFormProps) {
               required
               minLength={20}
               rows={6}
-              className="rounded-[4px]"
             />
           </div>
 
@@ -136,7 +134,6 @@ export function EditListingForm({ listing }: EditListingFormProps) {
                 name="location"
                 defaultValue={listing.location}
                 required
-                className="rounded-[4px]"
               />
             </div>
 
@@ -156,14 +153,13 @@ export function EditListingForm({ listing }: EditListingFormProps) {
               type="button"
               variant="outline"
               onClick={() => router.back()}
-              className="rounded-[4px]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
+              variant="indigo"
               disabled={loading}
-              className="rounded-[4px] bg-slate-900 text-white hover:bg-slate-800"
             >
               {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Save Changes

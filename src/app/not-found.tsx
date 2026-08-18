@@ -1,37 +1,51 @@
 import Link from 'next/link';
+import { Compass, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-[#FAF9F6] text-black px-6 py-12 text-center font-sans border-t-4 border-black">
-      <div className="max-w-md space-y-6">
-        <div className="inline-block text-xs font-bold uppercase tracking-widest bg-black text-white px-3 py-1 font-mono">
-          404 Error — Page Not Found
+    <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
+      <Card variant="subtle" className="max-w-lg w-full p-8 sm:p-12 space-y-6 shadow-xs border border-border">
+        {/* Badge & Icon */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-14 h-14 rounded-2xl bg-brand-indigo-light text-brand-indigo flex items-center justify-center border border-indigo-100 shadow-2xs">
+            <Compass className="w-7 h-7 animate-pulse" />
+          </div>
+          <Badge
+            variant="outline"
+            className="bg-brand-indigo-light text-brand-indigo border-indigo-200 text-xs font-semibold px-3 py-1 uppercase tracking-wider font-display"
+          >
+            404 Error — Page Not Found
+          </Badge>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-serif font-normal tracking-tight text-slate-900 leading-tight">
-          Lost in Placement?
-        </h1>
+        {/* Heading & Subtitle */}
+        <div className="space-y-3">
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-foreground leading-tight">
+            Lost in Placement?
+          </h1>
+          <p className="text-sm sm:text-base text-body-muted leading-relaxed max-w-sm mx-auto">
+            The page or SIWES placement listing you are looking for might have been moved, expired, or doesn&apos;t exist.
+          </p>
+        </div>
 
-        <p className="text-sm md:text-base text-slate-600 font-sans leading-relaxed">
-          The page or SIWES placement listing you are looking for might have been moved, closed, or doesn&apos;t exist.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-          <Link
-            href="/"
-            className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-6 bg-landing-primary text-white hover:bg-landing-primary-hover font-sans text-xs tracking-wider uppercase font-bold border border-black transition-colors"
-          >
-            Go Home
+        {/* Action CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button variant="indigo" size="lg" className="w-full sm:w-auto gap-2">
+              <LayoutDashboard className="w-4 h-4" /> Go to Dashboard
+            </Button>
           </Link>
 
-          <Link
-            href="/listings"
-            className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-6 bg-transparent text-black border border-black hover:bg-black hover:text-white font-sans text-xs tracking-wider uppercase font-bold transition-colors"
-          >
-            Browse Listings
+          <Link href="/listings" className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto gap-2">
+              Browse Listings <ArrowRight className="w-4 h-4" />
+            </Button>
           </Link>
         </div>
-      </div>
+      </Card>
     </main>
   );
 }

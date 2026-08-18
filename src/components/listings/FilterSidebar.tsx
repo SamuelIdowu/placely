@@ -72,7 +72,7 @@ export function FilterControls() {
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             placeholder="e.g. Electrical, CAD, SIWES..."
-            className="pl-9 text-sm rounded-[4px]"
+            className="pl-9 text-sm"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ export function FilterControls() {
             value={selectedLocation}
             onChange={(e) => updateParam('location', e.target.value || null)}
             placeholder="e.g. Lagos, Abuja, Port Harcourt"
-            className="pl-9 text-sm rounded-[4px]"
+            className="pl-9 text-sm"
           />
         </div>
       </div>

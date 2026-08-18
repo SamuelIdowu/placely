@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { getThreadUseCase } from '@/lib/container';
 import { mockApplications, mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
@@ -43,8 +44,21 @@ export default async function EmployerApplicantDetailPage({
     notFound();
   }
 
-  const initialMessages: any[] = [];
-  const initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
+  let initialMessages: any[] = [];
+  let initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
+
+  try {
+    const threadResult = await getThreadUseCase.execute({
+      applicationId: application.id,
+      userId: session.user.id,
+    });
+    initialMessages = threadResult.messages.map((m) => m.toObject());
+    if (typeof threadResult.isLocked === 'boolean') {
+      initialIsLocked = threadResult.isLocked;
+    }
+  } catch (err) {
+    console.error('Error prefetching messages on server:', err);
+  }
 
   const appliedDate = new Date(application.createdAt).toLocaleDateString('en-GB', {
     day: 'numeric',

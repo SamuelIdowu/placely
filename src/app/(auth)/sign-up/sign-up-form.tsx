@@ -1,13 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import { signUpAction } from './actions';
 import { getNigerianUniversities, NUC_ENGINEERING_COURSES } from '@/domain/value-objects/academic';
 
-export function SignUpForm() {
+function SignUpFormComponent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialEmail = searchParams.get('email') || '';
+
   const [role, setRole] = useState<'STUDENT' | 'EMPLOYER'>('STUDENT');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -259,19 +264,31 @@ export function SignUpForm() {
           name="email"
           type="email"
           required
+          defaultValue={initialEmail}
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Password</label>
-        <input
-          name="password"
-          type="password"
-          required
-          minLength={8}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
-        />
+        <div className="relative mt-1">
+          <input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            required
+            minLength={8}
+            className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none text-sm"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            title={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
 
       <button
@@ -284,3 +301,12 @@ export function SignUpForm() {
     </form>
   );
 }
+
+export function SignUpForm() {
+  return (
+    <Suspense fallback={<div className="h-48 flex items-center justify-center text-xs text-slate-400">Loading form...</div>}>
+      <SignUpFormComponent />
+    </Suspense>
+  );
+}
+

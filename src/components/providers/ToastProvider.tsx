@@ -16,7 +16,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         <Toast.Root
           key={t.id}
           className={cn(
-            'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-[4px] border p-4 shadow-lg transition-all my-1',
+            'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border p-4 shadow-lg transition-all my-1',
             t.variant === 'success' && 'bg-emerald-950 text-white border-emerald-800',
             t.variant === 'error' && 'bg-rose-950 text-white border-rose-800',
             t.variant === 'info' && 'bg-slate-900 text-white border-slate-700'

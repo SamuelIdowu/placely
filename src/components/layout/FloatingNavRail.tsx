@@ -53,6 +53,7 @@ export function FloatingNavRail({
       items: [
         { icon: LayoutDashboard, href: '/dashboard', label: 'Dashboard' },
         { icon: Compass, href: '/listings', label: 'Explore Placements', badge: 'Live', badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+        { icon: Building2, href: '/directory', label: 'IT Approved Directory', badge: 'SIWES List', badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
       ],
     },
     {
@@ -96,6 +97,7 @@ export function FloatingNavRail({
         { icon: ShieldCheck, href: '/admin/verifications', label: 'Verification Queue', badge: 'Review', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
         { icon: Layers, href: '/admin/listings', label: 'Listings Moderation' },
         { icon: Users, href: '/admin/users', label: 'User Directory' },
+        { icon: Sparkles, href: '/admin/design-system', label: 'Design System', badge: 'Tokens', badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
       ],
     },
   ];
@@ -109,6 +111,7 @@ export function FloatingNavRail({
 
     // Handle nested subroutes explicitly without prefix bleeding
     if (href === '/listings' && pathname.startsWith('/listings/')) return true;
+    if (href === '/directory' && (pathname.startsWith('/directory/') || pathname === '/outreach' || pathname.startsWith('/outreach/'))) return true;
     if (href === '/applications' && pathname.startsWith('/applications/')) return true;
     if (href === '/employer/listings' && pathname.startsWith('/employer/listings/')) return true;
     if (href === '/employer/applications' && pathname.startsWith('/employer/applications/')) return true;
@@ -118,6 +121,7 @@ export function FloatingNavRail({
 
     return false;
   };
+
 
   return (
     <aside
@@ -135,7 +139,7 @@ export function FloatingNavRail({
         )}
       >
         <div className="flex items-center gap-2.5">
-          <Link href="/" title="Placely Home" className="flex items-center gap-2.5 group">
+          <Link href="/dashboard" title="Placely Home" className="flex items-center gap-2.5 group">
             {/* Logo mark */}
             <div className="w-8 h-8 rounded-xl bg-brand-indigo flex items-center justify-center text-white font-serif font-bold text-lg shrink-0 group-hover:bg-brand-indigo-hover transition-all shadow-xs active:scale-95">
               P

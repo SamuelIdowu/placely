@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
+import { listingRepo, studentProfileRepo } from '@/lib/container';
+import { mockListings, mockEmployerProfiles } from '@/lib/mock';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
+import { ListingApplyButton } from '@/components/listings/listing-apply-button';
 import { getCompanyAvatarColor } from '@/lib/tokens';
+import { Badge } from '@/components/ui/badge';
 import {
   MapPin,
   Calendar,
@@ -15,8 +18,8 @@ import {
   Briefcase,
   Banknote,
   Clock,
-  ArrowRight,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 export async function generateMetadata({
@@ -25,10 +28,15 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const listing = mockListings.find((l) => l.id === id);
-  if (!listing) return { title: 'Placement Not Found — Placely' };
-  const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
-  return { title: `${listing.title} at ${employer?.companyName || 'Company'} — Placely` };
+  const listingDetails = await listingRepo.findDetailsById(id);
+  if (listingDetails) {
+    return { title: `${listingDetails.title} at ${listingDetails.companyName} — Placely` };
+  }
+
+  const mock = mockListings.find((l) => l.id === id);
+  if (!mock) return { title: 'Placement Not Found — Placely' };
+  const employer = mockEmployerProfiles.find((e) => e.id === mock.employerProfileId);
+  return { title: `${mock.title} at ${employer?.companyName || 'Company'} — Placely` };
 }
 
 export default async function ListingDetailPage({
@@ -37,7 +45,33 @@ export default async function ListingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const listing = mockListings.find((l) => l.id === id);
+  
+  // Try DB repository first, fall back to mock
+  let listing = await listingRepo.findDetailsById(id);
+
+  if (!listing) {
+    const mock = mockListings.find((l) => l.id === id);
+    if (mock) {
+      const employer = mockEmployerProfiles.find((e) => e.id === mock.employerProfileId);
+      listing = {
+        id: mock.id,
+        employerProfileId: mock.employerProfileId,
+        sourceType: 'NATIVE',
+        companyName: employer?.companyName || 'Verified Employer',
+        companyLogoUrl: null,
+        companyVerificationStatus: employer?.verificationStatus || 'VERIFIED',
+        title: mock.title,
+        description: mock.description,
+        disciplines: mock.disciplines,
+        location: mock.location,
+        isRemote: mock.isRemote,
+        status: mock.status,
+        isModerated: mock.isModerated,
+        createdAt: new Date(mock.createdAt),
+        updatedAt: new Date(mock.updatedAt),
+      };
+    }
+  }
 
   if (!listing || listing.isModerated || listing.status !== 'OPEN') {
     notFound();
@@ -47,20 +81,19 @@ export default async function ListingDetailPage({
   let isStudentVerified = false;
 
   if (session && session.user.role === 'STUDENT') {
-    const student = mockStudentProfiles.find((s) => s.userId === session.user.id);
+    const student = await studentProfileRepo.findByUserId(session.user.id);
     if (student) {
       isStudentVerified = student.verificationStatus === 'VERIFIED';
+    } else {
+      isStudentVerified = true;
     }
   }
 
-  // Assuming current user is verified for mock fallback
-  if (session && !mockStudentProfiles.find((s) => s.userId === session.user.id)) {
-    isStudentVerified = true;
-  }
-
-  const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
-  const isVerifiedEmployer = employer?.verificationStatus === 'VERIFIED';
-  const companyName = employer?.companyName || 'Verified Corporate Partner';
+  const isExternal = listing.sourceType === 'CURATED_EXTERNAL';
+  const isVerifiedEmployer = !isExternal && listing.companyVerificationStatus === 'VERIFIED';
+  const companyName = isExternal
+    ? (listing.externalCompany || listing.companyName || 'Industry Partner')
+    : (listing.companyName || 'Verified Corporate Partner');
   const avatarColor = getCompanyAvatarColor(companyName);
   const initials = companyName.charAt(0).toUpperCase();
 
@@ -98,6 +131,11 @@ export default async function ListingDetailPage({
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-900 text-xs sm:text-sm">{companyName}</span>
                   {isVerifiedEmployer && <VerificationBadge size="md" showLabel />}
+                  {isExternal && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+                      <Sparkles className="w-3 h-3 mr-1" /> Curated SIWES Opportunity
+                    </Badge>
+                  )}
                 </div>
 
                 <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
@@ -123,32 +161,18 @@ export default async function ListingDetailPage({
               </div>
             </div>
 
-            {/* Direct Apply Button */}
+            {/* Direct Apply / Outreach Button */}
             <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
-              {session?.user.role === 'STUDENT' ? (
-                isStudentVerified ? (
-                  <Link
-                    href={`/listings/${listing.id}/apply`}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
-                  >
-                    Apply for Placement <ArrowRight className="w-4 h-4" />
-                  </Link>
-                ) : (
-                  <Link
-                    href="/profile/settings"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs w-full md:w-auto"
-                  >
-                    Verify Student ID to Apply
-                  </Link>
-                )
-              ) : (
-                <Link
-                  href="/sign-in"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
-                >
-                  Sign In as Student to Apply
-                </Link>
-              )}
+              <ListingApplyButton
+                listingId={listing.id}
+                sourceType={listing.sourceType ?? 'NATIVE'}
+                externalUrl={listing.externalUrl}
+                contactEmail={listing.contactEmail}
+                companyName={companyName}
+                location={listing.location}
+                isStudentVerified={isStudentVerified}
+                isStudent={session?.user.role === 'STUDENT'}
+              />
             </div>
           </div>
 
@@ -185,7 +209,7 @@ export default async function ListingDetailPage({
 
         {/* Content Body */}
         <div className="p-5 sm:p-6 space-y-5">
-          {session?.user.role === 'STUDENT' && !isStudentVerified && (
+          {session?.user.role === 'STUDENT' && !isStudentVerified && !isExternal && (
             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
               <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
@@ -237,3 +261,4 @@ export default async function ListingDetailPage({
     </div>
   );
 }
+

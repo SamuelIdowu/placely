@@ -36,7 +36,8 @@ export function useMessagePolling({
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to fetch messages (${res.status})`);
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Failed to fetch messages (${res.status})`);
       }
 
       const data = await res.json();
@@ -46,10 +47,13 @@ export function useMessagePolling({
       if (typeof data.isLocked === 'boolean') {
         setIsLocked(data.isLocked);
       }
+      setError(null);
     } catch (err: unknown) {
       console.error('Error polling messages:', err);
     }
   }, [applicationId]);
+
+  const initialFetchSkipped = useRef(initialMessages.length > 0);
 
   useEffect(() => {
     if (isLocked) return;
@@ -61,7 +65,11 @@ export function useMessagePolling({
       }
     };
 
-    runFetch();
+    if (!initialFetchSkipped.current) {
+      runFetch();
+    } else {
+      initialFetchSkipped.current = false;
+    }
 
     const intervalId = setInterval(() => {
       runFetch();

@@ -61,7 +61,7 @@ export function AdminListingsTable({ initialListings }: AdminListingsTableProps)
   return (
     <div className="space-y-4">
       {errorMsg && (
-        <div className="p-3 bg-red-50 text-red-700 text-sm border border-red-200 rounded-[4px]">
+        <div className="p-3 bg-red-50 text-red-700 text-xs font-medium border border-red-200 rounded-xl">
           {errorMsg}
         </div>
       )}

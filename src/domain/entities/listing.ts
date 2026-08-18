@@ -5,11 +5,17 @@ import { DomainError } from '@/lib/errors';
 import type { DisciplineTag } from '@/lib/constants';
 
 export type ListingStatus = 'OPEN' | 'CLOSED';
+export type ListingSourceType = 'NATIVE' | 'CURATED_EXTERNAL';
 export type { DisciplineTag };
 
 export interface ListingProps {
   id: string;
-  employerProfileId: string;
+  employerProfileId?: string | null;
+  sourceType?: ListingSourceType;
+  externalUrl?: string | null;
+  contactEmail?: string | null;
+  externalCompany?: string | null;
+  externalLogoUrl?: string | null;
   title: string;
   description: string;
   disciplines: string[];
@@ -28,11 +34,24 @@ export class Listing {
     if (!props.disciplines.length) {
       throw new DomainError('A listing must target at least one discipline');
     }
-    this.props = props;
+    this.props = {
+      ...props,
+      sourceType: props.sourceType ?? 'NATIVE',
+      employerProfileId: props.employerProfileId ?? null,
+      externalUrl: props.externalUrl ?? null,
+      contactEmail: props.contactEmail ?? null,
+      externalCompany: props.externalCompany ?? null,
+      externalLogoUrl: props.externalLogoUrl ?? null,
+    };
   }
 
   get id() { return this.props.id; }
   get employerProfileId() { return this.props.employerProfileId; }
+  get sourceType() { return this.props.sourceType ?? 'NATIVE'; }
+  get externalUrl() { return this.props.externalUrl; }
+  get contactEmail() { return this.props.contactEmail; }
+  get externalCompany() { return this.props.externalCompany; }
+  get externalLogoUrl() { return this.props.externalLogoUrl; }
   get title() { return this.props.title; }
   get description() { return this.props.description; }
   get disciplines() { return this.props.disciplines; }
@@ -45,6 +64,10 @@ export class Listing {
 
   isOpen(): boolean {
     return this.props.status === 'OPEN' && !this.props.isModerated;
+  }
+
+  isExternal(): boolean {
+    return this.props.sourceType === 'CURATED_EXTERNAL';
   }
 
   close(): Listing {
@@ -68,3 +91,4 @@ export class Listing {
     return { ...this.props };
   }
 }
+

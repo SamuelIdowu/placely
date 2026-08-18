@@ -41,7 +41,7 @@ export async function GET(
     }
   }
 
-  const employer = listing ? await employerProfileRepo.findById(listing.employerProfileId) : null;
+  const employer = listing?.employerProfileId ? await employerProfileRepo.findById(listing.employerProfileId) : null;
 
   return NextResponse.json({
     application: application.toObject(),
