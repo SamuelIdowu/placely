@@ -97,6 +97,7 @@ export function FloatingNavRail({
         { icon: ShieldCheck, href: '/admin/verifications', label: 'Verification Queue', badge: 'Review', badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
         { icon: Layers, href: '/admin/listings', label: 'Listings Moderation' },
         { icon: Users, href: '/admin/users', label: 'User Directory' },
+        { icon: Sparkles, href: '/admin/design-system', label: 'Design System', badge: 'Tokens', badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
       ],
     },
   ];
@@ -110,7 +111,7 @@ export function FloatingNavRail({
 
     // Handle nested subroutes explicitly without prefix bleeding
     if (href === '/listings' && pathname.startsWith('/listings/')) return true;
-    if (href === '/directory' && pathname.startsWith('/directory/')) return true;
+    if (href === '/directory' && (pathname.startsWith('/directory/') || pathname === '/outreach' || pathname.startsWith('/outreach/'))) return true;
     if (href === '/applications' && pathname.startsWith('/applications/')) return true;
     if (href === '/employer/listings' && pathname.startsWith('/employer/listings/')) return true;
     if (href === '/employer/applications' && pathname.startsWith('/employer/applications/')) return true;

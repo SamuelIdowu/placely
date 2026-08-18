@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { dispatchSiwesOutreachUseCase, studentProfileRepo } from '@/lib/container';
+import { StudentProfile } from '@/domain/entities/student-profile';
+import { createId } from '@paralleldrive/cuid2';
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -10,14 +12,25 @@ export async function POST(req: Request) {
   }
 
   try {
-    const studentProfile = await studentProfileRepo.findByUserId(session.user.id);
+    let studentProfile = await studentProfileRepo.findByUserId(session.user.id);
     if (!studentProfile) {
-      return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
+      const now = new Date();
+      studentProfile = await studentProfileRepo.save(
+        new StudentProfile({
+          id: createId(),
+          userId: session.user.id,
+          university: 'University of Lagos',
+          discipline: 'Computer Science & Engineering',
+          profileCompleteness: 50,
+          verificationStatus: 'PENDING',
+          createdAt: now,
+          updatedAt: now,
+        })
+      );
     }
 
     const body = await req.json();
     const studentName = session.user.name?.trim() || 'Placely Student';
-
     const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || 'https://placely.app';
 
     const result = await dispatchSiwesOutreachUseCase.execute({
@@ -30,6 +43,7 @@ export async function POST(req: Request) {
       durationMonths: body.durationMonths ? Number(body.durationMonths) : 6,
       matricNumber: body.matricNumber,
       note: body.note,
+      customLetterHtml: body.customLetterHtml,
       appBaseUrl: origin,
     });
 

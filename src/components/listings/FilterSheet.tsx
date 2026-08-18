@@ -18,14 +18,14 @@ export function FilterSheet() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="md:hidden rounded-[4px] border-slate-300">
+        <Button variant="outline" size="sm" className="md:hidden">
           <Filter className="w-4 h-4 mr-2" />
           Filter Listings
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto p-6 rounded-lg">
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto p-6">
         <DialogHeader className="mb-4">
-          <DialogTitle className="text-lg font-semibold text-slate-900">Search & Filters</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-foreground">Search & Filters</DialogTitle>
         </DialogHeader>
         <FilterControls />
       </DialogContent>

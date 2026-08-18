@@ -3,10 +3,10 @@ import { Skeleton } from '@/components/shared/Skeleton';
 
 export function ListingCardSkeleton() {
   return (
-    <div className="bg-white border border-app-border rounded-lg p-5 shadow-sm space-y-4">
+    <div className="bg-card border border-border rounded-card p-5 shadow-xs space-y-4">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Skeleton className="h-10 w-10 rounded-md" />
+          <Skeleton className="h-10 w-10 rounded-full" />
           <div className="space-y-1.5">
             <Skeleton className="h-4 w-40" />
             <Skeleton className="h-3 w-28" />
@@ -24,9 +24,9 @@ export function ListingCardSkeleton() {
         <Skeleton className="h-5 w-16 rounded-full" />
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+      <div className="flex items-center justify-between pt-3 border-t border-border">
         <Skeleton className="h-3 w-24" />
-        <Skeleton className="h-8 w-24 rounded-[4px]" />
+        <Skeleton className="h-8 w-24 rounded-full" />
       </div>
     </div>
   );

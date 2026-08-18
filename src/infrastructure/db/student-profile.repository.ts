@@ -18,6 +18,21 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
   async save(profile: StudentProfile): Promise<StudentProfile> {
     const data = profile.toObject();
     const completeness = computeCompleteness(data);
+
+    // Ensure parent User row exists to satisfy foreign key constraint
+    const existingUser = await prisma.user.findUnique({ where: { id: data.userId } });
+    if (!existingUser) {
+      await prisma.user.create({
+        data: {
+          id: data.userId,
+          email: `student_${data.userId}@placely.ng`,
+          firstName: 'Placely',
+          lastName: 'Student',
+          role: 'STUDENT',
+        },
+      });
+    }
+
     const row = await prisma.studentProfile.create({
       data: {
         id: data.id,
@@ -60,6 +75,21 @@ export class PrismaStudentProfileRepository implements StudentProfileRepositoryP
   async upsert(profile: StudentProfile): Promise<StudentProfile> {
     const data = profile.toObject();
     const completeness = computeCompleteness(data);
+
+    // Ensure parent User row exists to satisfy foreign key constraint
+    const existingUser = await prisma.user.findUnique({ where: { id: data.userId } });
+    if (!existingUser) {
+      await prisma.user.create({
+        data: {
+          id: data.userId,
+          email: `student_${data.userId}@placely.ng`,
+          firstName: 'Placely',
+          lastName: 'Student',
+          role: 'STUDENT',
+        },
+      });
+    }
+
     const row = await prisma.studentProfile.upsert({
       where: { userId: data.userId },
       create: {

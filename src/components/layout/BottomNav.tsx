@@ -42,7 +42,7 @@ export function BottomNav({ role }: BottomNavProps) {
   }[role];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-around border-t border-app-border bg-white px-2 shadow-lg">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-around border-t border-border bg-white/95 backdrop-blur-md px-2 shadow-sm">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive =
@@ -58,7 +58,7 @@ export function BottomNav({ role }: BottomNavProps) {
             href={item.href}
             className={cn(
               "flex flex-col items-center justify-center w-full py-1 text-xs font-medium transition-colors cursor-pointer",
-              isActive ? "text-black" : "text-muted-foreground hover:text-foreground"
+              isActive ? "text-brand-indigo font-bold" : "text-body-muted hover:text-foreground"
             )}
           >
             <Icon className={cn("h-5 w-5 mb-0.5", isActive && "stroke-[2.5]")} />

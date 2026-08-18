@@ -3,7 +3,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { AlertTriangle, RefreshCw, LayoutDashboard } from 'lucide-react';
 
 export default function GlobalError({
   error,
@@ -17,30 +18,34 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-12 text-center">
-      <div className="bg-card text-card-foreground p-8 rounded-xl max-w-md shadow-sm border border-border space-y-4">
-        <div className="p-3 bg-rose-50 text-rose-600 rounded-full w-fit mx-auto">
-          <AlertTriangle className="h-8 w-8" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
+      <Card variant="subtle" className="p-8 sm:p-10 rounded-card max-w-md w-full shadow-xs border border-border space-y-5">
+        <div className="p-3.5 bg-rose-50 text-rose-600 rounded-2xl w-fit mx-auto border border-rose-100">
+          <AlertTriangle className="h-7 w-7" />
         </div>
-        <h1 className="text-xl font-bold text-slate-900">Something went wrong</h1>
-        <p className="text-xs text-muted-foreground">
-          An unexpected system error occurred while processing your request. Please try again or return to home.
-        </p>
+        <div className="space-y-1.5">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Something went wrong
+          </h1>
+          <p className="text-xs sm:text-sm text-body-muted leading-relaxed">
+            An unexpected error occurred while loading this page. Please try again or return to your dashboard.
+          </p>
+        </div>
 
-        <div className="flex items-center justify-center gap-3 pt-2">
-          <Button onClick={() => reset()} variant="default" size="sm">
-            <RefreshCw className="h-3.5 w-3.5 mr-1" />
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <Button onClick={() => reset()} variant="indigo" size="default" className="w-full sm:w-auto">
+            <RefreshCw className="h-4 w-4 mr-1.5" />
             Try Again
           </Button>
 
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center h-8 px-3 text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-[4px] transition-colors"
-          >
-            Go Home
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button variant="outline" size="default" className="w-full sm:w-auto">
+              <LayoutDashboard className="h-4 w-4 mr-1.5" />
+              Go to Dashboard
+            </Button>
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

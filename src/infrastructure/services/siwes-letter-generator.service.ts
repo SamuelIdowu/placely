@@ -62,128 +62,70 @@ ${links ? '\n' + links : ''}
     });
 
     const recipient = input.contactPerson || 'The Human Resources Manager / Head of Training';
-    const location = input.targetLocation ? `<p style="margin: 0; color: #4b5563;">${input.targetLocation}</p>` : '';
+    const location = input.targetLocation ? `<p style="margin: 0; color: #64748b; font-size: 12px;">${input.targetLocation}</p>` : '';
     const matric = input.matricNumber ? ` (Matric No: <strong>${input.matricNumber}</strong>)` : '';
-    const cgpaHtml = input.cgpa ? `<p style="margin: 4px 0; color: #1f2937;"><strong>Academic Standing:</strong> Current CGPA of ${input.cgpa.toFixed(2)}</p>` : '';
+    const cgpaHtml = input.cgpa ? `<p style="margin: 2px 0; color: #1e293b;"><strong>Academic Standing:</strong> Current CGPA of ${input.cgpa.toFixed(2)}</p>` : '';
     const skillsHtml = input.skills && input.skills.length > 0
-      ? `<p style="margin: 4px 0; color: #1f2937;"><strong>Core Competencies:</strong> ${input.skills.map((s) => `<span style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px;">${s}</span>`).join(' ')}</p>`
+      ? `<p style="margin: 2px 0; color: #1e293b;"><strong>Core Competencies:</strong> ${input.skills.map((s) => `<span style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px;">${s}</span>`).join(' ')}</p>`
       : '';
 
     return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>SIWES Application Letter - ${input.studentName}</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      line-height: 1.6;
-      color: #1f2937;
-      background-color: #ffffff;
-      margin: 0;
-      padding: 32px;
-    }
-    .letter-container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 40px 48px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .header {
-      border-bottom: 2px solid #3b82f6;
-      padding-bottom: 20px;
-      margin-bottom: 28px;
-    }
-    .badge {
-      display: inline-block;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-weight: 600;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      margin-bottom: 12px;
-    }
-    .title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-      margin: 24px 0 16px 0;
-      border-left: 4px solid #3b82f6;
-      padding-left: 12px;
-    }
-    .footer {
-      margin-top: 40px;
-      border-top: 1px solid #e5e7eb;
-      padding-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="letter-container">
-    <div class="header">
-      <div class="badge">Official SIWES Placement Application</div>
-      <p style="margin: 0; font-weight: 600; color: #374151;">${formattedDate}</p>
-    </div>
-
-    <div style="margin-bottom: 24px;">
-      <p style="margin: 0; font-weight: 700; color: #111827;">${recipient}</p>
-      <p style="margin: 0; font-weight: 600; color: #2563eb;">${input.targetCompany}</p>
-      ${location}
-    </div>
-
-    <p style="font-weight: 500;">Dear Sir/Madam,</p>
-
-    <div class="title">
-      APPLICATION FOR SIWES / INDUSTRIAL TRAINING PLACEMENT (${input.durationMonths}-MONTH DURATION)
-    </div>
-
-    <p>
-      I am writing to formally apply for an Industrial Training (SIWES) placement at <strong>${input.targetCompany}</strong>. 
-      I am an undergraduate student of <strong>${input.discipline}</strong> at <strong>${input.university}</strong>${matric}.
-    </p>
-
-    <p>
-      As part of the degree curriculum and the nationwide Students Industrial Work Experience Scheme (SIWES), 
-      I am required to undergo a <strong>${input.durationMonths}-month</strong> hands-on industrial attachment to bridge classroom theory 
-      with active industrial practices.
-    </p>
-
-    <p>
-      Having closely observed ${input.targetCompany}'s impact, high technical standards, and leadership in the industry, 
-      I am enthusiastic about contributing meaningfully to your team while expanding my professional competencies under your mentorship.
-    </p>
-
-    <div style="background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 8px; padding: 16px; margin: 20px 0;">
-      ${cgpaHtml}
-      ${skillsHtml}
-    </div>
-
-    <p>
-      I am dedicated, rapid in learning, and committed to upholding the highest standards of professional integrity. 
-      My comprehensive student profile and credentials are attached for your evaluation.
-    </p>
-
-    <p>
-      Thank you for your time and continuous investment in emerging talent. I look forward to the opportunity to discuss my application.
-    </p>
-
-    <div class="footer">
-      <p style="margin: 0 0 4px 0;">Yours faithfully,</p>
-      <p style="margin: 0; font-weight: 700; font-size: 16px; color: #111827;">${input.studentName}</p>
-      <p style="margin: 2px 0 0 0; color: #4b5563; font-size: 14px;">Department of ${input.discipline}, ${input.university}</p>
-    </div>
+<div class="siwes-letter-content" style="color: #0f172a; line-height: 1.6; font-size: 13px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 14px;">
+    <span style="display: inline-block; background: #eef2ff; color: #4338ca; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; padding: 2.5px 8px; border-radius: 9999px; border: 1px solid #e0e7ff;">
+      Official SIWES Placement Application
+    </span>
+    <span style="font-size: 12px; font-weight: 600; color: #64748b;">${formattedDate}</span>
   </div>
-</body>
-</html>
+
+  <div style="margin-bottom: 12px;">
+    <p style="margin: 0; font-weight: 700; color: #0f172a;">${recipient}</p>
+    <p style="margin: 0; font-weight: 600; color: #4338ca;">${input.targetCompany}</p>
+    ${location}
+  </div>
+
+  <p style="margin: 8px 0; font-weight: 600;">Dear Sir/Madam,</p>
+
+  <h2 style="font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.03em; margin: 12px 0 8px 0; border-left: 3px solid #4338ca; padding-left: 8px; line-height: 1.35;">
+    APPLICATION FOR SIWES / INDUSTRIAL TRAINING PLACEMENT (${input.durationMonths}-MONTH DURATION)
+  </h2>
+
+  <p style="margin: 8px 0;">
+    I am writing to formally apply for an Industrial Training (SIWES) placement at <strong>${input.targetCompany}</strong>. 
+    I am an undergraduate student of <strong>${input.discipline}</strong> at <strong>${input.university}</strong>${matric}.
+  </p>
+
+  <p style="margin: 8px 0;">
+    As part of the degree curriculum and the Students Industrial Work Experience Scheme (SIWES), 
+    I am expected to undergo an intensive <strong>${input.durationMonths}-month</strong> industrial attachment designed to bridge classroom academic theory with active industrial practices.
+  </p>
+
+  <p style="margin: 8px 0;">
+    Having followed ${input.targetCompany}'s track record and technical excellence, 
+    I am eager to contribute effectively to your team while acquiring practical industry competencies under your guidance.
+  </p>
+
+  ${(cgpaHtml || skillsHtml) ? `
+  <div style="background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: 12px;">
+    ${cgpaHtml}
+    ${skillsHtml}
+  </div>` : ''}
+
+  <p style="margin: 8px 0;">
+    I am dedicated, rapid in learning, and committed to upholding high standards of professional integrity. 
+    Enclosed with this letter is my student profile and curriculum vitae for your consideration.
+  </p>
+
+  <p style="margin: 8px 0;">
+    Thank you for your time, consideration, and commitment to student training.
+  </p>
+
+  <div style="margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+    <p style="margin: 0 0 2px 0; color: #64748b; font-size: 12px;">Yours faithfully,</p>
+    <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 14px;">${input.studentName}</p>
+    <p style="margin: 1px 0 0 0; color: #64748b; font-size: 12px;">Department of ${input.discipline}, ${input.university}</p>
+  </div>
+</div>
 `.trim();
   }
 }

@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { generateSiwesLetterUseCase, studentProfileRepo } from '@/lib/container';
+import { StudentProfile } from '@/domain/entities/student-profile';
+import { createId } from '@paralleldrive/cuid2';
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -10,17 +12,37 @@ export async function POST(req: Request) {
   }
 
   try {
-    const studentProfile = await studentProfileRepo.findByUserId(session.user.id);
+    let studentProfile = await studentProfileRepo.findByUserId(session.user.id);
+    
+    // Auto-provision profile if not yet created so students can preview/draft letters immediately
     if (!studentProfile) {
-      return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
+      const now = new Date();
+      try {
+        studentProfile = await studentProfileRepo.save(
+          new StudentProfile({
+            id: createId(),
+            userId: session.user.id,
+            university: 'University of Lagos',
+            discipline: 'Computer Science & Engineering',
+            profileCompleteness: 50,
+            verificationStatus: 'PENDING',
+            createdAt: now,
+            updatedAt: now,
+          })
+        );
+      } catch {
+        // Fall back gracefully
+      }
     }
 
     const body = await req.json();
     const studentName = session.user.name?.trim() || 'Placely Student';
 
     const result = await generateSiwesLetterUseCase.execute({
-      studentProfileId: studentProfile.id,
+      studentProfileId: studentProfile?.id,
       studentName,
+      university: body.university || studentProfile?.university || 'University of Lagos',
+      discipline: body.discipline || studentProfile?.discipline || 'Computer Science & Engineering',
       targetCompany: body.targetCompany,
       targetLocation: body.targetLocation,
       contactPerson: body.contactPerson,

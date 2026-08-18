@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import { VerificationBadge } from '@/components/shared/VerificationBadge';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
   Building2,
   GraduationCap,
@@ -18,6 +19,8 @@ import {
   Loader2,
   ArrowRight,
   Sparkles,
+  Briefcase,
+  ExternalLink,
 } from 'lucide-react';
 
 interface ClaimDetails {
@@ -127,10 +130,10 @@ function ClaimPageContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
         <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto" />
-          <p className="text-sm text-zinc-500 font-medium">Verifying SIWES application token...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-brand-indigo mx-auto" />
+          <p className="text-xs font-semibold text-slate-500">Verifying SIWES application token...</p>
         </div>
       </div>
     );
@@ -138,237 +141,271 @@ function ClaimPageContent() {
 
   if (errorMsg && !details) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
-        <Card className="max-w-md w-full text-center p-6 space-y-4">
-          <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/50 text-red-600 flex items-center justify-center mx-auto">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="max-w-md w-full bg-white rounded-[24px] border border-border p-8 text-center space-y-4 shadow-2xs">
+          <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto border border-red-200">
             !
           </div>
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Invalid Claim Link</h2>
-          <p className="text-sm text-zinc-500">{errorMsg}</p>
-          <Button onClick={() => router.push('/')} variant="outline" className="w-full">
+          <div className="space-y-1">
+            <h2 className="font-serif text-xl font-normal text-slate-900">Invalid Claim Link</h2>
+            <p className="text-xs text-slate-500">{errorMsg}</p>
+          </div>
+          <Button
+            onClick={() => router.push('/')}
+            className="w-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-semibold rounded-full h-10 shadow-xs cursor-pointer"
+          >
             Go to Placely Homepage
           </Button>
-        </Card>
+        </div>
       </div>
     );
   }
 
   if (isClaimed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
-        <Card className="max-w-lg w-full text-center p-8 space-y-6 shadow-xl border-emerald-200 dark:border-emerald-900">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center mx-auto">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="max-w-lg w-full bg-white rounded-[24px] border border-emerald-200 p-8 text-center space-y-6 shadow-md">
+          <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">Account Claimed Successfully!</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="space-y-1.5">
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-slate-900">
+              Account Claimed Successfully
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Your response has been transmitted to <strong>{details?.student.name}</strong>, and your Placely Employer Portal account is now active.
             </p>
           </div>
 
-          <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-xl text-left text-xs space-y-2 border">
-            <p><strong>Company:</strong> {companyName}</p>
-            <p><strong>Login Email:</strong> {email}</p>
-            <p><strong>Status:</strong> {action === 'ACCEPT' ? 'Offer Extended' : 'Candidate Shortlisted for Interview'}</p>
+          <div className="bg-slate-50 p-4 rounded-2xl text-left text-xs space-y-2 border border-slate-200/80">
+            <p className="flex justify-between">
+              <span className="text-slate-500">Company:</span>
+              <span className="font-semibold text-slate-900">{companyName}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-slate-500">Login Email:</span>
+              <span className="font-mono font-semibold text-slate-900">{email}</span>
+            </p>
+            <p className="flex justify-between">
+              <span className="text-slate-500">Decision:</span>
+              <span className="font-bold text-emerald-700">
+                {action === 'ACCEPT' ? 'Placement Offer Extended' : 'Candidate Shortlisted for Interview'}
+              </span>
+            </p>
           </div>
 
           <Button
             onClick={() => router.push('/api/auth/signin')}
-            className="w-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-bold h-11"
+            className="w-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold text-xs rounded-full h-11 shadow-xs cursor-pointer"
           >
             Sign In to Employer Portal <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
-        </Card>
+        </div>
       </div>
     );
   }
 
+  const avatarColor = details ? getCompanyAvatarColor(details.student.name) : '#4f46e5';
+  const initials = details?.student.name ? details.student.name.charAt(0).toUpperCase() : 'S';
+
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Branding */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-indigo-light text-brand-indigo text-[11px] font-bold border border-indigo-100">
             <Sparkles className="w-3.5 h-3.5" />
             Official SIWES Applicant Review
           </div>
-          <h1 className="text-3xl font-serif font-bold text-zinc-900 dark:text-zinc-50">
+          <h1 className="font-serif text-2xl sm:text-4xl font-normal tracking-tight text-slate-900">
             Review SIWES Placement Application
           </h1>
-          <p className="text-sm text-zinc-500 max-w-lg mx-auto">
-            You received this application for an Industrial Training (SIWES) attachment from a verified undergraduate.
+          <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">
+            You received this official Industrial Attachment application from a verified STEM undergraduate via Placely.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-start">
           {/* Applicant Info Card (Left Column) */}
           <div className="md:col-span-2 space-y-4">
-            <Card className="bg-white dark:bg-zinc-900 border shadow-xs">
-              <CardHeader className="pb-3 border-b">
-                <Badge variant="outline" className="w-fit bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
-                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Verified Student
-                </Badge>
-                <CardTitle className="text-xl font-bold mt-2">
-                  {details?.student.name}
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  {details?.student.discipline}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-4 text-xs">
-                <div className="space-y-1">
-                  <span className="text-zinc-400 font-medium">Institution</span>
-                  <p className="font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
-                    <GraduationCap className="w-4 h-4 text-blue-600" />
+            <div className="bg-white rounded-[20px] p-5 border border-border shadow-2xs space-y-4">
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-xs"
+                  style={{ background: avatarColor }}
+                >
+                  {initials}
+                </div>
+                <div className="space-y-0.5 min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="font-bold text-sm text-slate-900 truncate">
+                      {details?.student.name}
+                    </h3>
+                    <VerificationBadge size="sm" />
+                  </div>
+                  <p className="text-xs text-slate-500 truncate">
+                    {details?.student.discipline}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 space-y-3 text-xs">
+                <div>
+                  <span className="text-slate-400 text-[11px] font-medium block">Institution</span>
+                  <p className="font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                    <GraduationCap className="w-3.5 h-3.5 text-brand-indigo" />
                     {details?.student.university}
                   </p>
                 </div>
 
-                <div className="space-y-1">
-                  <span className="text-zinc-400 font-medium">Placement Role</span>
-                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+                <div>
+                  <span className="text-slate-400 text-[11px] font-medium block">Applied Role / Unit</span>
+                  <p className="font-semibold text-slate-800 flex items-center gap-1.5 mt-0.5">
+                    <Briefcase className="w-3.5 h-3.5 text-brand-indigo" />
                     {details?.listing.title}
                   </p>
                 </div>
 
                 {details?.student.resumeUrl && (
-                  <div className="pt-2">
+                  <div className="pt-1">
                     <a
                       href={details.student.resumeUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 font-semibold underline"
+                      className="inline-flex items-center gap-1.5 text-brand-indigo hover:text-brand-indigo-hover font-semibold text-xs"
                     >
-                      <FileText className="w-4 h-4" />
-                      View Student Resume / CV
+                      <FileText className="w-3.5 h-3.5" />
+                      View Student Resume / CV <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <div className="p-4 bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/60 rounded-xl text-xs text-blue-900 dark:text-blue-200 space-y-1">
-              <p className="font-bold">What is Placely?</p>
-              <p className="text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
-                Placely is Nigeria's dedicated SIWES & Internship network. Claiming your company profile is 100% free and allows you to source, review, and hire top STEM students across Nigerian universities.
+            <div className="p-4 rounded-2xl bg-brand-indigo-light/40 border border-indigo-100 text-xs text-slate-700 space-y-1.5">
+              <p className="font-bold text-brand-indigo flex items-center gap-1">
+                <Building2 className="w-3.5 h-3.5" /> What is Placely?
+              </p>
+              <p className="text-[11px] leading-relaxed text-slate-600">
+                Placely is Nigeria's dedicated SIWES & Internship network. Claiming your company profile is 100% free and allows your team to hire vetted talent across Nigerian universities with zero administrative overhead.
               </p>
             </div>
           </div>
 
           {/* Action & Account Claim Card (Right Column) */}
           <div className="md:col-span-3">
-            <Card className="bg-white dark:bg-zinc-900 border shadow-md">
-              <CardHeader className="pb-4 border-b">
-                <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-blue-600" />
+            <div className="bg-white rounded-[24px] p-6 sm:p-7 border border-border shadow-2xs space-y-5">
+              <div className="space-y-1 pb-4 border-b border-slate-100">
+                <h3 className="font-serif text-lg sm:text-xl font-normal text-slate-900 flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-brand-indigo" />
                   Respond & Claim Company Profile
-                </CardTitle>
-                <CardDescription className="text-xs">
+                </h3>
+                <p className="text-xs text-slate-500">
                   Choose your response to the student and create your login credentials.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <form onSubmit={handleClaimSubmit} className="space-y-5">
-                  {errorMsg && (
-                    <div className="p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 text-red-700 text-xs rounded-lg">
-                      {errorMsg}
-                    </div>
-                  )}
+                </p>
+              </div>
 
-                  {/* Action Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Your Response to Applicant</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setAction('ACCEPT')}
-                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                          action === 'ACCEPT'
-                            ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100 font-semibold ring-2 ring-blue-600/20'
-                            : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 hover:bg-zinc-50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 text-xs font-bold mb-1">
-                          <UserCheck className="w-4 h-4 text-emerald-600" /> Accept for SIWES
-                        </div>
-                        <p className="text-[11px] text-zinc-500 font-normal">Extend placement offer to student</p>
-                      </button>
+              <form onSubmit={handleClaimSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl">
+                    {errorMsg}
+                  </div>
+                )}
 
-                      <button
-                        type="button"
-                        onClick={() => setAction('SHORTLIST')}
-                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                          action === 'SHORTLIST'
-                            ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100 font-semibold ring-2 ring-blue-600/20'
-                            : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 hover:bg-zinc-50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 text-xs font-bold mb-1">
-                          <Calendar className="w-4 h-4 text-blue-600" /> Interview Candidate
-                        </div>
-                        <p className="text-[11px] text-zinc-500 font-normal">Shortlist student for interview</p>
-                      </button>
-                    </div>
+                {/* Action Selection */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-slate-700">Your Response to Applicant</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setAction('ACCEPT')}
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                        action === 'ACCEPT'
+                          ? 'border-brand-indigo bg-brand-indigo-light/30 text-slate-900 font-semibold ring-2 ring-brand-indigo/20'
+                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs font-bold mb-0.5">
+                        <UserCheck className="w-4 h-4 text-emerald-600" /> Accept for SIWES
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-normal">Extend placement offer</p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAction('SHORTLIST')}
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                        action === 'SHORTLIST'
+                          ? 'border-brand-indigo bg-brand-indigo-light/30 text-slate-900 font-semibold ring-2 ring-brand-indigo/20'
+                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 text-xs font-bold mb-0.5">
+                        <Calendar className="w-4 h-4 text-brand-indigo" /> Interview Candidate
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-normal">Shortlist for interview</p>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Company Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="space-y-1">
+                    <Label htmlFor="companyName" className="text-xs font-semibold text-slate-700">Company Name</Label>
+                    <Input
+                      id="companyName"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      required
+                      className="text-xs h-9.5 bg-slate-50 border-slate-200 rounded-xl focus:bg-white"
+                    />
                   </div>
 
-                  {/* Company Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="companyName" className="text-xs">Company Name</Label>
-                      <Input
-                        id="companyName"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        required
-                        className="text-xs h-10"
-                      />
-                    </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="cacNumber" className="text-xs font-semibold text-slate-700">CAC RC / Registration No. (Optional)</Label>
+                    <Input
+                      id="cacNumber"
+                      placeholder="e.g. RC 1234567"
+                      value={cacNumber}
+                      onChange={(e) => setCacNumber(e.target.value)}
+                      className="text-xs h-9.5 bg-slate-50 border-slate-200 rounded-xl focus:bg-white"
+                    />
+                  </div>
+                </div>
 
-                    <div className="space-y-1.5">
-                      <Label htmlFor="cacNumber" className="text-xs">CAC RC / Registration No. (Optional)</Label>
-                      <Input
-                        id="cacNumber"
-                        placeholder="e.g. RC 1234567"
-                        value={cacNumber}
-                        onChange={(e) => setCacNumber(e.target.value)}
-                        className="text-xs h-10"
-                      />
-                    </div>
+                {/* Account Credentials */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="space-y-1">
+                    <Label htmlFor="email" className="text-xs font-semibold text-slate-700">Work / Recruiter Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="text-xs h-9.5 font-mono bg-slate-50 border-slate-200 rounded-xl focus:bg-white"
+                    />
                   </div>
 
-                  {/* Account Credentials */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-xs">Work / Recruiter Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="text-xs h-10 font-mono"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <Label htmlFor="password" className="text-xs">Create Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Choose secure password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="text-xs h-10"
-                      />
-                    </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="password" className="text-xs font-semibold text-slate-700">Create Account Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Choose secure password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="text-xs h-9.5 bg-slate-50 border-slate-200 rounded-xl focus:bg-white"
+                    />
                   </div>
+                </div>
 
+                <div className="pt-2">
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 text-sm shadow-md active:scale-98"
+                    className="w-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold rounded-full h-11 text-xs sm:text-sm shadow-xs cursor-pointer active:scale-98"
                   >
                     {isSubmitting ? (
                       <>
@@ -381,9 +418,9 @@ function ClaimPageContent() {
                       </>
                     )}
                   </Button>
-                </form>
-              </CardContent>
-            </Card>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -394,8 +431,8 @@ function ClaimPageContent() {
 export default function ClaimPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-indigo" />
       </div>
     }>
       <ClaimPageContent />

@@ -1,24 +1,26 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { SiwesOutreachModal } from '@/components/student/siwes-outreach-modal';
+import { VerificationBadge } from '@/components/shared/VerificationBadge';
+import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
   Building2,
   Search,
   MapPin,
   Briefcase,
-  ShieldCheck,
   Send,
   ExternalLink,
   PlusCircle,
   GraduationCap,
   Sparkles,
   Loader2,
-  Filter,
+  Banknote,
+  Clock,
+  ArrowRight,
+  SearchX,
 } from 'lucide-react';
 
 interface CompanyItem {
@@ -119,20 +121,13 @@ const SEED_COMPANIES: CompanyItem[] = [
 ];
 
 export default function StudentDirectoryPage() {
+  const router = useRouter();
   const [companies, setCompanies] = useState<CompanyItem[]>(SEED_COMPANIES);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('ALL');
   const [selectedIndustry, setSelectedIndustry] = useState('ALL');
   const [selectedLocation, setSelectedLocation] = useState('ALL');
-
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeCompany, setActiveCompany] = useState<{
-    name: string;
-    email?: string | null;
-    location?: string | null;
-  }>({ name: '', email: null, location: null });
 
   useEffect(() => {
     fetchDirectory();
@@ -170,9 +165,12 @@ export default function StudentDirectoryPage() {
     fetchDirectory();
   };
 
-  const handleOpenOutreach = (company: { name: string; email?: string | null; location?: string | null }) => {
-    setActiveCompany(company);
-    setIsModalOpen(true);
+  const handleNavigateOutreach = (company: { name: string; email?: string | null; location?: string | null }) => {
+    const params = new URLSearchParams();
+    if (company.name) params.set('company', company.name);
+    if (company.email) params.set('email', company.email);
+    if (company.location) params.set('location', company.location);
+    router.push(`/outreach?${params.toString()}`);
   };
 
   const filteredCompanies = companies.filter((c) => {
@@ -187,62 +185,83 @@ export default function StudentDirectoryPage() {
   });
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-900 via-indigo-900 to-zinc-900 p-8 text-white shadow-xl">
-        <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            Zero Cold-Start • Guaranteed SIWES Supply
+    <div className="space-y-5 pb-10">
+      {/* ── 1. Header Band ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Institutional Training Network
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <Sparkles className="w-2.5 h-2.5" /> 100% ITF Approved
+            </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-900 mt-1">
             IT-Approved Employer Directory
           </h1>
-          <p className="text-blue-100/80 text-sm sm:text-base leading-relaxed">
-            Browse hundreds of Nigerian companies historically approved by University IT Departments for 3-month and 6-month SIWES attachments. Generate formal application letters and dispatch verified placement requests in seconds.
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Verified Nigerian companies historically approved by University IT Departments for 3-month and 6-month SIWES attachments.
           </p>
-
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Button
-              onClick={() => handleOpenOutreach({ name: '', email: null, location: null })}
-              className="bg-blue-500 hover:bg-blue-400 text-white font-semibold gap-2 shadow-lg active:scale-95"
-            >
-              <Send className="w-4 h-4" />
-              Apply to Any Unlisted Company
-            </Button>
-          </div>
         </div>
-
-        {/* Decorative background glow */}
-        <div className="absolute right-0 top-0 -mr-16 -mt-16 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* ── Search & Filter Controls ── */}
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 shadow-xs space-y-4">
-        <form onSubmit={handleSearchSubmit} className="flex gap-2">
+      {/* ── 2. Bento Hero: Custom Outreach Callout ── */}
+      <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 bg-surface-dark shadow-2xs">
+        <div className="space-y-1.5 max-w-xl">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-indigo text-white">
+              <PlusCircle className="w-3 h-3" /> Direct Outreach
+            </span>
+            <h2 className="font-serif text-lg sm:text-xl font-normal tracking-tight text-white">
+              Applying to an unlisted Nigerian company?
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm font-medium text-surface-dark-muted leading-relaxed">
+            Open the SIWES Letter Studio to format, edit with rich WYSIWYG tools, and dispatch your verified placement letter directly to HR.
+          </p>
+        </div>
+
+        <Button
+          onClick={() => handleNavigateOutreach({ name: '', email: null, location: null })}
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-semibold text-white transition-all shrink-0 bg-brand-indigo hover:bg-brand-indigo-hover rounded-full w-full sm:w-auto shadow-xs active:scale-95 cursor-pointer"
+        >
+          <Send className="w-3.5 h-3.5" />
+          Open Letter Studio
+        </Button>
+      </div>
+
+      {/* ── 3. Search & Filter Controls ── */}
+      <div className="bg-white rounded-[20px] p-4 sm:p-5 border border-slate-200/90 shadow-2xs space-y-3.5">
+        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2.5">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-zinc-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search companies by name, technology, or keywords (e.g. Flutterwave, Civil, Lagos)..."
-              className="pl-10 h-11 text-sm bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+              placeholder="Search companies by name, technology, or sector (e.g. Flutterwave, Julius Berger, Lagos)..."
+              className="pl-10 h-10 text-xs sm:text-sm bg-slate-50 border-slate-200 rounded-xl focus:bg-white"
             />
           </div>
-          <Button type="submit" className="h-11 px-6 bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold">
-            Search
+          <Button
+            type="submit"
+            className="h-10 px-6 bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-semibold rounded-full shadow-xs shrink-0 cursor-pointer"
+          >
+            Search Directory
           </Button>
         </form>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-slate-100">
           <div>
-            <label className="text-xs font-semibold text-zinc-500 mb-1.5 block">University IT Approval</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1 block">
+              University IT Endorsement
+            </label>
             <select
               value={selectedUniversity}
               onChange={(e) => setSelectedUniversity(e.target.value)}
-              className="w-full h-9.5 px-3 border rounded-lg text-xs bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+              className="w-full h-9 px-3 border border-slate-200 rounded-xl text-xs bg-slate-50 text-slate-800 focus:outline-none focus:border-brand-indigo"
             >
-              <option value="ALL">All University Lists</option>
+              <option value="ALL">All Universities (Nationwide)</option>
               <option value="UNILAG">UNILAG Approved</option>
               <option value="FUTA">FUTA Approved</option>
               <option value="UI">UI Approved</option>
@@ -253,13 +272,15 @@ export default function StudentDirectoryPage() {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-zinc-500 mb-1.5 block">Industry Sector</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1 block">
+              Industry Sector
+            </label>
             <select
               value={selectedIndustry}
               onChange={(e) => setSelectedIndustry(e.target.value)}
-              className="w-full h-9.5 px-3 border rounded-lg text-xs bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+              className="w-full h-9 px-3 border border-slate-200 rounded-xl text-xs bg-slate-50 text-slate-800 focus:outline-none focus:border-brand-indigo"
             >
-              <option value="ALL">All Industries</option>
+              <option value="ALL">All Engineering & Tech Sectors</option>
               <option value="Software">Software & IT</option>
               <option value="Civil">Civil & Construction</option>
               <option value="Energy">Energy / Oil & Gas</option>
@@ -270,11 +291,13 @@ export default function StudentDirectoryPage() {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-zinc-500 mb-1.5 block">Location Hub</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1 block">
+              Location Hub
+            </label>
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
-              className="w-full h-9.5 px-3 border rounded-lg text-xs bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800"
+              className="w-full h-9 px-3 border border-slate-200 rounded-xl text-xs bg-slate-50 text-slate-800 focus:outline-none focus:border-brand-indigo"
             >
               <option value="ALL">All Locations (Nigeria)</option>
               <option value="Lagos">Lagos State</option>
@@ -286,129 +309,142 @@ export default function StudentDirectoryPage() {
         </div>
       </div>
 
-      {/* ── Directory Grid ── */}
+      {/* ── 4. Results Count Strip ── */}
+      <div className="flex items-center justify-between text-xs text-slate-500 font-medium px-1">
+        <span>
+          Showing <span className="font-bold text-slate-900">{filteredCompanies.length}</span> approved {filteredCompanies.length === 1 ? 'organization' : 'organizations'}
+        </span>
+        {(selectedUniversity !== 'ALL' || selectedIndustry !== 'ALL' || selectedLocation !== 'ALL' || searchTerm) && (
+          <span className="text-brand-indigo font-semibold bg-brand-indigo-light px-2.5 py-0.5 rounded-full border border-indigo-100">
+            Filtered directory
+          </span>
+        )}
+      </div>
+
+      {/* ── 5. Directory Grid ── */}
       {isLoading ? (
-        <div className="py-20 flex flex-col items-center justify-center text-zinc-400 gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <p className="text-sm">Filtering approved employer directory...</p>
+        <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-brand-indigo" />
+          <p className="text-xs font-medium">Filtering approved employer directory...</p>
         </div>
       ) : filteredCompanies.length === 0 ? (
-        <div className="bg-white dark:bg-zinc-900 border rounded-2xl p-12 text-center space-y-4">
-          <Building2 className="w-12 h-12 text-zinc-400 mx-auto" />
-          <h3 className="text-lg font-bold">No companies found matching your filter</h3>
-          <p className="text-zinc-500 text-sm max-w-md mx-auto">
-            You can still apply to any specific company by email using our SIWES outreach generator.
-          </p>
-          <Button
-            onClick={() => handleOpenOutreach({ name: searchTerm || '', email: null, location: null })}
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
-          >
-            <Send className="w-4 h-4" /> Send Application to {searchTerm || 'Custom Company'}
-          </Button>
+        <div className="rounded-2xl border border-dashed border-border py-12 px-6 bg-white text-center space-y-3 shadow-2xs">
+          <div className="w-12 h-12 rounded-full bg-brand-indigo-light flex items-center justify-center text-brand-indigo mx-auto">
+            <SearchX className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-bold text-slate-900">No companies found matching your active filter</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              You can still draft, edit, and dispatch an official SIWES application letter to any company in Nigeria.
+            </p>
+          </div>
+          <div className="pt-2">
+            <Button
+              onClick={() => handleNavigateOutreach({ name: searchTerm || '', email: null, location: null })}
+              className="bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-semibold rounded-full px-5 py-2.5 gap-1.5 shadow-xs cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" /> Draft Letter for {searchTerm || 'Target Company'}
+            </Button>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          {filteredCompanies.map((company) => (
-            <Card
-              key={company.id}
-              className="hover:border-blue-500/50 hover:shadow-md transition-all duration-200 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col justify-between"
-            >
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-50">
-                        {company.name}
-                      </h3>
-                      {company.isUniversityApproved && (
-                        <span title="Verified SIWES Employer" className="text-blue-600">
-                          <ShieldCheck className="w-4 h-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredCompanies.map((company) => {
+            const avatarColor = getCompanyAvatarColor(company.name);
+            const initials = company.name.charAt(0).toUpperCase();
+
+            return (
+              <div
+                key={company.id}
+                className="bg-white rounded-[20px] p-5 border border-border hover:border-brand-indigo transition-all hover:shadow-xs flex flex-col justify-between group h-full shadow-2xs"
+              >
+                <div className="space-y-3.5">
+                  {/* Top Row: Avatar, Name, Badges */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
+                        style={{ background: avatarColor }}
+                      >
+                        {initials}
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-900">{company.name}</span>
+                          {company.isUniversityApproved && <VerificationBadge size="sm" />}
+                        </div>
+                        <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3 text-slate-400" />
+                          {company.location}
                         </span>
-                      )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-zinc-500">
-                      <Briefcase className="w-3.5 h-3.5 text-zinc-400" />
+                    {company.approvedByUniversity && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-indigo-light text-brand-indigo border border-indigo-100 shrink-0">
+                        <GraduationCap className="w-3 h-3" />
+                        {company.approvedByUniversity}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Industry & Highlights */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                      <Briefcase className="w-3.5 h-3.5 text-slate-400" />
                       <span>{company.industry}</span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-zinc-500">
-                      <MapPin className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>{company.location}</span>
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                      <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                        ITF SIWES Eligible
+                      </span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 ml-auto">
+                        <Banknote className="w-2.5 h-2.5" />
+                        ₦65k–₦85k/mo
+                      </span>
                     </div>
                   </div>
-
-                  {company.approvedByUniversity && (
-                    <Badge variant="outline" className="bg-blue-50/50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 text-[10px] whitespace-nowrap shrink-0">
-                      <GraduationCap className="w-3 h-3 mr-1" />
-                      {company.approvedByUniversity}
-                    </Badge>
-                  )}
                 </div>
 
-                <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between gap-3">
+                {/* Footer CTA Band */}
+                <div className="pt-3.5 mt-4 border-t border-slate-100 flex items-center justify-between gap-2">
                   {company.websiteUrl ? (
                     <a
                       href={company.websiteUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-zinc-500 hover:text-blue-600 flex items-center gap-1 transition-colors"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-brand-indigo transition-colors"
                     >
                       Website <ExternalLink className="w-3 h-3" />
                     </a>
                   ) : (
-                    <span className="text-xs text-zinc-400">Directory Listed</span>
+                    <span className="text-[11px] text-slate-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-slate-400" /> 6 Mo SIWES
+                    </span>
                   )}
 
                   <Button
                     size="sm"
                     onClick={() =>
-                      handleOpenOutreach({
+                      handleNavigateOutreach({
                         name: company.name,
                         email: company.contactEmail,
                         location: company.location,
                       })
                     }
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold gap-1.5 h-8.5 px-3.5 shadow-xs active:scale-95"
+                    className="bg-brand-indigo hover:bg-brand-indigo-hover text-white text-xs font-semibold rounded-full px-4 h-8 gap-1.5 shadow-xs active:scale-95 cursor-pointer"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    Send SIWES Application
+                    <Send className="w-3 h-3" />
+                    Draft &amp; Send Letter
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            );
+          })}
         </div>
       )}
-
-      {/* ── Bottom Callout: Student-Led Outreach ── */}
-      <div className="bg-gradient-to-r from-zinc-900 to-indigo-950 text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border border-zinc-800 shadow-lg">
-        <div className="space-y-1.5 text-center sm:text-left">
-          <h3 className="text-lg font-bold flex items-center justify-center sm:justify-start gap-2">
-            <PlusCircle className="w-5 h-5 text-blue-400" />
-            Want to apply to a specific Nigerian company?
-          </h3>
-          <p className="text-xs sm:text-sm text-zinc-300 max-w-xl">
-            You don't have to wait for an opening to be posted. Enter the company name and HR email to auto-generate and dispatch a standardized SIWES application.
-          </p>
-        </div>
-
-        <Button
-          onClick={() => handleOpenOutreach({ name: '', email: null, location: null })}
-          className="bg-white text-zinc-950 hover:bg-zinc-100 font-bold px-6 h-11 shrink-0 active:scale-95"
-        >
-          Generate Custom Application
-        </Button>
-      </div>
-
-      {/* ── SIWES Outreach Modal ── */}
-      <SiwesOutreachModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        targetCompany={activeCompany.name}
-        targetEmail={activeCompany.email}
-        targetLocation={activeCompany.location}
-      />
     </div>
   );
 }

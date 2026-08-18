@@ -47,33 +47,28 @@ export function ListingApplyButton({
         href={externalUrl}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
+        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
       >
         Apply on Company Portal <ExternalLink className="w-4 h-4" />
       </a>
     );
   }
 
-  // Curated External with Email Contact -> Opens SIWES Outreach Assistant
+  // Curated External with Email Contact -> Navigates to SIWES Letter Studio
   if (sourceType === 'CURATED_EXTERNAL' || contactEmail) {
-    return (
-      <>
-        <Button
-          onClick={() => setIsOutreachOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 h-auto rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
-        >
-          Apply via SIWES Outreach <Send className="w-4 h-4" />
-        </Button>
+    const params = new URLSearchParams();
+    if (companyName) params.set('company', companyName);
+    if (contactEmail) params.set('email', contactEmail);
+    if (location) params.set('location', location);
+    if (listingId) params.set('listingId', listingId);
 
-        <SiwesOutreachModal
-          isOpen={isOutreachOpen}
-          onClose={() => setIsOutreachOpen(false)}
-          targetCompany={companyName}
-          targetEmail={contactEmail}
-          targetLocation={location}
-          listingId={listingId}
-        />
-      </>
+    return (
+      <Link
+        href={`/outreach?${params.toString()}`}
+        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white text-sm font-semibold transition-all shadow-xs w-full md:w-auto"
+      >
+        Draft SIWES Letter &amp; Apply <Send className="w-4 h-4" />
+      </Link>
     );
   }
 

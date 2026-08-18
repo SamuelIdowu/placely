@@ -3,17 +3,21 @@
 
 import type { IStudentProfileRepository } from '@/domain/ports/IStudentProfileRepository';
 import type { ISiwesLetterGenerator } from '@/domain/ports/siwes-letter-generator.port';
-import { NotFoundError } from '@/lib/errors';
 
 export interface GenerateSiwesLetterDTO {
-  studentProfileId: string;
+  studentProfileId?: string;
   studentName: string;
+  university?: string;
+  discipline?: string;
   targetCompany: string;
   targetLocation?: string;
   contactPerson?: string;
   durationMonths?: number; // 3 or 6
   matricNumber?: string;
   skills?: string[];
+  cgpa?: number;
+  portfolioUrl?: string;
+  linkedinUrl?: string;
 }
 
 export interface GeneratedSiwesLetterResult {
@@ -32,26 +36,25 @@ export class GenerateSiwesLetterUseCase {
   ) {}
 
   async execute(dto: GenerateSiwesLetterDTO): Promise<GeneratedSiwesLetterResult> {
-    const student = await this.studentRepo.findById(dto.studentProfileId);
-    if (!student) {
-      throw new NotFoundError('StudentProfile', dto.studentProfileId);
-    }
+    const student = dto.studentProfileId ? await this.studentRepo.findById(dto.studentProfileId) : null;
 
+    const university = student?.university || dto.university || 'University of Lagos';
+    const discipline = student?.discipline || dto.discipline || 'Engineering & Technology';
     const durationMonths = dto.durationMonths ?? 6;
 
     const letterInput = {
       studentName: dto.studentName,
       matricNumber: dto.matricNumber,
-      university: student.university,
-      discipline: student.discipline,
+      university,
+      discipline,
       durationMonths,
       targetCompany: dto.targetCompany,
       targetLocation: dto.targetLocation,
       contactPerson: dto.contactPerson,
-      cgpa: student.cgpa,
+      cgpa: student?.cgpa ?? dto.cgpa,
       skills: dto.skills,
-      portfolioUrl: student.portfolioUrl,
-      linkedinUrl: student.linkedinUrl,
+      portfolioUrl: student?.portfolioUrl ?? dto.portfolioUrl,
+      linkedinUrl: student?.linkedinUrl ?? dto.linkedinUrl,
       date: new Date(),
     };
 
@@ -62,9 +65,10 @@ export class GenerateSiwesLetterUseCase {
       letterHtml,
       letterText,
       studentName: dto.studentName,
-      university: student.university,
-      discipline: student.discipline,
+      university,
+      discipline,
       durationMonths,
     };
   }
 }
+

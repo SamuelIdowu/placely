@@ -14,7 +14,7 @@ export function ErrorMessage({ title = 'Error', message, className }: ErrorMessa
   return (
     <div
       className={cn(
-        'flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-[4px] text-sm',
+        'flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-sm',
         className
       )}
       role="alert"

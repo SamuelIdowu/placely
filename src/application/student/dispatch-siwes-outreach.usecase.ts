@@ -21,6 +21,7 @@ export interface DispatchSiwesOutreachDTO {
   durationMonths?: number;
   matricNumber?: string;
   note?: string;
+  customLetterHtml?: string;
   appBaseUrl?: string;
 }
 
@@ -69,8 +70,8 @@ export class DispatchSiwesOutreachUseCase {
     const claimToken = createId();
     const durationMonths = dto.durationMonths ?? 6;
 
-    // Generate formal letter HTML
-    const letterHtml = this.letterGenerator.generateLetterHtml({
+    // Use custom edited letter HTML if provided, otherwise generate from default template
+    const letterHtml = dto.customLetterHtml || this.letterGenerator.generateLetterHtml({
       studentName: dto.studentName,
       matricNumber: dto.matricNumber,
       university: student.university,

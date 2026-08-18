@@ -3,10 +3,11 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
-import { MapPin, ArrowRight, Bookmark, Banknote, Clock, ExternalLink, Sparkles } from 'lucide-react';
+import { MapPin, ArrowRight, Bookmark, Banknote, Clock, Sparkles } from 'lucide-react';
 import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
 import { getCompanyAvatarColor } from '@/lib/tokens';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 
 interface ListingCardProps {
   listing: ListingWithEmployer;
@@ -58,7 +59,11 @@ export function ListingCard({
   if (viewMode === 'list') {
     return (
       <Link href={`${hrefPrefix}/${listing.id}`} className="block group">
-        <div className="bg-white rounded-xl p-4 sm:p-5 border border-border group-hover:border-brand-indigo group-hover:bg-brand-indigo-light/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+        <Card
+          variant="interactive"
+          density="compact"
+          className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
@@ -81,10 +86,10 @@ export function ListingCard({
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-body-muted">
-                <span className="font-semibold text-slate-800">{companyDisplayName}</span>
+                <span className="font-semibold text-foreground">{companyDisplayName}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-slate-400" />
+                  <MapPin className="w-3 h-3 text-muted-foreground" />
                   {listing.location}
                 </span>
                 {listing.isRemote && (
@@ -109,20 +114,23 @@ export function ListingCard({
               className={`p-2 rounded-full transition-all shrink-0 ${
                 isSaved
                   ? 'text-brand-indigo bg-brand-indigo-light hover:bg-indigo-100'
-                  : 'text-slate-400 hover:text-brand-indigo hover:bg-slate-100'
+                  : 'text-muted-foreground hover:text-brand-indigo hover:bg-muted'
               }`}
             >
               <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
             </button>
           </div>
-        </div>
+        </Card>
       </Link>
     );
   }
 
   // GRID MODE (DEFAULT)
   return (
-    <div className="bg-white rounded-[20px] p-5 border border-border hover:border-brand-indigo transition-all hover:shadow-xs flex flex-col justify-between group h-full">
+    <Card
+      variant="interactive"
+      className="p-5 flex flex-col justify-between group h-full space-y-4"
+    >
       <div className="space-y-3.5">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
@@ -136,7 +144,7 @@ export function ListingCard({
 
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-slate-900">{companyDisplayName}</span>
+                <span className="text-xs font-bold text-foreground">{companyDisplayName}</span>
                 {isVerified && <VerificationBadge size="sm" />}
                 {isExternal && (
                   <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[9px] px-1.5 py-0">
@@ -144,8 +152,8 @@ export function ListingCard({
                   </Badge>
                 )}
               </div>
-              <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-slate-400" />
+              <span className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                <MapPin className="w-3 h-3 text-muted-foreground" />
                 {listing.location} {listing.isRemote && '· Remote'}
               </span>
             </div>
@@ -157,7 +165,7 @@ export function ListingCard({
             className={`p-2 rounded-full transition-all shrink-0 ${
               isSaved
                 ? 'text-brand-indigo bg-brand-indigo-light hover:bg-indigo-100'
-                : 'text-slate-400 hover:text-brand-indigo hover:bg-slate-100'
+                : 'text-muted-foreground hover:text-brand-indigo hover:bg-muted'
             }`}
           >
             <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
@@ -169,7 +177,7 @@ export function ListingCard({
           <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-brand-indigo transition-colors">
             <Link href={`${hrefPrefix}/${listing.id}`}>{listing.title}</Link>
           </h3>
-          <p className="text-xs text-slate-500 line-clamp-2 mt-1.5 leading-relaxed">
+          <p className="text-xs text-body-muted line-clamp-2 mt-1.5 leading-relaxed">
             {listing.description}
           </p>
         </div>
@@ -179,7 +187,7 @@ export function ListingCard({
           {listing.disciplines.slice(0, 2).map((disc) => (
             <span
               key={disc}
-              className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700"
+              className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-[10px] font-semibold text-foreground"
             >
               {disc}
             </span>
@@ -193,9 +201,9 @@ export function ListingCard({
       </div>
 
       {/* Footer CTA */}
-      <div className="pt-3.5 mt-4 border-t border-slate-100 flex items-center justify-between">
-        <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-          <Clock className="w-3 h-3 text-slate-400" />
+      <div className="pt-3.5 mt-4 border-t border-border flex items-center justify-between">
+        <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+          <Clock className="w-3 h-3 text-muted-foreground" />
           6 Months SIWES
         </span>
 
@@ -210,7 +218,6 @@ export function ListingCard({
           )}
         </Link>
       </div>
-    </div>
+    </Card>
   );
 }
-

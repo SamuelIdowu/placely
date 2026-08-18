@@ -150,12 +150,20 @@ export class ResendEmailService implements EmailServicePort {
       </div>
     `;
 
-    await this.resend.emails.send({
-      from: this.from,
-      to: params.to,
-      subject: `SIWES Placement Application: ${params.studentName} (${params.discipline}, ${params.university})`,
-      html: emailHtml,
-    });
+    try {
+      await this.resend.emails.send({
+        from: this.from,
+        to: params.to,
+        subject: `SIWES Placement Application: ${params.studentName} (${params.discipline}, ${params.university})`,
+        html: emailHtml,
+      });
+    } catch (err) {
+      console.warn('[ResendEmailService] Failed to send outreach email:', err);
+      if (process.env.NODE_ENV === 'production') {
+        throw err;
+      }
+    }
   }
 }
+
 

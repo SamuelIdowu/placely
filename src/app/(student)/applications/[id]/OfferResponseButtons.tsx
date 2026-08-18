@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { respondToOfferAction } from './actions';
+import { Check, X } from 'lucide-react';
 
 export function OfferResponseButtons({ applicationId }: { applicationId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,18 +35,18 @@ export function OfferResponseButtons({ applicationId }: { applicationId: string 
   }
 
   return (
-    <div className="space-y-4 rounded-md border border-emerald-200 bg-emerald-50/60 p-6">
+    <div className="space-y-4 rounded-card border border-emerald-200 bg-emerald-50/70 p-6">
       <div>
         <h3 className="text-lg font-bold text-emerald-950">
           🎉 SIWES Placement Offer Issued
         </h3>
-        <p className="text-sm text-emerald-800 mt-1">
+        <p className="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
           The employer has selected you for this placement. Please accept or decline the offer. Accepting locks in your placement commitment.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-md bg-rose-50 border border-rose-200 p-3 text-sm text-rose-800">
+        <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-800 font-medium">
           {error}
         </div>
       )}
@@ -55,9 +56,9 @@ export function OfferResponseButtons({ applicationId }: { applicationId: string 
           <AlertDialogTrigger asChild>
             <Button
               disabled={isSubmitting}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[4px] font-semibold px-6"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold px-6 gap-1.5"
             >
-              Accept Offer ✓
+              <Check className="w-4 h-4" /> Accept Offer
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -84,9 +85,9 @@ export function OfferResponseButtons({ applicationId }: { applicationId: string 
             <Button
               variant="outline"
               disabled={isSubmitting}
-              className="border-rose-200 text-rose-700 hover:bg-rose-50 rounded-[4px] font-semibold px-6"
+              className="border-rose-200 text-rose-700 hover:bg-rose-50 rounded-full font-semibold px-6 gap-1.5"
             >
-              Decline Offer
+              <X className="w-4 h-4" /> Decline Offer
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
