@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/infrastructure/db/prisma.client';
 import { verificationRepo } from '@/lib/container';
 import { QuickVerificationActions } from './QuickVerificationActions';
-import { Users, CheckCircle2, Briefcase, FileText, ArrowUpRight, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Users, ArrowUpRight, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Admin Verification & Moderation Suite — Placely',
@@ -31,13 +31,9 @@ export default async function AdminDashboardPage() {
     <div className="space-y-4 sm:space-y-5">
       {/* ── Top Hero Banner (Deep Black Bento Card) ── */}
       <div
-        className="rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 text-white relative overflow-hidden bg-surface-dark"
+        className="rounded-card p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 text-white bg-surface-dark"
       >
-        <div
-          className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-15 pointer-events-none blur-3xl bg-stat-emerald"
-        />
-
-        <div className="space-y-1.5 relative z-10">
+        <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-400">
               Admin &amp; Institutional Governance
@@ -77,7 +73,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         {/* Total Users */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-brand-indigo"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-brand-indigo"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Platform Users
@@ -92,7 +88,7 @@ export default async function AdminDashboardPage() {
 
         {/* Pending Verifications */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-amber"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-amber"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-600">
             Pending Queue
@@ -105,7 +101,7 @@ export default async function AdminDashboardPage() {
 
         {/* Open Placements */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-blue"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-blue"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-stat-blue">
             Open Placements
@@ -118,7 +114,7 @@ export default async function AdminDashboardPage() {
 
         {/* Total Applications */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-emerald"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-emerald"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-600">
             Total Applications
@@ -134,7 +130,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
         <Link
           href="/admin/verifications"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-stat-emerald transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-card shadow-2xs hover:border-stat-emerald transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -155,7 +151,7 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/listings"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-stat-blue transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-card shadow-2xs hover:border-stat-blue transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -176,7 +172,7 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/users"
-          className="p-5 bg-white border border-slate-200/90 rounded-2xl shadow-2xs hover:border-brand-indigo transition-all group flex flex-col justify-between"
+          className="p-5 bg-white border border-slate-200/90 rounded-card shadow-2xs hover:border-brand-indigo transition-all group flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">

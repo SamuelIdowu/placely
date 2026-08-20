@@ -6,7 +6,7 @@ export default function StudentApplicationsLoading() {
     <div className="space-y-6">
       <div className="space-y-2">
         <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-80" />
+        <Skeleton className="h-4 w-full max-w-80" />
       </div>
 
       <div className="bg-card border border-border rounded-card p-5 space-y-3">

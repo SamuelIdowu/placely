@@ -62,7 +62,7 @@ export const MessageThread: React.FC<MessageThreadProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-[520px] rounded-lg border border-slate-200 bg-white shadow-xs overflow-hidden">
+    <div className="flex flex-col h-[60vh] sm:h-[520px] rounded-lg border border-slate-200 bg-white shadow-xs overflow-hidden">
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Application Messages</h3>

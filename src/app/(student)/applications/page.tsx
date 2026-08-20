@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { studentProfileRepo } from '@/lib/container';
-import { mockApplications, mockListings, mockEmployerProfiles } from '@/lib/mock';
+import { studentProfileRepo, getMyApplicationsUseCase } from '@/lib/container';
 import { ApplicationsViewManager } from './ApplicationsViewManager';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -28,14 +27,7 @@ export default async function MyApplicationsPage() {
     redirect('/student/onboarding');
   }
 
-  const rawApplications = mockApplications.map((app) => {
-    const listing = mockListings.find((l) => l.id === app.listingId)!;
-    const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId)!;
-    return {
-      application: app,
-      listing: { ...listing.toObject(), employer },
-    };
-  });
+  const rawApplications = await getMyApplicationsUseCase.execute(studentProfile.id);
 
   const applications = rawApplications.map((item) => ({
     id: item.application.id,
@@ -54,7 +46,6 @@ export default async function MyApplicationsPage() {
   }));
 
   const offeredCount = applications.filter((a) => a.status === 'OFFERED').length;
-  const shortlistedCount = applications.filter((a) => a.status === 'SHORTLISTED').length;
 
   return (
     <div className="space-y-5">

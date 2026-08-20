@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { getThreadUseCase } from '@/lib/container';
-import { mockApplications, mockListings, mockEmployerProfiles, mockStudentProfiles } from '@/lib/mock';
+import { getThreadUseCase, applicationRepo, listingRepo, employerProfileRepo, studentProfileRepo } from '@/lib/container';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { ApplicantActionButtons } from '../ApplicantActionButtons';
 import { ApplicationMessagingSection } from '@/app/(student)/applications/[id]/ApplicationMessagingSection';
 import type { ApplicationStatus } from '@/domain/entities/application';
+import type { MessageProps } from '@/domain/entities/message';
 
 export default async function EmployerApplicantDetailPage({
   params,
@@ -22,29 +22,27 @@ export default async function EmployerApplicantDetailPage({
     redirect(`/sign-in?callbackUrl=/employer/listings/${listingId}/applicants/${applicationId}`);
   }
 
-  // Use mock data for frontend visualization
-  let employerProfile = mockEmployerProfiles.find(e => e.userId === session.user.id);
-  if (!employerProfile) {
-    // mock fallback
-    employerProfile = mockEmployerProfiles[0];
-  }
-
-  const listing = mockListings.find(l => l.id === listingId);
+  const listing = await listingRepo.findDetailsById(listingId);
   if (!listing) {
     notFound();
   }
 
-  const application = mockApplications.find(a => a.id === applicationId);
+  const employerProfile = await employerProfileRepo.findByUserId(session.user.id);
+  if (!employerProfile || listing.employerProfileId !== employerProfile.id) {
+    notFound();
+  }
+
+  const application = await applicationRepo.findById(applicationId);
   if (!application || application.listingId !== listingId) {
     notFound();
   }
 
-  const student = mockStudentProfiles.find(s => s.id === application.studentId);
+  const student = await studentProfileRepo.findById(application.studentId);
   if (!student) {
     notFound();
   }
 
-  let initialMessages: any[] = [];
+  let initialMessages: MessageProps[] = [];
   let initialIsLocked = ['ACCEPTED', 'DECLINED'].includes(application.status);
 
   try {

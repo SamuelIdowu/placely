@@ -128,7 +128,7 @@ export function FloatingNavRail({
       className={cn(
         'fixed left-4 top-4 bottom-4 h-[calc(100vh-2rem)] z-40 hidden lg:flex flex-col rounded-[22px] border transition-[width,padding,margin] duration-200 ease-out py-5 px-3 shadow-2xl',
         'bg-sidebar-bg border-sidebar-border text-sidebar-muted',
-        isCollapsed ? 'w-18 items-center' : 'w-64'
+        isCollapsed ? 'w-16 items-center' : 'w-64'
       )}
     >
       {/* ── Brand Header & Toggle ── */}
@@ -228,7 +228,7 @@ export function FloatingNavRail({
                     href={item.href}
                     className={cn(
                       'group relative rounded-xl transition-all duration-150 flex items-center gap-3 text-xs font-semibold active:scale-[0.98]',
-                      isCollapsed ? 'p-2.5 justify-center' : 'px-3 py-2',
+                      isCollapsed ? 'p-2.5 justify-center' : 'px-3 py-2.5',
                       isActive
                         ? 'bg-brand-indigo text-white shadow-xs'
                         : 'text-sidebar-muted hover:text-white hover:bg-sidebar-hover-bg'

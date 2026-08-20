@@ -48,12 +48,9 @@ import { SearchCompanyDirectoryUseCase } from '@/application/student/search-comp
 import { RegisterEmployerUseCase } from '@/application/employer/register-employer.usecase';
 import { UpdateEmployerProfileUseCase } from '@/application/employer/update-employer-profile';
 import { UploadCacDocumentUseCase } from '@/application/employer/upload-cac-document';
-import { PostListingUseCase } from '@/application/employer/post-listing.usecase';
 import { CreateListingUseCase } from '@/application/employer/create-listing';
 import { UpdateListingUseCase } from '@/application/employer/update-listing';
 import { ToggleListingStatusUseCase } from '@/application/employer/toggle-listing-status';
-import { ReviewApplicantsUseCase } from '@/application/employer/review-applicants.usecase';
-import { SendOfferUseCase } from '@/application/employer/send-offer.usecase';
 import { UpdateApplicationStatusUseCase } from '@/application/employer/update-application-status';
 import { GetApplicantsUseCase } from '@/application/employer/get-applicants';
 import { ClaimCompanyProfileUseCase } from '@/application/employer/claim-company-profile.usecase';
@@ -87,12 +84,9 @@ export const searchCompanyDirectoryUseCase = new SearchCompanyDirectoryUseCase(c
 export const registerEmployerUseCase = new RegisterEmployerUseCase(employerProfileRepo);
 export const updateEmployerProfileUseCase = new UpdateEmployerProfileUseCase(employerProfileRepo);
 export const uploadCacDocumentUseCase = new UploadCacDocumentUseCase(employerProfileRepo, verificationRepo, fileStorage);
-export const postListingUseCase = new PostListingUseCase(listingRepo, employerProfileRepo);
 export const createListingUseCase = new CreateListingUseCase(listingRepo, employerProfileRepo);
 export const updateListingUseCase = new UpdateListingUseCase(listingRepo);
 export const toggleListingStatusUseCase = new ToggleListingStatusUseCase(listingRepo);
-export const reviewApplicantsUseCase = new ReviewApplicantsUseCase(applicationRepo);
-export const sendOfferUseCase = new SendOfferUseCase(applicationRepo, emailService);
 export const updateApplicationStatusUseCase = new UpdateApplicationStatusUseCase(applicationRepo, listingRepo, emailService);
 export const getApplicantsUseCase = new GetApplicantsUseCase(applicationRepo, listingRepo);
 export const claimCompanyProfileUseCase = new ClaimCompanyProfileUseCase(applicationRepo, listingRepo, employerProfileRepo, emailService);

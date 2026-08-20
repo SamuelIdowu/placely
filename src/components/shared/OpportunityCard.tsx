@@ -112,7 +112,7 @@ export function OpportunityCard({
 
           <Link
             href={`${hrefPrefix}/${id}`}
-            className="p-1.5 rounded-full bg-muted text-foreground hover:bg-brand-indigo hover:text-white transition-all duration-150 ease-out active:scale-95"
+            className="p-2 min-h-[44px] min-w-[44px] rounded-full bg-muted text-foreground hover:bg-brand-indigo hover:text-white transition-all duration-150 ease-out active:scale-95 flex items-center justify-center"
             title="View Details"
           >
             <ArrowUpRight className="w-4 h-4" />

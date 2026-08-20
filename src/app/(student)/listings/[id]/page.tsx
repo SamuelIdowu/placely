@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { listingRepo, studentProfileRepo } from '@/lib/container';
-import { mockListings, mockEmployerProfiles } from '@/lib/mock';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { ListingApplyButton } from '@/components/listings/listing-apply-button';
 import { getCompanyAvatarColor } from '@/lib/tokens';
@@ -11,11 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   MapPin,
   Calendar,
-  Building2,
   CheckCircle2,
   ShieldAlert,
   ArrowLeft,
-  Briefcase,
   Banknote,
   Clock,
   ShieldCheck,
@@ -32,11 +29,7 @@ export async function generateMetadata({
   if (listingDetails) {
     return { title: `${listingDetails.title} at ${listingDetails.companyName} — Placely` };
   }
-
-  const mock = mockListings.find((l) => l.id === id);
-  if (!mock) return { title: 'Placement Not Found — Placely' };
-  const employer = mockEmployerProfiles.find((e) => e.id === mock.employerProfileId);
-  return { title: `${mock.title} at ${employer?.companyName || 'Company'} — Placely` };
+  return { title: 'Placement Not Found — Placely' };
 }
 
 export default async function ListingDetailPage({
@@ -46,32 +39,7 @@ export default async function ListingDetailPage({
 }) {
   const { id } = await params;
   
-  // Try DB repository first, fall back to mock
-  let listing = await listingRepo.findDetailsById(id);
-
-  if (!listing) {
-    const mock = mockListings.find((l) => l.id === id);
-    if (mock) {
-      const employer = mockEmployerProfiles.find((e) => e.id === mock.employerProfileId);
-      listing = {
-        id: mock.id,
-        employerProfileId: mock.employerProfileId,
-        sourceType: 'NATIVE',
-        companyName: employer?.companyName || 'Verified Employer',
-        companyLogoUrl: null,
-        companyVerificationStatus: employer?.verificationStatus || 'VERIFIED',
-        title: mock.title,
-        description: mock.description,
-        disciplines: mock.disciplines,
-        location: mock.location,
-        isRemote: mock.isRemote,
-        status: mock.status,
-        isModerated: mock.isModerated,
-        createdAt: new Date(mock.createdAt),
-        updatedAt: new Date(mock.updatedAt),
-      };
-    }
-  }
+  const listing = await listingRepo.findDetailsById(id);
 
   if (!listing || listing.isModerated || listing.status !== 'OPEN') {
     notFound();

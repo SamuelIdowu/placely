@@ -1,13 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { getThreadUseCase } from '@/lib/container';
-import {
-  mockApplications,
-  mockListings,
-  mockEmployerProfiles,
-  mockStudentProfiles,
-} from '@/lib/mock';
+import { getThreadUseCase, applicationRepo, listingRepo } from '@/lib/container';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { OfferResponseButtons } from './OfferResponseButtons';
@@ -16,8 +10,6 @@ import type { MessageProps } from '@/domain/entities/message';
 import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
   ArrowLeft,
-  Calendar,
-  Building2,
   MapPin,
   Clock,
   Sparkles,
@@ -39,20 +31,17 @@ export default async function ApplicationDetailPage({
     redirect(`/sign-in?callbackUrl=/applications/${id}`);
   }
 
-  const application = mockApplications.find((a) => a.id === id);
+  const application = await applicationRepo.findById(id);
   if (!application) {
     notFound();
   }
 
-  const listing = mockListings.find((l) => l.id === application.listingId);
+  const listing = await listingRepo.findDetailsById(application.listingId);
   if (!listing) {
     notFound();
   }
 
-  const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId);
-  const student = mockStudentProfiles.find((s) => s.id === application.studentId);
-
-  const companyName = employer?.companyName || 'Verified Corporate Partner';
+  const companyName = listing.companyName || 'Verified Corporate Partner';
   const avatarColor = getCompanyAvatarColor(companyName);
   const initials = companyName.charAt(0).toUpperCase();
 
@@ -113,7 +102,7 @@ export default async function ApplicationDetailPage({
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-900 text-xs sm:text-sm">{companyName}</span>
-                  {employer?.verificationStatus === 'VERIFIED' && <VerificationBadge size="md" />}
+                  {listing.companyVerificationStatus === 'VERIFIED' && <VerificationBadge size="md" />}
                 </div>
 
                 <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900">
