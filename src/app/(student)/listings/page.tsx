@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { browseListingsUseCase } from '@/lib/container';
 import { FilterSidebar } from '@/components/shared/FilterSidebar';
 import { FilterSheet } from '@/components/listings/FilterSheet';
-import { ListingCard } from '@/components/listings/ListingCard';
+import { ListingGrid } from '@/components/listings/ListingGrid';
 import { EmployerLogoCarousel } from '@/components/shared/EmployerLogoCarousel';
 import { SearchX, Building2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
@@ -104,11 +104,7 @@ export default async function ListingsBrowsePage({
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {result.listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} hrefPrefix="/listings" />
-              ))}
-            </div>
+            <ListingGrid listings={result.listings} />
           )}
 
           {/* Pagination */}

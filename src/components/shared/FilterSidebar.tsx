@@ -118,7 +118,7 @@ export function FilterSidebar() {
                   <button
                     type="button"
                     onClick={() => removeTag(tag.key)}
-                    className="hover:bg-indigo-200/60 rounded-full p-0.5"
+                    className="hover:bg-indigo-200/60 rounded-full p-1.5 min-h-[32px] min-w-[32px] flex items-center justify-center"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -138,7 +138,7 @@ export function FilterSidebar() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Title, skill, or tech..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
+              className="w-full pl-9 pr-3 py-2.5 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"
             />
           </div>
         </form>
@@ -152,7 +152,7 @@ export function FilterSidebar() {
               setDiscipline(e.target.value);
               updateFilters({ discipline: e.target.value || null });
             }}
-            className="w-full px-3 py-2 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
+            className="w-full px-3 py-2.5 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
           >
             <option value="">All Engineering Disciplines</option>
             {disciplinesList.map((d) => (
@@ -172,7 +172,7 @@ export function FilterSidebar() {
               setLocation(e.target.value);
               updateFilters({ location: e.target.value || null });
             }}
-            className="w-full px-3 py-2 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
+            className="w-full px-3 py-2.5 text-xs rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 text-slate-800 font-medium"
           >
             <option value="">All Locations</option>
             {locationsList.map((loc) => (

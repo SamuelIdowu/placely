@@ -70,7 +70,7 @@ export function NotificationBell() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
 
-          <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-xl border border-slate-200 z-50 overflow-hidden">
+          <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-96 bg-white rounded-lg shadow-xl border border-slate-200 z-50 overflow-hidden">
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
               <h4 className="font-bold text-xs text-slate-900 uppercase tracking-wider">Notifications</h4>
               {unreadCount > 0 && (
@@ -99,7 +99,7 @@ export function NotificationBell() {
                       {!n.isRead && (
                         <button
                           onClick={() => handleMarkAsRead(n.id)}
-                          className="text-indigo-600 hover:text-indigo-800 p-0.5"
+                          className="text-indigo-600 hover:text-indigo-800 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Mark as read"
                         >
                           <Check className="w-3.5 h-3.5" />

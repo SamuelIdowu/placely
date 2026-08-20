@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { getCompanyAvatarColor } from '@/lib/tokens';
 import {
-  Building2,
   Search,
   MapPin,
   Briefcase,
@@ -19,7 +18,6 @@ import {
   Loader2,
   Banknote,
   Clock,
-  ArrowRight,
   SearchX,
 } from 'lucide-react';
 
@@ -36,102 +34,17 @@ interface CompanyItem {
   approvedByUniversity?: string | null;
 }
 
-// Initial Nigerian IT-approved company seed database for instant Day-1 utility
-const SEED_COMPANIES: CompanyItem[] = [
-  {
-    id: 'seed-1',
-    name: 'Andela Nigeria',
-    industry: 'Software & Technology',
-    location: 'Lagos (Hybrid/Remote)',
-    contactEmail: 'talent@andela.com',
-    websiteUrl: 'https://andela.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'UNILAG IT Unit',
-  },
-  {
-    id: 'seed-2',
-    name: 'Julius Berger Nigeria Plc',
-    industry: 'Civil & Structural Engineering',
-    location: 'Abuja & Lagos',
-    contactEmail: 'recruitment@julius-berger.com',
-    websiteUrl: 'https://julius-berger.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'FUTA IT Office',
-  },
-  {
-    id: 'seed-3',
-    name: 'Flutterwave',
-    industry: 'Fintech & Software Engineering',
-    location: 'Lagos, Nigeria',
-    contactEmail: 'careers@flutterwavego.com',
-    websiteUrl: 'https://flutterwave.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'UI SIWES Directorate',
-  },
-  {
-    id: 'seed-4',
-    name: 'Dangote Industries Limited',
-    industry: 'Mechanical & Chemical Engineering',
-    location: 'Lagos (Lekki / Ikoyi)',
-    contactEmail: 'careers@dangote.com',
-    websiteUrl: 'https://dangote.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'OAU Industrial Training',
-  },
-  {
-    id: 'seed-5',
-    name: 'MTN Nigeria Communications Plc',
-    industry: 'Telecommunications & Networks',
-    location: 'Lagos & Regional Hubs',
-    contactEmail: 'internships@mtn.ng',
-    websiteUrl: 'https://mtn.ng',
-    isUniversityApproved: true,
-    approvedByUniversity: 'UNIBEN IT Office',
-  },
-  {
-    id: 'seed-6',
-    name: 'Chevron Nigeria Limited',
-    industry: 'Petroleum & Energy Engineering',
-    location: 'Lagos (Lekki) & Warri',
-    contactEmail: 'hrnigeria@chevron.com',
-    websiteUrl: 'https://chevron.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'UNILAG IT Unit',
-  },
-  {
-    id: 'seed-7',
-    name: 'Paystack (Stripe)',
-    industry: 'Software & Infrastructure',
-    location: 'Lagos (Ikeja)',
-    contactEmail: 'jobs@paystack.com',
-    websiteUrl: 'https://paystack.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'Covenant University SIWES',
-  },
-  {
-    id: 'seed-8',
-    name: 'NLNG (Nigeria LNG Limited)',
-    industry: 'Chemical & Process Engineering',
-    location: 'Bonny Island & Port Harcourt',
-    contactEmail: 'careers@nlng.com',
-    websiteUrl: 'https://nlng.com',
-    isUniversityApproved: true,
-    approvedByUniversity: 'FUTA IT Office',
-  },
-];
+// Initial state: empty — loaded from the API
+const INITIAL_COMPANIES: CompanyItem[] = [];
 
 export default function StudentDirectoryPage() {
   const router = useRouter();
-  const [companies, setCompanies] = useState<CompanyItem[]>(SEED_COMPANIES);
+  const [companies, setCompanies] = useState<CompanyItem[]>(INITIAL_COMPANIES);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('ALL');
   const [selectedIndustry, setSelectedIndustry] = useState('ALL');
   const [selectedLocation, setSelectedLocation] = useState('ALL');
-
-  useEffect(() => {
-    fetchDirectory();
-  }, [selectedUniversity, selectedIndustry, selectedLocation]);
 
   const fetchDirectory = async () => {
     setIsLoading(true);
@@ -145,20 +58,20 @@ export default function StudentDirectoryPage() {
       const res = await fetch(`/api/directory?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.companies && data.companies.length > 0) {
-          setCompanies(data.companies);
-        } else if (!searchTerm && selectedUniversity === 'ALL' && selectedIndustry === 'ALL') {
-          setCompanies(SEED_COMPANIES);
-        } else {
-          setCompanies([]);
-        }
+        setCompanies(data.companies || []);
+      } else {
+        setCompanies([]);
       }
     } catch {
-      setCompanies(SEED_COMPANIES);
+      setCompanies([]);
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDirectory();
+  }, [selectedUniversity, selectedIndustry, selectedLocation]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,7 +120,7 @@ export default function StudentDirectoryPage() {
       </div>
 
       {/* ── 2. Bento Hero: Custom Outreach Callout ── */}
-      <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 bg-surface-dark shadow-2xs">
+      <div className="rounded-card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 bg-surface-dark shadow-2xs">
         <div className="space-y-1.5 max-w-xl">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-indigo text-white">

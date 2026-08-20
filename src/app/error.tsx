@@ -18,7 +18,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
+    <div className="min-h-dvh flex flex-col items-center justify-center bg-background text-foreground px-4 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
       <Card variant="subtle" className="p-8 sm:p-10 rounded-card max-w-md w-full shadow-xs border border-border space-y-5">
         <div className="p-3.5 bg-rose-50 text-rose-600 rounded-2xl w-fit mx-auto border border-rose-100">
           <AlertTriangle className="h-7 w-7" />

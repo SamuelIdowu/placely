@@ -91,7 +91,7 @@ function SignUpFormComponent() {
         <button
           type="button"
           onClick={() => setRole('STUDENT')}
-          className={`py-2 text-sm font-medium rounded-md transition-all ${role === 'STUDENT'
+          className={`py-2.5 text-sm font-medium rounded-md transition-all ${role === 'STUDENT'
               ? 'bg-white text-gray-900 shadow-sm font-semibold'
               : 'text-gray-600 hover:text-gray-900'
             }`}
@@ -101,7 +101,7 @@ function SignUpFormComponent() {
         <button
           type="button"
           onClick={() => setRole('EMPLOYER')}
-          className={`py-2 text-sm font-medium rounded-md transition-all ${role === 'EMPLOYER'
+          className={`py-2.5 text-sm font-medium rounded-md transition-all ${role === 'EMPLOYER'
               ? 'bg-white text-gray-900 shadow-sm font-semibold'
               : 'text-gray-600 hover:text-gray-900'
             }`}
@@ -110,14 +110,14 @@ function SignUpFormComponent() {
         </button>
       </div>
 
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700">First Name</label>
           <input
             name="firstName"
             type="text"
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
         <div className="flex-1">
@@ -126,7 +126,7 @@ function SignUpFormComponent() {
             name="lastName"
             type="text"
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
       </div>
@@ -141,7 +141,7 @@ function SignUpFormComponent() {
               value={selectedUniversity}
               onChange={(e) => setSelectedUniversity(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
             >
               <option value="">Select University / Institution</option>
               {universities.map((uni) => (
@@ -160,7 +160,7 @@ function SignUpFormComponent() {
                 value={customUniversity}
                 onChange={(e) => setCustomUniversity(e.target.value)}
                 required
-                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
               />
             )}
           </div>
@@ -172,7 +172,7 @@ function SignUpFormComponent() {
               value={selectedDiscipline}
               onChange={(e) => setSelectedDiscipline(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none cursor-pointer"
             >
               <option value=""> Select Engineering Course   </option>
               {NUC_ENGINEERING_COURSES.map((course) => (
@@ -190,7 +190,7 @@ function SignUpFormComponent() {
                 value={customDiscipline}
                 onChange={(e) => setCustomDiscipline(e.target.value)}
                 required
-                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
               />
             )}
           </div>
@@ -203,7 +203,7 @@ function SignUpFormComponent() {
               step="0.01"
               min="0"
               max="5"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -212,7 +212,7 @@ function SignUpFormComponent() {
             <textarea
               name="bio"
               rows={3}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
         </>
@@ -224,7 +224,7 @@ function SignUpFormComponent() {
               name="companyName"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -234,7 +234,7 @@ function SignUpFormComponent() {
               name="cacNumber"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -243,7 +243,7 @@ function SignUpFormComponent() {
             <textarea
               name="description"
               rows={3}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -252,7 +252,7 @@ function SignUpFormComponent() {
             <input
               name="websiteUrl"
               type="url"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
         </>
@@ -265,7 +265,7 @@ function SignUpFormComponent() {
           type="email"
           required
           defaultValue={initialEmail}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
         />
       </div>
 
@@ -277,12 +277,12 @@ function SignUpFormComponent() {
             type={showPassword ? 'text' : 'password'}
             required
             minLength={8}
-            className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 shadow-sm focus:border-blue-500 focus:outline-none text-sm"
+            className="block w-full rounded-md border border-gray-300 px-3 py-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none text-sm"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 min-w-[44px] text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
             title={showPassword ? 'Hide password' : 'Show password'}
           >
@@ -294,7 +294,7 @@ function SignUpFormComponent() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none disabled:opacity-50"
+        className="w-full flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none disabled:opacity-50"
       >
         {loading ? 'Creating account...' : 'Create account'}
       </button>

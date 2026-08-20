@@ -37,7 +37,7 @@ export function Shell({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground font-sans selection:bg-brand-indigo selection:text-white overflow-x-hidden w-full">
+    <div className="min-h-dvh flex flex-col bg-background text-foreground font-sans selection:bg-brand-indigo selection:text-white overflow-x-hidden w-full">
       <Header
         userRole={role}
         userEmail={userEmail}
@@ -52,7 +52,7 @@ export function Shell({
         />
         <main
           className={cn(
-            "flex-1 px-4 sm:px-6 lg:pr-8 pt-2 pb-16 md:pb-10 w-full max-w-full overflow-x-hidden transition-all duration-200 ease-out",
+            "flex-1 px-4 sm:px-6 lg:pr-8 pt-2 pb-20 md:pb-10 w-full max-w-full overflow-x-hidden transition-all duration-200 ease-out",
             isCollapsed ? "lg:pl-28" : "lg:pl-[296px]"
           )}
         >

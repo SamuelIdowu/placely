@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/infrastructure/db/prisma.client';
-import { studentProfileRepo } from '@/lib/container';
-import { mockApplications, mockListings, mockEmployerProfiles } from '@/lib/mock';
+import { studentProfileRepo, getMyApplicationsUseCase, listingRepo } from '@/lib/container';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import { DashboardActionBanner } from '@/components/dashboard/DashboardActionBanner';
@@ -29,14 +28,7 @@ export default async function StudentDashboardPage() {
   if (!studentProfile) redirect('/student/onboarding');
 
   // Load applications with attached listing & employer details
-  const rawApplications = mockApplications.map((app) => {
-    const listing = mockListings.find((l) => l.id === app.listingId)!;
-    const employer = mockEmployerProfiles.find((e) => e.id === listing.employerProfileId)!;
-    return {
-      application: app,
-      listing: { ...listing.toObject(), employer },
-    };
-  });
+  const rawApplications = await getMyApplicationsUseCase.execute(studentProfile.id);
 
   const totalApps = rawApplications.length;
   const shortlistedApps = rawApplications.filter((a) => a.application.status === 'SHORTLISTED');
@@ -51,57 +43,27 @@ export default async function StudentDashboardPage() {
     companyVerified: item.listing.employer.verificationStatus === 'VERIFIED',
     location: item.listing.location,
     status: item.application.status as ApplicationStatus,
-    appliedDate: '2 days ago',
-    stipendText: '₦70,000/mo',
+    appliedDate: new Date(item.application.createdAt).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }),
   }));
 
-  // Curated matched placements for student's discipline
-  const matchedListingsData = [
-    {
-      id: 'siwes-match-1',
-      title: 'Robotics & Automation Trainee (SIWES)',
-      companyName: 'Dangote Sugar Refinery',
-      companyVerified: true,
-      location: 'Ikeja, Lagos',
-      stipendText: '₦80,000/mo',
-      disciplines: [studentProfile.discipline, 'Mechatronics', 'Electrical'],
-      skills: ['PLC', 'Automation', 'Sensors'],
-      isRemote: false,
-    },
-    {
-      id: 'siwes-match-2',
-      title: 'Hardware & IoT Engineering Intern',
-      companyName: 'Moove Africa',
-      companyVerified: true,
-      location: 'Victoria Island, Lagos',
-      stipendText: '₦75,000/mo',
-      disciplines: [studentProfile.discipline, 'Computer Engineering'],
-      skills: ['Embedded C', 'Telemetry', 'Circuit Design'],
-      isRemote: false,
-    },
-    {
-      id: 'siwes-match-3',
-      title: 'Instrumentation & Control Systems Intern',
-      companyName: 'Nestle Nigeria Plc',
-      companyVerified: true,
-      location: 'Agbara, Ogun',
-      stipendText: '₦65,000/mo',
-      disciplines: [studentProfile.discipline, 'Mechanical Engineering'],
-      skills: ['SCADA', 'Pneumatics', 'Calibration'],
-      isRemote: false,
-    },
-    {
-      id: 'siwes-match-4',
-      title: 'CAD Modeling & Prototyping Intern',
-      companyName: 'Innoson Vehicle Manufacturing',
-      companyVerified: true,
-      location: 'Nnewi, Anambra',
-      stipendText: '₦60,000/mo',
-      disciplines: [studentProfile.discipline, 'Mechatronics'],
-      skills: ['SolidWorks', 'MATLAB', 'CNC'],
-      isRemote: false,
-    },
-  ];
+  // Matched placements from real listings in student's discipline
+  const { listings: matchedRaw } = await listingRepo.findPublic({
+    discipline: studentProfile.discipline,
+    pageSize: 4,
+  });
+  const matchedListingsData = matchedRaw.map((l) => ({
+    id: l.id,
+    title: l.title,
+    companyName: l.companyName,
+    companyVerified: l.companyVerificationStatus === 'VERIFIED',
+    location: l.location,
+    disciplines: l.disciplines,
+    isRemote: l.isRemote,
+  }));
 
   /* User lookup for greetings */
   const user = await prisma.user.findUnique({
@@ -147,7 +109,7 @@ export default async function StudentDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch">
         {/* Greetings Card (Dark Bento) */}
         <div
-          className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 bg-surface-dark"
+          className="rounded-card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 bg-surface-dark"
         >
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -171,17 +133,8 @@ export default async function StudentDashboardPage() {
 
         {/* Profile Completeness Card (White Bento Style with Circular Progress) */}
         <div
-          className="bg-white rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-5 relative overflow-hidden group border border-slate-200/90 shadow-2xs"
+          className="bg-white rounded-card p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-5 relative overflow-hidden group border border-slate-200/90 shadow-2xs"
         >
-          {/* Subtle background dot pattern */}
-          <div
-            className="absolute inset-0 opacity-5 pointer-events-none"
-            style={{
-              backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)',
-              backgroundSize: '24px 24px',
-            }}
-          />
-
           <div className="relative shrink-0 flex items-center justify-center">
             <CircularProgress
               value={studentProfile.profileCompleteness}
@@ -267,13 +220,7 @@ export default async function StudentDashboardPage() {
         {/* Right Column (1 Col): SIWES Logbook Tracker & Market Barometer */}
         <div className="lg:col-span-1 space-y-5">
           {/* Digital SIWES Logbook & ITF Card */}
-          <SiwesLogbookCard
-            currentWeek={4}
-            totalWeeks={24}
-            loggedDays={16}
-            supervisorName="Engr. Babatunde"
-            isSupervisorSigned={true}
-          />
+          <SiwesLogbookCard />
 
           {/* Nigerian Engineering Market & Stipend Barometer */}
           <MarketStipendBarometer />

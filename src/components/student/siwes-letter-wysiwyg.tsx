@@ -76,7 +76,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('bold')}
             title="Bold (Ctrl+B)"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <Bold className="w-3.5 h-3.5" />
           </button>
@@ -84,7 +84,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('italic')}
             title="Italic (Ctrl+I)"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <Italic className="w-3.5 h-3.5" />
           </button>
@@ -92,7 +92,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('underline')}
             title="Underline (Ctrl+U)"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <Underline className="w-3.5 h-3.5" />
           </button>
@@ -104,7 +104,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('formatBlock', '<h2>')}
             title="Heading"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <Heading2 className="w-3.5 h-3.5" />
           </button>
@@ -112,7 +112,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('formatBlock', '<p>')}
             title="Paragraph"
-            className="px-1.5 py-0.5 text-[11px] font-semibold rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] px-1.5 py-0.5 text-[11px] font-semibold rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             Body
           </button>
@@ -124,7 +124,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('justifyLeft')}
             title="Align Left"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <AlignLeft className="w-3.5 h-3.5" />
           </button>
@@ -132,7 +132,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('justifyCenter')}
             title="Align Center"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <AlignCenter className="w-3.5 h-3.5" />
           </button>
@@ -140,7 +140,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('justifyFull')}
             title="Justify"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <AlignJustify className="w-3.5 h-3.5" />
           </button>
@@ -152,7 +152,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('insertUnorderedList')}
             title="Bullet List"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <List className="w-3.5 h-3.5" />
           </button>
@@ -160,7 +160,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={() => execCommand('insertOrderedList')}
             title="Numbered List"
-            className="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-1.5 rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer flex items-center justify-center"
           >
             <ListOrdered className="w-3.5 h-3.5" />
           </button>
@@ -172,7 +172,7 @@ export function SiwesLetterWysiwyg({
             type="button"
             onClick={insertDate}
             title="Insert Today's Date"
-            className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
+            className="min-h-[44px] inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg hover:bg-white hover:shadow-2xs text-slate-700 active:bg-slate-200 transition-all cursor-pointer"
           >
             <Calendar className="w-3 h-3 text-slate-400" /> Date
           </button>

@@ -5,13 +5,10 @@ import { auth } from '@/lib/auth';
 import { employerProfileRepo, listingRepo, applicationRepo } from '@/lib/container';
 import { VerificationBadge } from '@/components/shared/VerificationBadge';
 import {
-  Building2,
-  Users,
   Plus,
   ArrowRight,
   ShieldCheck,
   Briefcase,
-  Sparkles,
   MapPin,
 } from 'lucide-react';
 
@@ -61,14 +58,9 @@ export default async function EmployerDashboardPage() {
     <div className="space-y-4 sm:space-y-5">
       {/* ── Top Hero Banner (Deep Bento Card) ── */}
       <div
-        className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 text-white relative overflow-hidden bg-surface-dark"
+        className="rounded-card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 text-white bg-surface-dark"
       >
-        {/* Subtle accent glow */}
-        <div
-          className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-15 pointer-events-none blur-3xl bg-brand-indigo"
-        />
-
-        <div className="space-y-1.5 relative z-10">
+        <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-white">
               {employerProfile.companyName}
@@ -115,7 +107,7 @@ export default async function EmployerDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
         {/* Active Openings */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-brand-indigo"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-brand-indigo"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Active SIWES Openings
@@ -128,7 +120,7 @@ export default async function EmployerDashboardPage() {
 
         {/* Total Applicants */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-blue"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-blue"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Total Student Applicants
@@ -141,7 +133,7 @@ export default async function EmployerDashboardPage() {
 
         {/* Shortlisted / Interview */}
         <div
-          className="bg-white rounded-2xl p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-emerald"
+          className="bg-white rounded-card p-4.5 sm:p-5 border border-slate-200/90 shadow-2xs transition-all hover:shadow-xs border-l-4 border-l-stat-emerald"
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Shortlisted &amp; Offers
@@ -168,7 +160,7 @@ export default async function EmployerDashboardPage() {
         </div>
 
         {listingsWithApplicantCounts.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 py-10 px-6 bg-white text-center space-y-2.5">
+          <div className="rounded-card border border-dashed border-slate-200 py-10 px-6 bg-white text-center space-y-2.5">
             <Briefcase className="w-9 h-9 text-slate-400 mx-auto" />
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-slate-900">
@@ -192,7 +184,7 @@ export default async function EmployerDashboardPage() {
             {listingsWithApplicantCounts.map((listing) => (
               <div
                 key={listing.id}
-                className="bg-white rounded-xl p-5 border border-border hover:border-brand-indigo transition-all hover:shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="bg-white rounded-card p-5 border border-border hover:border-brand-indigo transition-all hover:shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

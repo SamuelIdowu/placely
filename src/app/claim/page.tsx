@@ -130,7 +130,7 @@ function ClaimPageContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="min-h-dvh flex items-center justify-center bg-slate-50 p-4">
         <div className="text-center space-y-3">
           <Loader2 className="w-8 h-8 animate-spin text-brand-indigo mx-auto" />
           <p className="text-xs font-semibold text-slate-500">Verifying SIWES application token...</p>
@@ -141,7 +141,7 @@ function ClaimPageContent() {
 
   if (errorMsg && !details) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="min-h-dvh flex items-center justify-center bg-slate-50 p-4">
         <div className="max-w-md w-full bg-white rounded-[24px] border border-border p-8 text-center space-y-4 shadow-2xs">
           <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto border border-red-200">
             !
@@ -163,7 +163,7 @@ function ClaimPageContent() {
 
   if (isClaimed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="min-h-dvh flex items-center justify-center bg-slate-50 p-4">
         <div className="max-w-lg w-full bg-white rounded-[24px] border border-emerald-200 p-8 text-center space-y-6 shadow-md">
           <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
             <CheckCircle2 className="w-8 h-8" />
@@ -209,7 +209,7 @@ function ClaimPageContent() {
   const initials = details?.student.name ? details.student.name.charAt(0).toUpperCase() : 'S';
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-dvh bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Branding */}
         <div className="text-center space-y-2">
@@ -431,7 +431,7 @@ function ClaimPageContent() {
 export default function ClaimPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-dvh flex items-center justify-center bg-slate-50">
         <Loader2 className="w-8 h-8 animate-spin text-brand-indigo" />
       </div>
     }>

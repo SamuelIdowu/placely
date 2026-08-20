@@ -2,12 +2,9 @@ import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { getSavedListingsUseCase, studentProfileRepo } from '@/lib/container';
-import { mockListings, mockEmployerProfiles } from '@/lib/mock';
 import { Bookmark, Compass } from 'lucide-react';
 import Link from 'next/link';
 import { SavedViewManager } from './SavedViewManager';
-
-import type { ListingWithEmployer } from '@/domain/ports/IListingRepository';
 
 export const metadata: Metadata = {
   title: 'Saved Placements | Placely',
@@ -22,22 +19,11 @@ export default async function SavedListingsPage() {
   }
 
   const profile = await studentProfileRepo.findByUserId(session.user.id);
-  // const savedListings = profile ? await getSavedListingsUseCase.execute(profile.id) : [];
-  
-  // Use mock listings 1 and 3 as "saved" for visualization
-  const savedListings: ListingWithEmployer[] = [mockListings[0], mockListings[2]].map(listing => {
-    const employer = mockEmployerProfiles.find(e => e.id === listing.employerProfileId)!;
-    return {
-      ...listing.toObject(),
-      companyName: employer.companyName,
-      companyLogoUrl: employer.toObject().logoUrl ?? null,
-      companyVerificationStatus: employer.verificationStatus,
-    };
-  });
+  const savedListings = profile ? await getSavedListingsUseCase.execute(profile.id) : [];
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-slate-900 flex items-center gap-2">
             <Bookmark className="w-5 h-5 text-indigo-600 fill-indigo-100" /> Saved Placements
@@ -49,7 +35,7 @@ export default async function SavedListingsPage() {
 
         <Link
           href="/listings"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold text-xs transition-colors shadow-xs"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-brand-indigo hover:bg-brand-indigo-hover text-white font-semibold text-xs transition-colors shadow-xs"
         >
           <Compass className="w-3.5 h-3.5" /> Explore More
         </Link>

@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
+    <main className="min-h-dvh flex flex-col items-center justify-center bg-background text-foreground px-6 py-12 text-center selection:bg-brand-indigo-light selection:text-brand-indigo">
       <Card variant="subtle" className="max-w-lg w-full p-8 sm:p-12 space-y-6 shadow-xs border border-border">
         {/* Badge & Icon */}
         <div className="flex flex-col items-center gap-3">

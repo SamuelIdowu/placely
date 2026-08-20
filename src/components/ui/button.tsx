@@ -40,7 +40,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizeStyles = {
-      xs: "h-7 px-2.5 text-xs rounded-full gap-1",
+      xs: "h-9 px-2.5 text-xs rounded-full gap-1",
       sm: "h-8 px-3 text-xs gap-1.5",
       default: "h-10 px-4 py-2 gap-2",
       lg: "h-12 px-6 text-base gap-2.5",
