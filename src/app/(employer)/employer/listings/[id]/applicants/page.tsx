@@ -52,7 +52,7 @@ export default async function ApplicantReviewPage({
   const { listingTitle, applicants } = data;
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-5 pb-8">
+    <div className="container mx-auto max-w-6xl space-y-5 pb-8">
       {/* ── Header Deck ── */}
       <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-2.5">
         <Link

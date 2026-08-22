@@ -65,9 +65,17 @@ const moreNavItems: Record<"STUDENT" | "EMPLOYER" | "ADMIN", NavSection[]> = {
   ],
   EMPLOYER: [
     {
-      title: "Account",
+      title: "Talent Pipeline",
       items: [
-        { title: "Company Settings", href: "/employer/profile/settings", icon: Settings },
+        { title: "All Applicants", href: "/employer/applications", icon: FileText },
+        { title: "Shortlisted", href: "/employer/shortlisted", icon: Users },
+      ],
+    },
+    {
+      title: "Company",
+      items: [
+        { title: "Company Profile", href: "/employer/profile", icon: Building2 },
+        { title: "Account Settings", href: "/employer/profile/settings", icon: Settings },
       ],
     },
   ],

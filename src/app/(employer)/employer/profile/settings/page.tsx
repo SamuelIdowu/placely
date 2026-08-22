@@ -1,58 +1,29 @@
-// app/(employer)/employer/profile/settings/page.tsx
-
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { employerProfileRepo, verificationRepo } from '@/lib/container';
-import { EmployerProfileForm } from '../EmployerProfileForm';
+import { employerProfileRepo } from '@/lib/container';
+import { EmployerSettingsForm } from '../EmployerSettingsForm';
 
-export const metadata: Metadata = { title: 'Company Settings — Placely' };
+export const metadata: Metadata = { title: 'Account Settings — Placely' };
 
 export default async function EmployerSettingsPage() {
   const session = await auth();
-  if (!session?.user?.id) {
-    redirect('/auth/signin');
-  }
+  if (!session?.user?.id) redirect('/sign-in');
 
   const profile = await employerProfileRepo.findByUserId(session.user.id);
-  const profileObj = profile?.toObject();
-
-  let cacDocumentUrl: string | undefined = undefined;
-  let adminNote: string | undefined = undefined;
-
-  if (profileObj?.id) {
-    const vReq = await verificationRepo.findByEmployerProfileId(profileObj.id);
-    if (vReq) {
-      const vObj = vReq.toObject();
-      cacDocumentUrl = vObj.documentUrl;
-      adminNote = vObj.adminNote;
-    }
-  }
 
   return (
-    <div className="max-w-5xl space-y-6 mx-auto">
-      <div className="border-b pb-4">
-        <h1 className="text-2xl font-bold tracking-tight">Company Profile & Verification Settings</h1>
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-foreground">Account Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Update your corporate details, company logo, and CAC verification documents.
+          Manage your account preferences, notifications, and security settings.
         </p>
       </div>
 
-      <EmployerProfileForm
-        initialData={
-          profileObj
-            ? {
-                companyName: profileObj.companyName,
-                cacNumber: profileObj.cacNumber,
-                description: profileObj.description,
-                logoUrl: profileObj.logoUrl,
-                websiteUrl: profileObj.websiteUrl,
-                cacDocumentUrl,
-                verificationStatus: profileObj.verificationStatus,
-                adminNote,
-              }
-            : undefined
-        }
+      <EmployerSettingsForm
+        email={session.user.email || ''}
+        companyName={profile?.companyName || 'Your Company'}
       />
     </div>
   );

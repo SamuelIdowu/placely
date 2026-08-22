@@ -19,6 +19,12 @@ export class UpdateListingUseCase {
       disciplines: input.disciplines,
       location: input.location,
       isRemote: input.isRemote,
+      stipendAmount: input.stipendAmount,
+      isStipendNegotiable: input.isStipendNegotiable,
+      durationWeeks: input.durationWeeks,
+      requirements: input.requirements,
+      applicationDeadline: input.applicationDeadline,
+      maxApplicants: input.maxApplicants,
     });
 
     const existingListing = await this.listingRepo.findById(input.listingId);
@@ -38,6 +44,12 @@ export class UpdateListingUseCase {
       disciplines: validatedData.disciplines ?? currentObj.disciplines,
       location: validatedData.location ?? currentObj.location,
       isRemote: validatedData.isRemote ?? currentObj.isRemote,
+      stipendAmount: validatedData.stipendAmount ?? currentObj.stipendAmount,
+      isStipendNegotiable: validatedData.isStipendNegotiable ?? currentObj.isStipendNegotiable,
+      durationWeeks: validatedData.durationWeeks ?? currentObj.durationWeeks,
+      requirements: validatedData.requirements ?? currentObj.requirements,
+      applicationDeadline: validatedData.applicationDeadline ?? currentObj.applicationDeadline,
+      maxApplicants: validatedData.maxApplicants ?? currentObj.maxApplicants,
       updatedAt: new Date(),
     });
 

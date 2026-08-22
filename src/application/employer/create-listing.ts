@@ -23,6 +23,12 @@ export class CreateListingUseCase {
       disciplines: input.disciplines,
       location: input.location,
       isRemote: input.isRemote,
+      stipendAmount: input.stipendAmount,
+      isStipendNegotiable: input.isStipendNegotiable,
+      durationWeeks: input.durationWeeks,
+      requirements: input.requirements,
+      applicationDeadline: input.applicationDeadline,
+      maxApplicants: input.maxApplicants,
     });
 
     const employer = await this.employerRepo.findById(input.employerProfileId);
@@ -43,8 +49,14 @@ export class CreateListingUseCase {
       disciplines: validatedData.disciplines,
       location: validatedData.location,
       isRemote: validatedData.isRemote ?? false,
+      stipendAmount: validatedData.stipendAmount ?? null,
+      isStipendNegotiable: validatedData.isStipendNegotiable ?? false,
+      durationWeeks: validatedData.durationWeeks ?? null,
+      requirements: validatedData.requirements ?? null,
+      applicationDeadline: validatedData.applicationDeadline ?? null,
+      maxApplicants: validatedData.maxApplicants ?? null,
       status: 'OPEN',
-      isModerated: false, // Default unmoderated
+      isModerated: false,
       createdAt: now,
       updatedAt: now,
     });

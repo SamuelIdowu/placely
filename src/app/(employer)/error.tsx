@@ -17,6 +17,14 @@ export default function EmployerError({
     console.error('Employer route error:', error);
   }, [error]);
 
+  const handleReload = () => {
+    try {
+      reset();
+    } catch {
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="py-16 flex flex-col items-center justify-center text-center px-4">
       <Card variant="subtle" className="max-w-md w-full p-8 rounded-card border border-border shadow-xs space-y-4">
@@ -31,7 +39,7 @@ export default function EmployerError({
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-          <Button onClick={() => reset()} variant="indigo" size="sm" className="w-full sm:w-auto">
+          <Button onClick={handleReload} variant="indigo" size="sm" className="w-full sm:w-auto">
             <RefreshCw className="h-3.5 w-3.5 mr-1" />
             Reload Page
           </Button>

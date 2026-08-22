@@ -72,7 +72,7 @@ export default async function ListingDetailPage({
   });
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-5 pb-8">
+    <div className="w-full max-w-6xl mx-auto space-y-5 pb-8">
       {/* Back link */}
       <Link
         href="/listings"

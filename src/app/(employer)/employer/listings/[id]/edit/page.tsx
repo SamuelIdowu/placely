@@ -13,7 +13,7 @@ export default async function EditListingPage({
 }) {
   const session = await auth();
   if (!session || session.user.role !== 'EMPLOYER') {
-    redirect('/auth/login');
+    redirect('/sign-in');
   }
 
   const { id } = await params;

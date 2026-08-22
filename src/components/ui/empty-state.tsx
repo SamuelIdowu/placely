@@ -20,10 +20,11 @@ export function EmptyState({
   className,
   variant = "card",
 }: EmptyStateProps) {
-  const isComponent = typeof icon === "function";
-  const IconComponent = isComponent
-    ? (icon as React.ComponentType<{ className?: string }>)
-    : null;
+  const isElement = React.isValidElement(icon);
+  const IconComponent =
+    !isElement && icon
+      ? (icon as React.ComponentType<{ className?: string }>)
+      : null;
 
   return (
     <div
@@ -36,11 +37,11 @@ export function EmptyState({
     >
       {icon && (
         <div className="w-12 h-12 rounded-2xl bg-muted/70 flex items-center justify-center text-muted-foreground mb-4 border border-border/50">
-          {IconComponent ? (
+          {isElement ? (
+            icon
+          ) : IconComponent ? (
             <IconComponent className="h-6 w-6" />
-          ) : (
-            (icon as React.ReactNode)
-          )}
+          ) : null}
         </div>
       )}
 

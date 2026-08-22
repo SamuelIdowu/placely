@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { DISCIPLINES } from '@/lib/constants';
 import { updateListingAction } from './actions';
 import type { ListingProps } from '@/domain/entities/listing';
+import { LocationSelect } from '@/components/shared/LocationSelect';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -23,6 +24,7 @@ export function EditListingForm({ listing }: EditListingFormProps) {
     listing.disciplines || []
   );
   const [isRemote, setIsRemote] = React.useState<boolean>(listing.isRemote || false);
+  const [location, setLocation] = React.useState<string>(listing.location || '');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -46,6 +48,7 @@ export function EditListingForm({ listing }: EditListingFormProps) {
     const formData = new FormData(e.currentTarget);
     selectedDisciplines.forEach((d) => formData.append('disciplines', d));
     formData.set('isRemote', isRemote ? 'true' : 'false');
+    formData.set('location', location);
 
     const res = await updateListingAction(listing.id, formData);
     setLoading(false);
@@ -126,13 +129,12 @@ export function EditListingForm({ listing }: EditListingFormProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="location" className="text-sm font-medium text-slate-700">
+              <Label className="text-sm font-medium text-slate-700">
                 Location <span className="text-rose-500">*</span>
               </Label>
-              <Input
-                id="location"
-                name="location"
-                defaultValue={listing.location}
+              <LocationSelect
+                value={location}
+                onChange={setLocation}
                 required
               />
             </div>
@@ -146,6 +148,93 @@ export function EditListingForm({ listing }: EditListingFormProps) {
                 <span>Remote / Hybrid position</span>
               </label>
             </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">
+              Stipend & Duration
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="stipendAmount" className="text-sm font-medium text-slate-700">
+                  Monthly Stipend (NGN)
+                </Label>
+                <Input
+                  id="stipendAmount"
+                  name="stipendAmount"
+                  type="number"
+                  min="0"
+                  defaultValue={listing.stipendAmount ?? ''}
+                  placeholder="e.g. 50000"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="durationWeeks" className="text-sm font-medium text-slate-700">
+                  Duration (Weeks)
+                </Label>
+                <Input
+                  id="durationWeeks"
+                  name="durationWeeks"
+                  type="number"
+                  min="1"
+                  defaultValue={listing.durationWeeks ?? ''}
+                  placeholder="e.g. 24"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="applicationDeadline" className="text-sm font-medium text-slate-700">
+                  Application Deadline
+                </Label>
+                <Input
+                  id="applicationDeadline"
+                  name="applicationDeadline"
+                  type="date"
+                  defaultValue={listing.applicationDeadline ? new Date(listing.applicationDeadline).toISOString().split('T')[0] : ''}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="maxApplicants" className="text-sm font-medium text-slate-700">
+                  Max Applicants
+                </Label>
+                <Input
+                  id="maxApplicants"
+                  name="maxApplicants"
+                  type="number"
+                  min="1"
+                  defaultValue={listing.maxApplicants ?? ''}
+                  placeholder="Leave empty for unlimited"
+                />
+              </div>
+
+              <div className="flex items-end pb-2">
+                <label className="flex items-center gap-2.5 text-sm font-medium text-slate-700 cursor-pointer">
+                  <Checkbox
+                    name="isStipendNegotiable"
+                    checked={listing.isStipendNegotiable ?? false}
+                    onCheckedChange={() => {}}
+                  />
+                  <span>Stipend is negotiable</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="requirements" className="text-sm font-medium text-slate-700">
+              Requirements & Prerequisites
+            </Label>
+            <Textarea
+              id="requirements"
+              name="requirements"
+              defaultValue={listing.requirements ?? ''}
+              placeholder="e.g. Must be a 300-level engineering student, proficiency in CAD/MATLAB preferred..."
+              rows={4}
+            />
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">

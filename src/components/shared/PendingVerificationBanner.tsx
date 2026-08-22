@@ -23,7 +23,7 @@ export function PendingVerificationBanner({
         )}
       >
         <CheckCircle2 className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-        <div className="text-sm">
+        <div className="text-xs">
           <h4 className="font-semibold text-emerald-950">Verified Account</h4>
           <p className="mt-0.5 text-emerald-800">
             Your verification document has been approved by our administrators. You have full access to apply or post listings.

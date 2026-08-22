@@ -25,11 +25,17 @@ export const signUpStudentSchema = z.object({
 
 export type SignUpStudentInput = z.infer<typeof signUpStudentSchema>;
 
+const cacNumberRegex = /^(RC|BN|IT|LL|CO|JE)\s?\d{6,7}$/i;
+
 export const signUpEmployerSchema = z.object({
   email: z.string().trim().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   companyName: z.string().trim().min(1, 'Company name is required'),
-  cacNumber: z.string().trim().min(1, 'CAC registration number is required'),
+  cacNumber: z
+    .string()
+    .trim()
+    .min(1, 'CAC registration number is required')
+    .regex(cacNumberRegex, 'Enter a valid CAC number (e.g. RC 1492084)'),
   description: z.string().optional(),
   websiteUrl: z
     .string()

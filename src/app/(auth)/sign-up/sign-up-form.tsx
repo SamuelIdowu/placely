@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { signUpAction } from './actions';
+import { signInAction } from '../sign-in/actions';
 import { getNigerianUniversities, NUC_ENGINEERING_COURSES } from '@/domain/value-objects/academic';
 
 function SignUpFormComponent() {
@@ -62,11 +63,17 @@ function SignUpFormComponent() {
         return;
       }
 
-      setSuccess('Account created successfully! Redirecting to sign in...');
-      setTimeout(() => {
-        router.push('/sign-in');
-        router.refresh();
-      }, 1000);
+      setSuccess('Account created! Signing you in...');
+
+      const signInResult = await signInAction(formData);
+      if (signInResult.error) {
+        setSuccess('Account created! Redirecting to sign in...');
+        setTimeout(() => router.push('/sign-in'), 1000);
+        return;
+      }
+
+      const dest = signInResult.redirectUrl || '/dashboard';
+      window.location.href = dest;
     } catch {
       setError('An unexpected error occurred during account creation. Please try again.');
       setLoading(false);
@@ -234,8 +241,12 @@ function SignUpFormComponent() {
               name="cacNumber"
               type="text"
               required
+              pattern="^(RC|BN|IT|LL|CO|JE)\s?\d{6,7}$"
+              title="Valid CAC format: RC 1492084, BN 1234567, etc."
+              placeholder="e.g. RC 1492084"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm focus:border-blue-500 focus:outline-none"
             />
+            <p className="mt-1 text-xs text-gray-500">Format: RC/BN/IT/LL/CO/JE followed by 6-7 digits</p>
           </div>
 
           <div>

@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: 'My Listings — Placely' };
 export default async function EmployerListingsPage() {
   const session = await auth();
   if (!session || session.user.role !== 'EMPLOYER') {
-    redirect('/auth/login');
+    redirect('/sign-in');
   }
 
   const employer = await employerProfileRepo.findByUserId(session.user.id);

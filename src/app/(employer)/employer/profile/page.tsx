@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: 'Company Profile — Placely' };
 export default async function EmployerProfilePage() {
   const session = await auth();
   if (!session?.user?.id) {
-    redirect('/auth/signin');
+    redirect('/sign-in');
   }
 
   const profile = await employerProfileRepo.findByUserId(session.user.id);
@@ -30,7 +30,7 @@ export default async function EmployerProfilePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <EmployerProfileForm
         initialData={
           profileObj

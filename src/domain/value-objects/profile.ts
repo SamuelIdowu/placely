@@ -34,9 +34,15 @@ export const studentProfileSchema = z.object({
 
 export type StudentProfileInput = z.infer<typeof studentProfileSchema>;
 
+const cacNumberRegex = /^(RC|BN|IT|LL|CO|JE)\s?\d{6,7}$/i;
+
 export const employerProfileSchema = z.object({
   companyName: z.string().trim().min(1, 'Company name is required'),
-  cacNumber: z.string().trim().min(1, 'CAC registration number is required'),
+  cacNumber: z
+    .string()
+    .trim()
+    .min(1, 'CAC registration number is required')
+    .regex(cacNumberRegex, 'Enter a valid CAC number (e.g. RC 1492084)'),
   description: z.string().trim().max(2000, 'Description cannot exceed 2000 characters').optional(),
   logoUrl: z
     .string()

@@ -165,8 +165,11 @@ export function EmployerProfileForm({ initialData }: EmployerProfileFormProps) {
                     value={formData.cacNumber}
                     onChange={(e) => handleInputChange('cacNumber', e.target.value)}
                     placeholder="e.g. RC 1492084"
+                    pattern="^(RC|BN|IT|LL|CO|JE)\s?\d{6,7}$"
+                    title="Valid CAC format: RC 1492084, BN 1234567, etc."
                     className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo bg-slate-50/50"
                   />
+                  <p className="text-[10px] text-slate-400">Format: RC/BN/IT/LL/CO/JE followed by 6-7 digits</p>
                 </div>
 
                 <div className="space-y-1.5">

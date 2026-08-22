@@ -37,7 +37,7 @@ export default async function SubmitApplicationPage({
   const alreadyApplied = await applicationRepo.existsByListingAndStudent(listingId, studentProfile.id);
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8 space-y-6 pb-14">
+    <div className="container mx-auto max-w-6xl px-4 py-8 space-y-6 pb-14">
       <Link
         href={`/listings/${listingId}`}
         className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-indigo transition-colors"

@@ -10,14 +10,14 @@ export const metadata: Metadata = { title: 'Post an Internship Listing — Place
 export default async function NewListingPage() {
   const session = await auth();
   if (!session || session.user.role !== 'EMPLOYER') {
-    redirect('/auth/login');
+    redirect('/sign-in');
   }
 
   const employer = await employerProfileRepo.findByUserId(session.user.id);
   const isVerified = employer?.verificationStatus === 'VERIFIED';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Post an Internship Listing</h1>
         <p className="text-sm text-slate-500">

@@ -33,7 +33,7 @@ export default async function StudentSettingsPage() {
   const profileObj = profile?.toObject();
 
   return (
-    <div className="max-w-5xl space-y-7 pb-14">
+    <div className="max-w-6xl space-y-7 pb-14">
       {/* ── Top Header Band ── */}
       <div className="bg-white rounded-[24px] p-6 sm:p-8 border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="space-y-1.5 relative z-10">

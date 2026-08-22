@@ -24,6 +24,12 @@ export interface ListingWithEmployer {
   disciplines: string[];
   location: string;
   isRemote: boolean;
+  stipendAmount?: number | null;
+  isStipendNegotiable?: boolean;
+  durationWeeks?: number | null;
+  requirements?: string | null;
+  applicationDeadline?: Date | null;
+  maxApplicants?: number | null;
   status: 'OPEN' | 'CLOSED';
   isModerated: boolean;
   createdAt: Date;

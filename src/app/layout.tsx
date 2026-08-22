@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Inter, Space_Grotesk } from "next/font/google";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { DevStateToggle } from "./(dev)/dev-toggle/DevStateToggle";
 import "./globals.css";
 
 const dmSerifDisplay = DM_Serif_Display({
@@ -46,6 +47,7 @@ export default function RootLayout({
           <div id="main-content" className="flex-1 flex flex-col">
             {children}
           </div>
+          <DevStateToggle />
         </ToastProvider>
       </body>
     </html>

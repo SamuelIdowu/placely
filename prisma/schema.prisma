@@ -151,6 +151,14 @@ model Listing {
   disciplines String[] // e.g. ["Electrical", "Civil", "Computer"]
   location    String
   isRemote    Boolean       @default(false)
+
+  stipendAmount      Int?        // Monthly stipend in NGN (null = unpaid/unspecified)
+  isStipendNegotiable Boolean   @default(false)
+  durationWeeks      Int?        // Placement duration in weeks
+  requirements       String?     // What the employer expects from the student
+  applicationDeadline DateTime?  // When applications close
+  maxApplicants      Int?        // Cap on number of applicants
+
   status      ListingStatus @default(OPEN)
   isModerated Boolean       @default(false) // admin flag
 

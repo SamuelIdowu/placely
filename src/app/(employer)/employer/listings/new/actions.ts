@@ -27,6 +27,12 @@ export async function createListingAction(formData: FormData) {
   const location = formData.get('location') as string;
   const isRemote = formData.get('isRemote') === 'true' || formData.get('isRemote') === 'on';
   const disciplines = formData.getAll('disciplines') as string[];
+  const stipendAmount = formData.get('stipendAmount') ? Number(formData.get('stipendAmount')) : null;
+  const isStipendNegotiable = formData.get('isStipendNegotiable') === 'true';
+  const durationWeeks = formData.get('durationWeeks') ? Number(formData.get('durationWeeks')) : null;
+  const requirements = formData.get('requirements') as string || null;
+  const applicationDeadline = formData.get('applicationDeadline') ? new Date(formData.get('applicationDeadline') as string) : null;
+  const maxApplicants = formData.get('maxApplicants') ? Number(formData.get('maxApplicants')) : null;
 
   try {
     const listing = await createListingUseCase.execute({
@@ -36,6 +42,12 @@ export async function createListingAction(formData: FormData) {
       disciplines,
       location,
       isRemote,
+      stipendAmount,
+      isStipendNegotiable,
+      durationWeeks,
+      requirements,
+      applicationDeadline,
+      maxApplicants,
     });
 
     revalidatePath('/employer/listings');

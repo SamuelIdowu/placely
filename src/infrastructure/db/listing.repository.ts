@@ -24,6 +24,12 @@ interface ListingDbRow {
   disciplines: string[];
   location: string;
   isRemote: boolean;
+  stipendAmount: number | null;
+  isStipendNegotiable: boolean;
+  durationWeeks: number | null;
+  requirements: string | null;
+  applicationDeadline: Date | null;
+  maxApplicants: number | null;
   status: string;
   isModerated: boolean;
   createdAt: Date;
@@ -88,6 +94,12 @@ export class PrismaListingRepository implements IListingRepository {
         disciplines: row.disciplines,
         location: row.location,
         isRemote: row.isRemote,
+        stipendAmount: row.stipendAmount,
+        isStipendNegotiable: row.isStipendNegotiable,
+        durationWeeks: row.durationWeeks,
+        requirements: row.requirements,
+        applicationDeadline: row.applicationDeadline,
+        maxApplicants: row.maxApplicants,
         status: row.status as ListingStatus,
         isModerated: row.isModerated,
         createdAt: row.createdAt,
@@ -237,6 +249,12 @@ export class PrismaListingRepository implements IListingRepository {
           disciplines: r.disciplines,
           location: r.location,
           isRemote: r.isRemote,
+          stipendAmount: r.stipendAmount,
+          isStipendNegotiable: r.isStipendNegotiable,
+          durationWeeks: r.durationWeeks,
+          requirements: r.requirements,
+          applicationDeadline: r.applicationDeadline,
+          maxApplicants: r.maxApplicants,
           status: r.status as ListingStatus,
           isModerated: r.isModerated,
           createdAt: r.createdAt,
@@ -268,6 +286,12 @@ export class PrismaListingRepository implements IListingRepository {
         disciplines: data.disciplines,
         location: data.location,
         isRemote: data.isRemote ?? false,
+        stipendAmount: data.stipendAmount ?? null,
+        isStipendNegotiable: data.isStipendNegotiable ?? false,
+        durationWeeks: data.durationWeeks ?? null,
+        requirements: data.requirements ?? null,
+        applicationDeadline: data.applicationDeadline ?? null,
+        maxApplicants: data.maxApplicants ?? null,
         status: data.status || 'OPEN',
         isModerated: data.isModerated ?? false,
       },
@@ -291,6 +315,12 @@ export class PrismaListingRepository implements IListingRepository {
         disciplines: data.disciplines,
         location: data.location,
         isRemote: data.isRemote,
+        stipendAmount: data.stipendAmount ?? null,
+        isStipendNegotiable: data.isStipendNegotiable ?? false,
+        durationWeeks: data.durationWeeks ?? null,
+        requirements: data.requirements ?? null,
+        applicationDeadline: data.applicationDeadline ?? null,
+        maxApplicants: data.maxApplicants ?? null,
         status: data.status,
         isModerated: data.isModerated,
       },
@@ -308,6 +338,12 @@ export class PrismaListingRepository implements IListingRepository {
         disciplines: data.disciplines,
         location: data.location,
         isRemote: data.isRemote,
+        stipendAmount: data.stipendAmount ?? null,
+        isStipendNegotiable: data.isStipendNegotiable ?? false,
+        durationWeeks: data.durationWeeks ?? null,
+        requirements: data.requirements ?? null,
+        applicationDeadline: data.applicationDeadline ?? null,
+        maxApplicants: data.maxApplicants ?? null,
         status: data.status,
         isModerated: data.isModerated,
         sourceType: (data.sourceType ?? 'NATIVE') as 'NATIVE' | 'CURATED_EXTERNAL',
@@ -395,6 +431,12 @@ export class PrismaListingRepository implements IListingRepository {
           disciplines: r.disciplines,
           location: r.location,
           isRemote: r.isRemote,
+          stipendAmount: r.stipendAmount,
+          isStipendNegotiable: r.isStipendNegotiable,
+          durationWeeks: r.durationWeeks,
+          requirements: r.requirements,
+          applicationDeadline: r.applicationDeadline,
+          maxApplicants: r.maxApplicants,
           status: r.status as ListingStatus,
           isModerated: r.isModerated,
           createdAt: r.createdAt,
@@ -430,6 +472,12 @@ export class PrismaListingRepository implements IListingRepository {
       disciplines: row.disciplines,
       location: row.location,
       isRemote: row.isRemote,
+      stipendAmount: row.stipendAmount,
+      isStipendNegotiable: row.isStipendNegotiable,
+      durationWeeks: row.durationWeeks,
+      requirements: row.requirements,
+      applicationDeadline: row.applicationDeadline,
+      maxApplicants: row.maxApplicants,
       status: row.status as ListingStatus,
       isModerated: row.isModerated,
       createdAt: row.createdAt,

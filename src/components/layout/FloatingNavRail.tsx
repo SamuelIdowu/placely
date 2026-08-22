@@ -74,17 +74,24 @@ export function FloatingNavRail({
 
   const employerSections: NavSection[] = [
     {
-      title: 'Talent Workspace',
+      title: 'Workspace',
       items: [
         { icon: LayoutDashboard, href: '/employer/dashboard', label: 'Dashboard' },
         { icon: Briefcase, href: '/employer/listings', label: 'SIWES Listings' },
       ],
     },
     {
-      title: 'Corporate Identity',
+      title: 'Talent Pipeline',
+      items: [
+        { icon: FileText, href: '/employer/applications', label: 'All Applicants' },
+        { icon: Users, href: '/employer/shortlisted', label: 'Shortlisted Candidates' },
+      ],
+    },
+    {
+      title: 'Company',
       items: [
         { icon: Building2, href: '/employer/profile', label: 'Company Profile & CAC' },
-        { icon: Settings, href: '/employer/profile/settings', label: 'Company Settings' },
+        { icon: Settings, href: '/employer/profile/settings', label: 'Account Settings' },
       ],
     },
   ];
@@ -115,6 +122,7 @@ export function FloatingNavRail({
     if (href === '/applications' && pathname.startsWith('/applications/')) return true;
     if (href === '/employer/listings' && pathname.startsWith('/employer/listings/')) return true;
     if (href === '/employer/applications' && pathname.startsWith('/employer/applications/')) return true;
+    if (href === '/employer/shortlisted' && pathname.startsWith('/employer/shortlisted/')) return true;
     if (href === '/admin/verifications' && pathname.startsWith('/admin/verifications/')) return true;
     if (href === '/admin/listings' && pathname.startsWith('/admin/listings/')) return true;
     if (href === '/admin/users' && pathname.startsWith('/admin/users/')) return true;

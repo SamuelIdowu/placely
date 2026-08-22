@@ -21,8 +21,14 @@ export interface ListingProps {
   disciplines: string[];
   location: string;
   isRemote: boolean;
+  stipendAmount?: number | null;
+  isStipendNegotiable?: boolean;
+  durationWeeks?: number | null;
+  requirements?: string | null;
+  applicationDeadline?: Date | null;
+  maxApplicants?: number | null;
   status: ListingStatus;
-  isModerated: boolean; // admin flag
+  isModerated: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +48,12 @@ export class Listing {
       contactEmail: props.contactEmail ?? null,
       externalCompany: props.externalCompany ?? null,
       externalLogoUrl: props.externalLogoUrl ?? null,
+      stipendAmount: props.stipendAmount ?? null,
+      isStipendNegotiable: props.isStipendNegotiable ?? false,
+      durationWeeks: props.durationWeeks ?? null,
+      requirements: props.requirements ?? null,
+      applicationDeadline: props.applicationDeadline ?? null,
+      maxApplicants: props.maxApplicants ?? null,
     };
   }
 
@@ -57,6 +69,12 @@ export class Listing {
   get disciplines() { return this.props.disciplines; }
   get location() { return this.props.location; }
   get isRemote() { return this.props.isRemote; }
+  get stipendAmount() { return this.props.stipendAmount; }
+  get isStipendNegotiable() { return this.props.isStipendNegotiable; }
+  get durationWeeks() { return this.props.durationWeeks; }
+  get requirements() { return this.props.requirements; }
+  get applicationDeadline() { return this.props.applicationDeadline; }
+  get maxApplicants() { return this.props.maxApplicants; }
   get status() { return this.props.status; }
   get isModerated() { return this.props.isModerated; }
   get createdAt() { return this.props.createdAt; }
